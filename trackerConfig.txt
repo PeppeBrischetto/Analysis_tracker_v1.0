@@ -1,0 +1,36 @@
+# Configuration file for the tracker
+# the digitizer ar assigned to the proper tracker section
+
+Section number		Column	Row 	Dig	Preamp
+0    			0	0	
+1			1	0	-1	-1
+2			2	0	-1	-1
+3			3	0	-1	-1
+4			0	1	
+5			1	1	-1	-1
+6			2	1	-1	-1
+7			3	1	-1	-1
+8			0	2
+9			1	2	-1	-1
+10			2	2	-1	-1
+11			3	2	-1	-1
+12			0	3
+13			1	3	-1	-1
+14			2	3	-1	-1
+15			3	3	-1	-1
+16			0	4	
+17			1	4	-1	-1
+18			2	4	-1	-1
+19			3	4	-1	-1
+
+
+
+
+
+
+
+
+
+
+
+

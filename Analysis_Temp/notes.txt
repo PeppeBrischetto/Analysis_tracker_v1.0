@@ -1,0 +1,32 @@
+
+1) all the parameters must be used as a variable not writtene explicitely
+
+	-  anode_fit->Fill(centroid[j],(j*21.60)+10.80); 	
+	-  flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>evMult
+	-  if(Board==21247 && Charge>thresh){
+	-  double xpad= (Single_Pads*5.0)+2.50;     
+	-  if(intercept>-325.0 && intercept<-150.0){
+	
+2) avoid to use non necessary command inside the loops
+	
+	-  fit_result->SetLineWidth(2);
+	-  anode_fit->SetMarkerStyle(20);
+	-  anode_fit->SetMarkerSize(1);
+	
+3) comments the not trivial variables
+
+4) avoid to use variable that differ just by an uppercase  charge and Charge
+
+5) avoid to draw unecessary plot
+
+6) whats happen to the centroid when there are less than 5 custer per event? 
+	
+7) Fit of 2DHisto onsted of a TGraph ?!?
+
+8) center of gravity is the mean of the histo
+
+9) the binning of projection histo is too small
+
+10) why row histos ha 63 bin?
+
+11) added size of the anode

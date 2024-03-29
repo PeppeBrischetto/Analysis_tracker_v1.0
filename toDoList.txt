@@ -1,0 +1,14 @@
+
+
+- Considera come nomicnare le pad successive alla 60 quand avrai più anodi
+
+- cambia flag pile up e saturazione
+
+- Acq: copy directory and digitizer configuration file automatically
+
+* Domanda: serve ancora la struct data?
+* Perché prima legge la word 0 (cioè k=0) e poi legge le successive??
+
+
+
+
