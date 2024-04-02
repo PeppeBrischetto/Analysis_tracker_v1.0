@@ -27,7 +27,14 @@ void A_plot_EnergyVsPad(int run)
 
    // Apertura file
    char fileIn[50];
-   sprintf(fileIn, "../Merged_data/run_%i/merg_%i.root", run, run);
+   if(run<10){
+      sprintf(fileIn, "../Merged_data/run_00%i/merg_00%i.root", run, run);
+   }else if(run <100){
+      sprintf(fileIn, "../Merged_data/run_0%i/merg_0%i.root", run, run);
+   }else{
+      sprintf(fileIn, "../Merged_data/run_%i/merg_%i.root", run, run);
+   }   
+
 
    TFile *fin = new TFile(fileIn);
    TTree *tree = (TTree*)fin->Get("Data_R");
@@ -47,48 +54,50 @@ void A_plot_EnergyVsPad(int run)
    cout<<" "<<entries<<endl;
 
    // Dichiarazione Histo 
-   TH2F *digit[5];
+   TH2F *rowHisto[5];
    for(int i=0; i<5; i++){
-      digit[i]=new TH2F("dig","dig",64,-0.5,63.5, 6400,0.5,64000.5);
-      digit[i]->GetXaxis()->SetTitle("pad");
-      digit[i]->GetYaxis()->SetTitle("energy");
+      rowHisto[i]=new TH2F("dig","dig",64,-0.5,63.5, 6400,0.5,64000.5);
+      rowHisto[i]->GetXaxis()->SetTitle("pad");
+      rowHisto[i]->GetYaxis()->SetTitle("energy");
+      rowHisto[i]->SetStats(0);
    }
 
    // Ciclo sui dati   
    for(int i=0; i <entries; i++){
       tree->GetEntry(i);
-      if(row<5){digit[row]->Fill(pad,Charge);}
+      if(row<5){rowHisto[row]->Fill(pad,Charge);}
+      
    }
    
    TCanvas *C1=new TCanvas("c1","c1",100,50,900,400);
    C1->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
-   digit[0]->Draw("colz");   
+   rowHisto[0]->Draw("colz");   
    
    TCanvas *C2=new TCanvas("c2","c2",1000,50,900,400);
    C2->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
-   digit[1]->Draw("colz");   
+   rowHisto[1]->Draw("colz");   
    
    TCanvas *C3=new TCanvas("c3","c3",100,500,900,400);
    C3->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
-   digit[2]->Draw("colz");   
+   rowHisto[2]->Draw("colz");   
 
    TCanvas *C4=new TCanvas("c4","c4",1000,500,900,400);
    C4->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
-   digit[3]->Draw("colz");   
+   rowHisto[3]->Draw("colz");   
 
    TCanvas *C5=new TCanvas("c5","c5",100,950,900,400);
    C5->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
-   digit[4]->Draw("colz");   
+   rowHisto[4]->Draw("colz");   
 
 
 }

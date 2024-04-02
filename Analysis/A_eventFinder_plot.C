@@ -4,6 +4,11 @@
 //#   required as argument the run number
 //#            as input the DeltaT, time interval that is used to define an event
 //# 			   array with the number of digitizers used
+//#   parameters that can be changed:
+//#   DeltaT  :  time window that define the event
+//#   thresh  :  charge threshold for the single hit
+//#   rowMult :  show just event where at least rowMult rows have a  cluster
+//#
 //###################################################################################################
 //#   created march 2021
 //#######################################
@@ -12,7 +17,7 @@
 //# updated: plot the "strips"         1 12 2022 D. Torresi
 //# updated: rows start from 0         
 //#	      events counter 		 5 12 2022 D. Torresi
-//# updated: for the new anode	19  7 2023 D. Torresis
+//# updated: for the new anode	19  7 2023 D. Torresi
 //###################################################################################################
 
 int A_eventFinder_plot(int run)
@@ -25,6 +30,10 @@ int A_eventFinder_plot(int run)
    float DeltaT=2000000;  //in ps
    // energy threshold to defin an hit
    int thresh=0;
+   // row multiplicity required to plot the event
+   int rowMult=0; 
+   
+
 
    UShort_t Channel; 
    UShort_t pad; 
@@ -50,7 +59,14 @@ int A_eventFinder_plot(int run)
    
    // Apertura file
    char fileIn[50];
-   sprintf(fileIn, "../Merged_data/run_%i/merg_%i.root", run, run);
+   if(run<10){
+      sprintf(fileIn, "../Merged_data/run_00%i/merg_00%i.root", run, run);
+   }else if(run <100){
+      sprintf(fileIn, "../Merged_data/run_0%i/merg_0%i.root", run, run);
+   }else{
+      sprintf(fileIn, "../Merged_data/run_%i/merg_%i.root", run, run);
+   }   
+
    cout<<fileIn<<endl;
    TFile *fin = new TFile(fileIn);
    TTree *tree = (TTree*)fin->Get("Data_R");
@@ -60,7 +76,6 @@ int A_eventFinder_plot(int run)
    tree->SetBranchAddress("FineTSInt",&FTS);
    tree->SetBranchAddress("CoarseTSInt",&CTS);
    tree->SetBranchAddress("Timestamp",&Timestamp);
-   tree->SetBranchAddress("Charge",&Charge);
    tree->SetBranchAddress("Charge",&Charge);
    tree->SetBranchAddress("Flags",&Flags);
    tree->SetBranchAddress("Pads",&pad);
@@ -205,7 +220,7 @@ int A_eventFinder_plot(int run)
            for(int g=0;g<62;g++){anodeTime->Fill(g,0.5,Timestamp-timeinit +10);}
         }
       }else{
-        if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>2){
+        if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>rowMult){
            C1->cd(0);
            anode->Draw("colz");
            //C1->Update();      
