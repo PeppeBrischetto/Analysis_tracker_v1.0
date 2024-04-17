@@ -301,7 +301,7 @@ void B_trackerFinder_plot(int run)
             cout<<"entry "<<i<<endl;
             cout<<"press any key to continue, q to quit, s to save a plot"<<endl;
             cin>>anykey;
-            if(anykey=='q')return 0; // Per uscire dal programma
+            if(anykey=='q')return ; // Per uscire dal programma
             if(anykey=='s'){ 		 // Salvi il plot
                C1->Print("c1.eps");
                C5->Print("C5.eps");

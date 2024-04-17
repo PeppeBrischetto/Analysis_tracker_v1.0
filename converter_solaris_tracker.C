@@ -13,7 +13,7 @@
 // created        July 2022  F. Dalaunay
 // modified: 	15 Nov 2022  F. Delaunay,  F.Soukeras
 // modified:    25 Nov 2022  added row and section variables in the output file  D. Torresi
-// last update: 20 Mar 2024  read and convert the data format from SOLARIS G. Brischetto, A. Pitronaci
+// last update: 20 Mar 2024  read and convert the data format from SOLARIS G. A. Brischetto, A. Pitronaci
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // To do

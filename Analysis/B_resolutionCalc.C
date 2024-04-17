@@ -1,3 +1,7 @@
+
+
+//######## OBSOLETE ################
+
 // Macro determine the resolution of the detector with run done with a collimator whose
 // relative position is not well known.
 // Three figures are plotted: 

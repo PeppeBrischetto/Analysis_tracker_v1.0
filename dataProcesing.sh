@@ -67,7 +67,7 @@ cp $initfile $file1
 echo "---------"
 
 #for dig in 22643 22644 22645 22646
-for dig in 22643 22644 22645 21247
+for dig in 22642 22643 22644 22645 21247
    do
    # fill the $file2 
    cp $caldir/dig_$dig\_cal.root $file2
