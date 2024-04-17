@@ -1,6 +1,6 @@
 //###################################################################################################
-//#   macro that take as input a merged file, plot a 2D histo of the charge as a function of the pad 
-//#   number for each row
+//#   macro that take as input a merged file, plot a 2D histo of the charge as a function of the digitizer channel
+//#   for each digitizer
 //#   
 //#   required as argument the run number
 //###################################################################################################
@@ -9,7 +9,7 @@
 //
 
 
-void A_plot_EnergyVsPad(int run)
+void A_plot_EnergyVsChannel(int run)
 {
 
    // Dichiarazione variabili	
@@ -25,6 +25,8 @@ void A_plot_EnergyVsPad(int run)
    UInt_t Flags;
    UShort_t row;
 
+   Int_t board_id[20]={22642,22643,22644,22645,21247};
+
    // Apertura file
    char fileIn[50];
    if(run<10){
@@ -34,7 +36,6 @@ void A_plot_EnergyVsPad(int run)
    }else{
       sprintf(fileIn, "../Merged_data/run_%i/merg_%i.root", run, run);
    }   
-
 
    TFile *fin = new TFile(fileIn);
    TTree *tree = (TTree*)fin->Get("Data_R");
@@ -54,18 +55,22 @@ void A_plot_EnergyVsPad(int run)
    cout<<" "<<entries<<endl;
 
    // Dichiarazione Histo 
-   TH2F *rowHisto[5];
+   TH2F *digit[5];
    for(int i=0; i<5; i++){
-      rowHisto[i]=new TH2F("dig","dig",64,-0.5,63.5, 6400,0.5,64000.5);
-      rowHisto[i]->GetXaxis()->SetTitle("pad");
-      rowHisto[i]->GetYaxis()->SetTitle("energy");
-      rowHisto[i]->SetStats(0);
+      digit[i]=new TH2F("dig","dig",64,-0.5,63.5, 6400,0.5,64000.5);
+      digit[i]->GetXaxis()->SetTitle("Channel");
+      digit[i]->GetYaxis()->SetTitle("energy");
+      digit[i]->SetStats(0);
    }
 
    // Ciclo sui dati   
    for(int i=0; i <entries; i++){
       tree->GetEntry(i);
-      if(row<5){rowHisto[row]->Fill(pad,Charge);}
+      if(Board==board_id[0]){digit[0]->Fill(Channel,Charge);}
+      if(Board==board_id[1]){digit[1]->Fill(Channel,Charge);}
+      if(Board==board_id[2]){digit[2]->Fill(Channel,Charge);}
+      if(Board==board_id[3]){digit[3]->Fill(Channel,Charge);}
+      if(Board==board_id[4]){digit[4]->Fill(Channel,Charge);}
       
    }
    
@@ -73,31 +78,32 @@ void A_plot_EnergyVsPad(int run)
    C1->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
-   rowHisto[0]->Draw("colz");   
+   digit[0]->Draw("colz");   
+
    
    TCanvas *C2=new TCanvas("c2","c2",1000,50,900,400);
    C2->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
-   rowHisto[1]->Draw("colz");   
+   digit[1]->Draw("colz");   
    
    TCanvas *C3=new TCanvas("c3","c3",100,500,900,400);
    C3->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
-   rowHisto[2]->Draw("colz");   
+   digit[2]->Draw("colz");   
 
    TCanvas *C4=new TCanvas("c4","c4",1000,500,900,400);
    C4->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
-   rowHisto[3]->Draw("colz");   
+   digit[3]->Draw("colz");   
 
    TCanvas *C5=new TCanvas("c5","c5",100,950,900,400);
    C5->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
-   rowHisto[4]->Draw("colz");   
+   digit[4]->Draw("colz");   
 
 
 }

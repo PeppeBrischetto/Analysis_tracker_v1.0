@@ -163,7 +163,7 @@ void pad_init(int ver=0){
    char buffer[200];   // buffer for text
    int channel;
    //##  read header ##
-   for(int i=0;i<9;i++){
+   for(int i=0;i<10;i++){
       fp1.getline(buffer,200);
       if(ver>0)cout<<buffer<<endl;
    }
