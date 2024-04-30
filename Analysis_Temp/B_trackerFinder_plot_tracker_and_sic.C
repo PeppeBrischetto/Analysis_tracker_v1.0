@@ -185,12 +185,16 @@ void B_trackerFinder_plot_tracker_and_sic(int run)
    C5->cd(0);
   // tracks->GetYaxis()->SetRangeUser(-2.0,5.0);
    tracks->Draw();
-   
+    
    TCanvas *C6=new TCanvas("c6","c6",800,500,900,400);
    C6->SetFillColor(kWhite);
    C6->cd(0);
    tracks_with_sic->Draw();
-   
+
+    TCanvas *C6a=new TCanvas("c6a","c6a",800,500,900,400);
+   C6a->SetFillColor(kWhite);
+   C6a->cd(0);
+   tracks_with_sic->Draw();  
   
    finTracker->cd();
   
@@ -353,8 +357,9 @@ void B_trackerFinder_plot_tracker_and_sic(int run)
 	       fit_result->SetLineWidth(2);
 	       if(np==5){
 	          //fit_result->Draw("same");
-	          C6->cd();
+      	       	  if(track_with_sic_flag==0){C6->cd();}else{C6a->cd();}
 	       	  fit_result->Draw("same");
+
 	       }
 /*	       if(j==4){
 		   anode_fit->Draw();
@@ -413,12 +418,14 @@ void B_trackerFinder_plot_tracker_and_sic(int run)
             C3->Update();
             C4->Update();
             C5->Update();
+            C6a->Update();
             C6->Update();
            
             cout<<"entry "<<i<<endl;
             cout<<"press any key to continue, q to quit, s to save a plot"<<endl;
             //cin>>anykey;
-            if(flagM==0)cin>>anykey;
+            //if(flagM==0)cin>>anykey;
+            //if(flagS==1)cin>>anykey;
             //if(flagS==1) cin>>anykey;
             if(anykey=='q') return ; // Per uscire dal programma
             if(anykey=='s'){ 		 // Salvi il plot

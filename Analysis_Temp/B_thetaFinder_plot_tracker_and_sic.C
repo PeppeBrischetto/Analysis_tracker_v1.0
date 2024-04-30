@@ -15,7 +15,7 @@
 
 
 
-void B_anglesFinder_plot_tracker_and_sic(int run)
+void B_thetaFinder_plot_tracker_and_sic(int run)
 {
 
    // Dichiarazione variabili
@@ -114,11 +114,11 @@ void B_anglesFinder_plot_tracker_and_sic(int run)
    row[4]->SetLineColor(kViolet);
    
    
-   TH1D *h_angles[4];
+   TH1F *h_angles[4];
    h_angles[0]=new TH1F("h_theta_without_sic","h_theta_without_sic",60,-30.,30.);
    h_angles[1]=new TH1F("h_theta_with_sic","h_theta_with_sic",60,-30.,30.);
    h_angles[2]=new TH1F("h_phi_without_sic","h_phi_without_sic",50,-5.,5.);
-   h_angles[3]=new TH1F("h_phi_with_sic","h_phi_with_sic",62,50,-5.,5.);
+   h_angles[3]=new TH1F("h_phi_with_sic","h_phi_with_sic",50,-5.,5.);
    
 
    TH1D *h_theta_without_sic = new TH1D("","",60,-30.,30.);

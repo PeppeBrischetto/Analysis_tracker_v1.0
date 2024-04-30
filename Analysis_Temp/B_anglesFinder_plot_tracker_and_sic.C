@@ -21,7 +21,7 @@ void B_anglesFinder_plot_tracker_and_sic(int run)
    // Dichiarazione variabili
 
    // window that define the event, opened with the first hit
-   float DeltaT=2000000;  //in ps
+   float DeltaT=1000000;  //in ps
    // energy threshold to defin an hit
    int thresh=0;
 
@@ -57,7 +57,7 @@ void B_anglesFinder_plot_tracker_and_sic(int run)
    eventSic=tracksWithoutSic=tracksWithSic=sicWithoutTracks=0;   
 
    double *zrow = new double[5];  // zcoordinate of the row
-   zrow[0]=18.60;		// valid for the prototype 1.5
+   zrow[0]=18.60;		  // valid for the prototype 2
    zrow[1]=39.80;
    zrow[2]=61.00;
    zrow[3]=82.20;
