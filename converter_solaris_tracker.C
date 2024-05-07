@@ -425,7 +425,6 @@ void converter_solaris_tracker (const char *data_file_name_0, const UShort_t Boa
       //data_0 = (struct data*)block_0;
       
       reader->ReadNextBlock();  // 2024-03-20 added, as in converter_solaris.C    
-      k++;
   
       // 2024-03-20 commented
       //array_Channel[k]=(UShort_t)(data_0->Channel);
@@ -451,7 +450,8 @@ void converter_solaris_tracker (const char *data_file_name_0, const UShort_t Boa
       array_Flags[k]=LoPFlags0 << 16;
       array_Flags[k]+= HiPFlags0;
       array_Board[k]=Board0;
-     
+
+      k++;     
       //##################### Charge calibration ############################
   
       for(UInt_t cp=0; cp<64; cp++){    

@@ -6,6 +6,9 @@ A_plotMap_analisi.C
 
 A_eventFinder_plot.C	find event and plot an anode map of charge and time.
 			print on screen also the entry of the first pad of the event
+			
+A_eventFinderTrSiC_plot.C Find an event in coincidence between one Sic ans the tracker
+			and plot the event on the anode.		
 
 A_plotMap_entries	plot the map of hit on the anode for a given number of entries
 

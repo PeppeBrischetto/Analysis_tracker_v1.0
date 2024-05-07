@@ -16,7 +16,7 @@
 //# 
 //###################################################################################################
 
-int A_eventFinderTrSiC_plot.C(int run)
+int A_eventFinderTrSiC_plot(int run)
 {
 
 ////////////////////////////////////////////////////////////////////
@@ -31,7 +31,6 @@ int A_eventFinderTrSiC_plot.C(int run)
    // in other word the delay of pad hit respect to the Sic hit.
    Float_t timeWindowlow = 0.5E+06; 
    Float_t timeWindowhigh = 4.0E+06; 
-
 
    // tracker variables 
    UShort_t Channel; 
@@ -58,14 +57,16 @@ int A_eventFinderTrSiC_plot.C(int run)
    // Secondary variables  
    ULong64_t TimestampSicTemp;   
    ULong64_t TimestampTrackerEv;	// variables used for checks
-   UInt_t SicLoopFlag;	// variable used to stop the loop on the Sic file
+   UInt_t SicLoopFlag;			// variable used to stop the loop on the Sic file
+   UInt_t rowMultiplicity=4; 	// consider tracks with a number of hit row bigger than rowMultiplicity
+   UInt_t binmax, max;
 
    char anykey;		// variable used to pause the macro
    int flag[5];		// variable that are true when there is at least one hit in the Row
    for(int i =0; i<5; i++) flag[i]=0;
    int flagM=1;				// Flag used to contine the macro without interruption
    int Fstrip=1;			// flag to plot strip: 0 plot, 1 no plot
-   int binmax, max;
+
    UInt_t FlagSicStop=0;  		// variable used to pause the macro with a SiC   
    UInt_t sicHits=0;    		// number of SiC hit
    UInt_t eventNumber=0;		// number of tracker event (tracks) in the run
@@ -74,7 +75,6 @@ int A_eventFinderTrSiC_plot.C(int run)
    UInt_t sicWithoutTracks=0;
 // END: Dichiarazione variabili		//////////////////////////////////////
 
-  
 //////////////////////////////////////////////////////////////////////////////   
 // open tracker file
    char fileInTracker[50];
@@ -262,7 +262,7 @@ int A_eventFinderTrSiC_plot.C(int run)
          TimestampTrackerEv = Timestamp;
          
       }else{
-         if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>2){
+         if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>rowMultiplicity){
           
             // loop on the SiC file 
             finSic->cd();
@@ -317,8 +317,6 @@ int A_eventFinderTrSiC_plot.C(int run)
                cout<<"press any key to continue, q to quit, s to save a plot, c to continue till the end"<<endl; 
                if(flagM)cin>>anykey;
             }
- 
-
            
             if(anykey=='q') return 0; // Per uscire dal programma
             if(anykey=='s'){ 		 // Salvi il plot
@@ -332,10 +330,9 @@ int A_eventFinderTrSiC_plot.C(int run)
             cout<<"Event number: "<<eventNumber<<endl;
             cout << " - Timestamp Track: " << Timestamp <<endl;
             cout << " - Timestamp SiC  : " << TimestampTrackerEv <<"\n"<< endl; 
-      	       
+       	    cout<<"---------------"<<endl;      
     	 }
- 
-         cout<<"---------------"<<endl;
+         
          timeinit=Timestamp;
          anode->Reset("ICES");
          anodeTime->Reset("ICES");

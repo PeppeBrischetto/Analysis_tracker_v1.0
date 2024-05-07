@@ -179,7 +179,7 @@ void B_anglesFinder_plot_tracker_and_sic(int run)
    int np=0;
   
    // Lettura file      
-   for(int i=0; i<entriesTracker; i++){
+   for(int i=0; i<entriesTracker/100; i++){
    //for (int i=0; i<3694953; i++) {
       treeTracker->GetEntry(i);   
       if (i%1000==0) cout << "Entry: " << i << endl;
