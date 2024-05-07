@@ -382,7 +382,8 @@ void converter (const char *data_file_name_0, const UShort_t Board0 = 0, const c
       if(data_file_0.eof()) break;
       data_file_0.read(block_0,sizeof(struct data));
       data_0 = (struct data*)block_0;
-  
+      k++;
+      
       array_Channel[k]=(UShort_t)(data_0->Channel);
       array_Time_ps[k]=ULong64_t(us_to_ps*(data_0->Coarse_Time_micros)) + ULong64_t((Double_t)(data_0->Fine_Time_int)*fineTS_to_ps);
       array_Coarse_Time[k]=(data_0->Coarse_Time_micros);
@@ -393,7 +394,7 @@ void converter (const char *data_file_name_0, const UShort_t Board0 = 0, const c
       HiPFlags0 = (UInt_t)(data_0->HiPFlags);  
       array_Flags[k]=LoPFlags0 << 16;
       array_Flags[k]+= HiPFlags0;
-      k++;
+
      
       //##################### Charge calibration ############################
   
