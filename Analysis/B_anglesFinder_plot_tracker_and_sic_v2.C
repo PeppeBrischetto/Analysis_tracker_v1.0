@@ -99,7 +99,7 @@ void B_anglesFinder_plot_tracker_and_sic_v2(int run)
    zrow[3]=82.20;
    zrow[4]=103.40;
 
-   
+   char dummyString[50];
 
 // END: Dichiarazione variabili		//////////////////////////////////////
 
@@ -151,11 +151,16 @@ void B_anglesFinder_plot_tracker_and_sic_v2(int run)
 //////////////////////////////////////////////////////////////////////////////
 // Dichiarazione Histo, Canvas, TGraph and Functions
    TH1F *row[5];
-   row[0]=new TH1F("r0","r0",62,-0.5,61.5);
-   row[1]=new TH1F("r1","r1",62,-0.5,61.5);
-   row[2]=new TH1F("r2","r2",62,-0.5,61.5);
-   row[3]=new TH1F("r3","r3",62,-0.5,61.5);
-   row[4]=new TH1F("r4","r4",62,-0.5,61.5);
+   for (int i=0; i<5; ++i){
+       sprintf(dummyString,"r%i",i);
+       row[i]=new TH1F(dummyString,dummyString,62,-0.5,61.5);
+   }
+
+   TH1D *time[5];
+   for (int i=0; i<5; ++i) {
+       sprintf(dummyString,"time%i",i);
+       time[i]=new TH1D(dummyString,dummyString,1.0E+06,-0.5,1.0E+12);
+   }
 
    for(int i=0;i<5; i++){
      row[i]->GetXaxis()->SetTitle("pad");
@@ -228,37 +233,24 @@ void B_anglesFinder_plot_tracker_and_sic_v2(int run)
    ULong64_t timeinit=Timestamp;
    cout<<" time init tracker: "<<timeinit<<endl;
    treeSic->GetEntry(0);
-   cout<<" time init SiC: "<<Timestamp<<endl;
+   cout<<" time init SiC: "<<TimestampSic<<endl;
    
    for(int i=0; i<entriesTracker/100; i++){
       treeTracker->GetEntry(i);   
       //if (i%1000==0) cout << "Entry: " << i << endl;
-      //if(Charge>0){cout<< Board<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<Timestamp<<"\t"<<Flags<<endl;}
+      if(Charge>0){cout<< Board<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<Timestamp<<"\t"<<Flags<<endl;}
       if((Timestamp-timeinit)<DeltaT){
          //Fill histos
          if (Charge > thresh) {
-            if (Row==0) {
-               flag[0]=1;
-               row[0]->Fill(pad,Charge);
-            }
-            if (Row==1) {
-               flag[1]=1;
-               row[1]->Fill(pad,Charge);
-            }
-            if (Row==2) {
-               flag[2]=1;
-               row[2]->Fill(pad,Charge);
-            }
-            if (Row==3) {
-               flag[3]=1;
-               row[3]->Fill(pad,Charge);
-            }
-            if (Row==4) {
-               flag[4]=1;
-               row[4]->Fill(pad,Charge);
+            for (int k=0; k<5; ++k) {
+                if (Row==k) {
+                   flag[k]=1;
+                   row[k]->Fill(pad,Charge);
+                   time[k]->Fill(pad,timeinit);
+                }
             }
          }
-      }else {
+      } else {
       	 // The event is finished plot if there is something 
          if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>rowMultiplicity){
             np=0; 
@@ -283,7 +275,7 @@ void B_anglesFinder_plot_tracker_and_sic_v2(int run)
             SicLoopFlag=1;
             while(SicLoopFlag){ 
             treeSic->GetEntry(sicHits);
-               if (TimestampSic>timeinit-timeWindowlow){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
+	       if (TimestampSic>(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
                   tracksWithoutSic++;
                   SicLoopFlag=0;
                   FlagSicStop=0;  	
@@ -312,7 +304,7 @@ void B_anglesFinder_plot_tracker_and_sic_v2(int run)
 	       theta_deg=-90-alpha_deg+180;
 	    }
             //cout << "slope " << slope << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
-            //cin >> anykey; 
+            cin >> anykey; 
 	    h_alpha[0]->Fill(alpha_deg);	       
 	    h_angles[0]->Fill(theta_deg);
             if(FlagSicStop==0){
@@ -338,7 +330,8 @@ void B_anglesFinder_plot_tracker_and_sic_v2(int run)
                cout << lin1->GetParameter(1)<<"  "<<90-abs(atan(lin1->GetParameter(1))*180/3.1415)<<endl;
               
                cout<<"press any key to continue, q to quit, s to save a plot, c to continue till the end"<<endl; 
-               if(flagM)cin>>anykey;
+               if(flagM)
+                  cin>>anykey;
             }
  
             if(anykey=='q') return; // Per uscire dal programma
@@ -355,28 +348,16 @@ void B_anglesFinder_plot_tracker_and_sic_v2(int run)
 	
    	 for(int j=0;j<5; j++){
 	    row[j]->Reset("ICES");
+	    time[j]->Reset("ICES");
 	    flag[j]=0;
 	 }
          if (Charge > thresh) {
-            if (Row==0) {
-               flag[0]=1;
-               row[0]->Fill(pad,Charge);
-            }
-            if (Row==1) {
-               flag[1]=1;
-               row[1]->Fill(pad,Charge);
-            }
-            if (Row==2) {
-               flag[2]=1;
-               row[2]->Fill(pad,Charge);
-            }
-            if (Row==3) {
-               flag[3]=1;
-               row[3]->Fill(pad,Charge);
-            }
-            if (Row==4) {
-               flag[4]=1;
-               row[4]->Fill(pad,Charge);
+            for (int k=0; k<5; ++k) {
+                if (Row==k) {
+                   flag[k]=1;
+                   row[k]->Fill(pad,Charge);
+                   time[k]->Fill(pad,timeinit);
+                }
             }
          }
       } 
