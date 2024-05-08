@@ -246,7 +246,7 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    for(int i=0; i<entriesTracker/100; i++){
       treeTracker->GetEntry(i);   
       //if (i%1000==0) cout << "Entry: " << i << endl;
-      if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<Timestamp<<"\t"<<Flags<<endl;}
+      if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<endl;}
       if((Timestamp-timeinit)<DeltaT){
          //Fill histos
          if (Charge > thresh) {
