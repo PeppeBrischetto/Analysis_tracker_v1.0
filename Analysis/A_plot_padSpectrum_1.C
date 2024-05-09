@@ -1,15 +1,15 @@
 //###################################################################################################
-//#   macro that take as input a merged file, plot the charge spectrum of a single pad
-//#   It divides the total length of a run in ten sections and fill ten histrograms
+//#   macro that take as input a merged file, plot the charge spectrum of multiple pads
+//#   in the same plot
 //#   
 //#   required as argument the run number
 //###################################################################################################
-//#   created January 2023   D. Torresi
+//#   created May 2024   D. Torresi
 //#######################################
 //
 
 
-void A_plot_padSpectrum(int run)
+void A_plot_padSpectrum_1(int run)
 {
 
    // Dichiarazione variabili	
@@ -47,9 +47,9 @@ void A_plot_padSpectrum(int run)
    cout<<" "<<entries<<endl;
 
    // Dichiarazione Histo 
-   TH1F *chargepad[10];
-   for(int i=0; i<10; i++){
-      chargepad[i]=new TH1F("ep","ep",4000,-0.5,63999.5);
+   TH1F *chargepad[64];
+   for(int i=0; i<64; i++){
+      chargepad[i]=new TH1F("ep","ep",64100,-0.5,64099.5);
       chargepad[i]->GetXaxis()->SetTitle("charge");
       chargepad[i]->GetYaxis()->SetTitle("counts");
    }
@@ -62,22 +62,28 @@ void A_plot_padSpectrum(int run)
    int k=0;
    double intpart, fracpart;
    
-   cout<<"Board Channel (pad) Charge (Charge_cal) Timestamp Flags"<<endl;
+   //cout<<"Board Channel (pad) Charge (Charge_cal) Timestamp Flags"<<endl;
    for(int i=0;i <entries; i++){
       tree->GetEntry(i);
-      modf((((float)i/entries)*10),&intpart);
-      if(pad==10){chargepad[(int)intpart]->Fill(Charge);}                 
+      //modf((((float)i/entries)*10),&intpart);
+      
+      for(int j=0; j<64; j++){
+        if(pad==j){
+           chargepad[j]->Fill(Charge);
+        }                 
+      }
+      
    }
    
-   
-   for(int i=0; i<10; i++){
+   chargepad[10]->Draw();   
+   for(int i=20; i<25; i++){
       chargepad[i]->SetLineColor(i);
       chargepad[i]->Draw("same");   
    }
   
    char naam[100];
    TLegend *leg= new TLegend(0.7,0.65,0.9,0.9);
-   for(int i=0; i<10; i++){
+   for(int i=20; i<25; i++){
       sprintf(naam,"Pad %d",i);
       leg->AddEntry(chargepad[i], naam, "l");
    }
