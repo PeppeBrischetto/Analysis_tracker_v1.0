@@ -68,7 +68,7 @@ void A_plot_padSpectrum_1(int run)
       //modf((((float)i/entries)*10),&intpart);
       
       for(int j=0; j<64; j++){
-        if(pad==j){
+        if(pad==j && Board==22643){
            chargepad[j]->Fill(Charge);
         }                 
       }
@@ -77,7 +77,7 @@ void A_plot_padSpectrum_1(int run)
    
    chargepad[10]->Draw();   
    for(int i=20; i<25; i++){
-      chargepad[i]->SetLineColor(i);
+      chargepad[i]->SetLineColor(i-20);
       chargepad[i]->Draw("same");   
    }
   

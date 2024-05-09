@@ -14,7 +14,13 @@ A_plotMap_entries	plot the map of hit on the anode for a given number of entries
 
 A_plotMap_time		plot the map of hit on the anode for a given interval of time
 
-A_plot_padSpectrum.C    plot the charge spectrum of a single pad in a run
+A_plot_padSpectrum.C    plot the charge spectrum of a single pad in a run splitting the
+			run in more pieces.
+
+A_plot_padSpectrum_1.C  plot the charge spectrum of multiple pad in a single plot
+
+A_plot_padSpectrum_2.C  plot the charge spectrum of a single pad with a condition
+			on the hit multiplicity in a time window
 
 A_plot_EnergyVsChannel.C plot the charge vs digitizer channel in a TH2 for each digitizer
 

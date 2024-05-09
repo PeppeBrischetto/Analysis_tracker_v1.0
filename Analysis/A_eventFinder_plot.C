@@ -33,8 +33,6 @@ int A_eventFinder_plot(int run)
    // row multiplicity required to plot the event
    int rowMult=0; 
    
-
-
    UShort_t Channel; 
    UShort_t pad; 
    UShort_t FTS;
@@ -156,9 +154,7 @@ int A_eventFinder_plot(int run)
    tree->GetEntry(0);
    ULong64_t timeinit=Timestamp;
    cout<<" time init: "<<timeinit<<endl;
-
-   
-   
+ 
    cout<<"Board Channel (pad) Energy (Energy_cal) Timestamp Flags"<<endl;
    for(int i=0;i <entries; i++){
       tree->GetEntry(i);

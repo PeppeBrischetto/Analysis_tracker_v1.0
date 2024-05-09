@@ -46,6 +46,13 @@ converter.C	converts raw data from binary to root, calibrates the charge and pad
                 
                 use:  converter.C("Raw_data/Run_18/dig22642.bin",22642,"Cal_data/out.root") 
 
+converter.cc	same as converter.C but do not use root, uses its libraries.
+			
+		UNDER DEVELOPMENT
+		use: for the moment the input data name, the digitizer ID, the output
+		file name must be introduced explicitely inside the code.
+
+
 merger.C	merge 2 root files at a time
 		Input from Cal_data 
  		Output to Cal_data 
@@ -57,4 +64,4 @@ dataProcessing.sh  Shell script that use in a smart way converter.C and merger.C
 		$ dataProcessing n 
 		where n is the number of the run
 		
-
+compila.sh	Shell script that compile converter.cc
