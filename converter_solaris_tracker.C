@@ -37,7 +37,7 @@
 int verbosity=0;
 // File names
 char fileCalCharge[200]="Calib_files/chargeCalib_PA.txt";   // charge calibration file 
-char filePadMapping[200]="Calib_files/channel2pad_3.txt";   // pads mapping file
+char filePadMapping[200]="Calib_files/channel2pad_2.txt";   // pads mapping file
                                                             // 2024-03-20 We defined channel2pad_3.txt from channel2pad_2.txt changing the pad numbers relative to the strips from 100 and 101 (i.e. channels 60 and 61) to 1000 and 1001, respectively. This is because with the final anode the pad number will be from 0 to 239, therefore 100 and 101 will be used for pads and not for strips
 
 // Board mapping
@@ -167,11 +167,12 @@ void calib_init(int ver=0){
 void pad_init(int ver=0){
    ifstream fp1;
    fp1.open(filePadMapping);
+   if(!fp1){cerr<<" Pad map file does not exist!"<<endl;}
 
    char buffer[200];   // buffer for text
    int channel;
    //##  read header ##
-   for(int i=0;i<9;i++){
+   for(int i=0;i<10;i++){
       fp1.getline(buffer,200);
       if(ver>0)cout<<buffer<<endl;
    }
@@ -257,11 +258,6 @@ void quicksort(UShort_t arr0[], ULong64_t arr1[], UShort_t arr2[], UShort_t arr3
    if(i < high) 
       quicksort(arr0, arr1, arr2, arr3, arr4, arr5, arr6, arr7, arr8, i, high);
 };
-
-
-
-
-
 
 
 // Convert a binary file of a single digitizer in root, provide also calibration
