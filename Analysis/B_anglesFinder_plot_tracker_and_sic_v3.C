@@ -30,7 +30,14 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    int thresh=0;
 
    Float_t timeWindowlow = 0.5E+06; // time (in ps) that the primary electrons need to reach the anode
-   Float_t timeWindowhigh = 2.0E+06; 
+   Float_t timeWindowhigh = 2.0E+06;
+
+   Double_t timeOffset = 10.; // time (in ps) used to avoid that the time difference Timestamp-timeinit 
+                              // is equal to zero for the first event entry (see where time histos are filled)
+                              // This is important when you want to calculate the time average weighted by the charge
+                              
+   Double_t velocity = 50.;  // drift velocity (in mm/us) of electrons in isobutane;  
+   Double_t velocity_mm_ps = velocity/1.0E+06;  // drift velocity (in mm/ps) of electrons in isobutane;
 
     // tracker variables 
    UShort_t Channel; 
@@ -61,19 +68,22 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    double total_charge = 0.0;
    double weigthed_pos[60];
    double centroid[5], centroid_mm[5];
-    
+
    // Secondary variables  
    ULong64_t TimestampSicTemp;   
    ULong64_t TimestampTrackerEv;	// variables used for checks
    UInt_t SicLoopFlag;	// variable used to stop the loop on the Sic file
-   
+
+   Double_t timeAverage[5] = {0.}; // variable used to calculate the average time (weighted by the charge) on a raw
+   Double_t time = 0.;             // variable used to store the time of a single pad (it is used for the calculation of the average time
+
    int binmax=-100, max=-100;		// variables used to plot the histos
    // number of event in the run
    
    Double_t theta=-1000., theta_deg=-1000.;
-   Double_t alpha=-1000., alpha_deg=-1000.;
+   Double_t alpha=-1000., alpha_deg=-1000.;  // auxiliary angle for the calculation of theta
    Double_t phi=-1000., phi_deg=-1000.;
-   
+   Double_t beta=-1000., beta_deg=-1000.;    // auxiliary angle for the calculation of phi
 
    UInt_t flagTrackWithSiC=0;  
    UInt_t rowMultiplicity=4; 	// consider tracks with a number of hit row bigger than rowMultiplicity
@@ -91,13 +101,16 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    UInt_t sicWithoutTracks=0; 
 
    int np=0; // number of point of the Tgraph
+   int npTime=0; // number of point of the Tgraph of the time
 
-   double *zrow = new double[5];  // zcoordinate of the row
+   double *zrow = new double[5];  // zcoordinate (in mm) of the row
    zrow[0]=18.60;		  // valid for the prototype 2
    zrow[1]=39.80;
    zrow[2]=61.00;
    zrow[3]=82.20;
    zrow[4]=103.40;
+
+   double yrow[5] = {0.};
 
    char dummyString[50];
 
@@ -156,10 +169,10 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
        row[i]=new TH1F(dummyString,dummyString,62,-0.5,61.5);
    }
 
-   TH1D *time[5];
+   TH1D *h_time[5];
    for (int i=0; i<5; ++i) {
-       sprintf(dummyString,"time%i",i);
-       time[i]=new TH1D(dummyString,dummyString,64,-0.5,63.5);
+       sprintf(dummyString,"h_time%i",i);
+       h_time[i]=new TH1D(dummyString,dummyString,64,-0.5,63.5);
    }
 
    for(int i=0;i<5; i++){
@@ -172,10 +185,10 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    row[4]->SetLineColor(kViolet);
    
    for(int i=0;i<5; i++){
-     time[i]->GetXaxis()->SetTitle("pad");
-     time[i]->GetYaxis()->SetTitle("timestamp");
+     h_time[i]->GetXaxis()->SetTitle("pad");
+     h_time[i]->GetYaxis()->SetTitle("timestamp");
    }   
-   
+   h_time[1]->SetLineColor(kRed);
    
    Int_t nbintheta=3600;
    Int_t nbinalpha=3600;   
@@ -214,10 +227,15 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    TGraph *grTrack=new TGraph(0);
    grTrack->SetMarkerStyle(20);
    grTrack->SetMarkerSize(1);
+   
+   TGraph *grPhi=new TGraph(0);
+   grPhi->SetMarkerStyle(20);
+   grPhi->SetMarkerSize(1);
 
    TF1 *lin1 = new TF1("lin1","[0]+([1]*x)",0,300);
    TF1 *fit_result;
 
+   TF1 *lin2 = new TF1("lin2","[0]+([1]*x)",0,200);
 
    TCanvas *C1=new TCanvas("c1","alpha",900.,800.);
    C1->SetFillColor(kWhite);
@@ -246,7 +264,7 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    for(int i=0; i<entriesTracker/100; i++){
       treeTracker->GetEntry(i);   
       //if (i%1000==0) cout << "Entry: " << i << endl;
-      if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<endl;}
+      if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
       if((Timestamp-timeinit)<DeltaT){
          //Fill histos
          if (Charge > thresh) {
@@ -254,28 +272,45 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
                 if (Row==k) {
                    flag[k]=1;
                    row[k]->Fill(pad,Charge);
-                   time[k]->Fill(pad,Timestamp-timeinit+10);
+                   h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);
                 }
             }
          }
       } else {
-      	 // The event is finished plot if there is something 
+      	 // The event is finished. Plot if there is something
+      	 cout << "\n-------- Event finished ---------\n" << endl;
+
+         total_charge = 0.;
+      	 for (int j=0; j<5; j++)
+      	     timeAverage[j] = 0.;
+      	     
          if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>rowMultiplicity){
             np=0; 
+            npTime=0;
 	    for(int j=0; j<5; j++){ 
 	       //centroid[j]=0;
 	       binmax = row[j]->GetMaximumBin(); 
 	       max  = row[j]->GetBinContent(binmax);
 	       //cout<<binmax<<"  "<<max<<endl;
-	       //for(int k=1; k<=62; k++){
-               //  charge = row[j]->GetBinContent(k);
-               //  total_charge = row[j]->Integral(1,62);
-	       //weigthed_pos[k] = (k-1)*charge/total_charge;
-	       //  centroid[j] = centroid[j] + weigthed_pos[k];
-	       //}
-	       centroid[j] = row[j]->GetMean();
+	       for (int k=0; k<60; k++) {
+                   charge = row[j]->GetBinContent(k);
+                   time   = h_time[j]->GetBinContent(k);
+                   total_charge = row[j]->Integral(0,59);
+	           //weigthed_pos[k] = (k-1)*charge/total_charge;
+	           //centroid[j] = centroid[j] + weigthed_pos[k];
+	           timeAverage[j] += charge*time;
+	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << total_charge << endl;
+	       }
+      
+ 	       centroid[j] = row[j]->GetMean();
 	       centroid_mm[j] = centroid[j] * 5 + 2.5;
 	       if(max>100){grTrack->SetPoint(np++, centroid_mm[j],zrow[j]);}
+	       
+      	       timeAverage[j] = (double)(timeAverage[j]/total_charge);
+      	       yrow[j] = timeAverage[j]*velocity_mm_ps;
+	       printf("timeAverage[%d] = %10.2f (ps) \t yrow[%d] = %6.2f (mm) \n\n", j, timeAverage[j], j, yrow[j]);
+      	       if(max>100){grPhi->SetPoint(npTime++, yrow[j],zrow[j]);}
+
             }
             
             // loop on the SiC file 
@@ -304,7 +339,8 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
 	    row[4]->GetYaxis()->SetRangeUser(0,max*2);
 
 	    C4->cd();
-            time[0]->Draw();
+            h_time[0]->Draw("HIST");
+            h_time[1]->Draw("HIST same");
 	    
    	    grTrack->Fit("lin1","R");
     	    intercept = lin1->GetParameter(0);
@@ -316,7 +352,16 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
 	       theta_deg=-90-alpha_deg+180;
 	    }
             //cout << "slope " << slope << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
-            cin >> anykey; 
+       	    grPhi->Fit("lin2","R");
+    	    intercept = lin2->GetParameter(0);
+	    slope = lin2->GetParameter(1);
+   	    beta = TMath::ATan(slope);
+	    beta_deg = beta*180./TMath::Pi();
+	    phi_deg=90+beta_deg;
+	    
+            cout << "\n\n alpha_deg = " << alpha_deg << "\t theta_deg = " << theta_deg << "\t beta_deg = " << beta_deg << "\t phi_deg = " << phi_deg << "\n\n" << endl;
+            cin >> anykey;
+            
 	    h_alpha[0]->Fill(alpha_deg);	       
 	    h_angles[0]->Fill(theta_deg);
             if(FlagSicStop==0){
@@ -337,6 +382,8 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
                }
                
                C2->Update();
+               C3->Update();
+               C4->Update();
                cout << "alpha_deg " << alpha_deg << endl;
                cout << "slope " << slope << endl;
                cout << lin1->GetParameter(1)<<"  "<<90-abs(atan(lin1->GetParameter(1))*180/3.1415)<<endl;
@@ -357,10 +404,11 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
 	 // Start a new Event
 	 timeinit=Timestamp;
 	 grTrack->Set(0);
+	 grPhi->Set(0);
 	
    	 for(int j=0;j<5; j++){
 	    row[j]->Reset("ICES");
-	    time[j]->Reset("ICES");
+	    h_time[j]->Reset("ICES");
 	    flag[j]=0;
 	 }
          if (Charge > thresh) {
@@ -368,7 +416,7 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
                 if (Row==k) {
                    flag[k]=1;
                    row[k]->Fill(pad,Charge);
-                   time[k]->Fill(pad,Timestamp-timeinit+10);
+                   h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);
                 }
             }
          }
