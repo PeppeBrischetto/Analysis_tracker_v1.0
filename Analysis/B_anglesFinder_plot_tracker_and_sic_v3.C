@@ -192,7 +192,7 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    
    Int_t nbintheta=3600;
    Int_t nbinalpha=3600;   
-   Int_t nbinphi=50;
+   Int_t nbinphi=600;
    Double_t binmintheta=-180., binmaxtheta=180.;
    Double_t binminalpha=-180., binmaxalpha=180.;
    Double_t binminphi=-30., binmaxphi=30.;
@@ -217,10 +217,17 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
           h_alpha[k]->GetYaxis()->SetTitle("counts");
           h_alpha[k]->SetLineColor(k+1);  
        }
-       else h_angles[k]->GetXaxis()->SetTitle("#phi (deg)");
+       else 
+          h_angles[k]->GetXaxis()->SetTitle("#phi (deg)");
+       
        h_angles[k]->GetYaxis()->SetTitle("counts");
-       h_angles[k]->SetLineColor(k+1);
-      
+
+       if (k%3==0)
+          h_angles[k]->SetLineColor(kBlack);
+       else if (k%3==1)
+          h_angles[k]->SetLineColor(kBlue);
+       else if (k%3==2)
+          h_angles[k]->SetLineColor(kRed); 
    } 
  
    TH2D *bg= new TH2D("bg","bg",130,70,200,107, 0,107);
@@ -248,6 +255,8 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    C3->SetLogy();
    TCanvas *C4=new TCanvas("C4","C4",900.,800.);
    C4->SetFillColor(kWhite);
+   TCanvas *C5=new TCanvas("C5","C5",900.,800.);
+   C5->SetFillColor(kWhite);
    
 // END Histo and Canvas 	////////////////////////////////////
 
@@ -261,10 +270,10 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    treeSic->GetEntry(0);
    cout<<" time init SiC: "<<TimestampSic<<endl;
    
-   for(int i=0; i<entriesTracker/100; i++){
-      treeTracker->GetEntry(i);   
+   for(int i=0; i<entriesTracker; i++){
+      treeTracker->GetEntry(i);
       //if (i%1000==0) cout << "Entry: " << i << endl;
-      if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
+      //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
       if((Timestamp-timeinit)<DeltaT){
          //Fill histos
          if (Charge > thresh) {
@@ -278,7 +287,7 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
          }
       } else {
       	 // The event is finished. Plot if there is something
-      	 cout << "\n-------- Event finished ---------\n" << endl;
+      	 // cout << "\n-------- Event finished ---------\n" << endl;
 
          total_charge = 0.;
       	 for (int j=0; j<5; j++)
@@ -308,8 +317,8 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
 	       
       	       timeAverage[j] = (double)(timeAverage[j]/total_charge);
       	       yrow[j] = timeAverage[j]*velocity_mm_ps;
-	       printf("timeAverage[%d] = %10.2f (ps) \t yrow[%d] = %6.2f (mm) \n\n", j, timeAverage[j], j, yrow[j]);
-      	       if(max>100){grPhi->SetPoint(npTime++, yrow[j],zrow[j]);}
+	       //printf("timeAverage[%d] = %10.2f (ps) \t yrow[%d] = %6.2f (mm) \n\n", j, timeAverage[j], j, yrow[j]);
+      	       if(max>100){grPhi->SetPoint(npTime++, zrow[j], yrow[j]);}
 
             }
             
@@ -339,10 +348,10 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
 	    row[4]->GetYaxis()->SetRangeUser(0,max*2);
 
 	    C4->cd();
-            h_time[0]->Draw("HIST");
-            h_time[1]->Draw("HIST same");
+            //h_time[0]->Draw("HIST");
+            //h_time[1]->Draw("HIST same");
 	    
-   	    grTrack->Fit("lin1","R");
+   	    grTrack->Fit("lin1","RQ");
     	    intercept = lin1->GetParameter(0);
 	    slope = lin1->GetParameter(1);
    	    alpha = TMath::ATan(slope);
@@ -352,24 +361,31 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
 	       theta_deg=-90-alpha_deg+180;
 	    }
             //cout << "slope " << slope << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
-       	    grPhi->Fit("lin2","R");
+       	    grPhi->Fit("lin2","RQ");
     	    intercept = lin2->GetParameter(0);
 	    slope = lin2->GetParameter(1);
-   	    beta = TMath::ATan(slope);
-	    beta_deg = beta*180./TMath::Pi();
-	    phi_deg=90+beta_deg;
-	    
-            cout << "\n\n alpha_deg = " << alpha_deg << "\t theta_deg = " << theta_deg << "\t beta_deg = " << beta_deg << "\t phi_deg = " << phi_deg << "\n\n" << endl;
-            cin >> anykey;
+   	    //beta = TMath::ATan(slope);
+	    //beta_deg = beta*180./TMath::Pi();
+	    //phi_deg=90-beta_deg;
+            //if (beta_deg<0) {
+            //   phi_deg=
+            //}
+            phi = TMath::ATan(slope);
+	    phi_deg = phi*180./TMath::Pi();
+            //cout << "\n\n alpha_deg = " << alpha_deg << "\t theta_deg = " << theta_deg << "\t beta_deg = " << beta_deg << "\t phi_deg = " << phi_deg << "\n\n" << endl;
+            //cin >> anykey;
             
 	    h_alpha[0]->Fill(alpha_deg);	       
 	    h_angles[0]->Fill(theta_deg);
+            h_angles[3]->Fill(phi_deg);
             if(FlagSicStop==0){
                h_alpha[1]->Fill(alpha_deg);
       	       h_angles[1]->Fill(theta_deg);
+               h_angles[4]->Fill(phi_deg);
             }else{
                h_alpha[2]->Fill(alpha_deg);
                h_angles[2]->Fill(theta_deg);
+               h_angles[5]->Fill(phi_deg);
                //cout << "alpha_deg " << alpha_deg << endl;
                //cin >> anykey;
             }  
@@ -378,15 +394,15 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
                C2->cd(0);
                if(np>0){
                   grTrack->Draw("P");
-                  grTrack->Fit("lin1","");
+                  grTrack->Fit("lin1","Q");
                }
                
                C2->Update();
                C3->Update();
                C4->Update();
-               cout << "alpha_deg " << alpha_deg << endl;
-               cout << "slope " << slope << endl;
-               cout << lin1->GetParameter(1)<<"  "<<90-abs(atan(lin1->GetParameter(1))*180/3.1415)<<endl;
+               //cout << "alpha_deg " << alpha_deg << endl;
+               //cout << "slope " << slope << endl;
+               //cout << lin1->GetParameter(1)<<"  "<<90-abs(atan(lin1->GetParameter(1))*180/3.1415)<<endl;
               
                cout<<"press any key to continue, q to quit, s to save a plot, c to continue till the end"<<endl; 
                if(flagM)
@@ -431,6 +447,10 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    h_angles[0]->Draw();
    h_angles[1]->Draw("same");
    h_angles[2]->Draw("same");
+   C5->cd();
+   h_angles[3]->Draw();
+   h_angles[4]->Draw("same");
+   h_angles[5]->Draw("same");
    
    //cout << "Col sic: " << h_angles[2]->Integral(0,nbinalpha) << endl;
       
