@@ -76,6 +76,7 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
 
    Double_t timeAverage[5] = {0.}; // variable used to calculate the average time (weighted by the charge) on a raw
    Double_t time = 0.;             // variable used to store the time of a single pad (it is used for the calculation of the average time
+   Double_t driftTime = 0.;        // variable used to store the drift time of electrons corresponding to  row 2 (i.e. driftTime=timeSiC-timeRow2)
 
    int binmax=-100, max=-100;		// variables used to plot the histos
    // number of event in the run
@@ -189,7 +190,11 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
      h_time[i]->GetYaxis()->SetTitle("timestamp");
    }   
    h_time[1]->SetLineColor(kRed);
-   
+
+   TH1D *h_driftTime = new TH1D("h_driftTime","h_driftTime",1000.,0.5E+00,5.0E+00);
+   h_driftTime->GetXaxis()->SetTitle("driftTime (us)");
+   h_driftTime->GetYaxis()->SetTitle("counts");
+
    Int_t nbintheta=3600;
    Int_t nbinalpha=3600;   
    Int_t nbinphi=600;
@@ -257,6 +262,8 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    C4->SetFillColor(kWhite);
    TCanvas *C5=new TCanvas("C5","C5",900.,800.);
    C5->SetFillColor(kWhite);
+   TCanvas *C6 = new TCanvas("C6","C6",900.,800.);
+   C6->SetFillColor(kWhite);
    
 // END Histo and Canvas 	////////////////////////////////////
 
@@ -337,11 +344,15 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
                   sicHits++;
                   SicLoopFlag=0;
                   FlagSicStop=1;
+                  driftTime = timeAverage[2]+timeinit-timeOffset-TimestampSic;
+                  //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
+                  h_driftTime->Fill(driftTime/1000000.);
                }else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
                   sicWithoutTracks++;
                   sicHits++;
                   SicLoopFlag=1;
                   FlagSicStop=0;
+                  cout << "----------- Event without SiC" << endl;
                }
             }
             //cout << "tracksWithoutSic " << tracksWithoutSic << "\t tracksWithSic " << tracksWithSic << "\t flagTrackWithSiC " << flagTrackWithSiC << "\t flagS " << flagS << endl;
@@ -451,6 +462,8 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    h_angles[3]->Draw();
    h_angles[4]->Draw("same");
    h_angles[5]->Draw("same");
+   C6->cd();
+   h_driftTime->Draw();
    
    //cout << "Col sic: " << h_angles[2]->Integral(0,nbinalpha) << endl;
       
