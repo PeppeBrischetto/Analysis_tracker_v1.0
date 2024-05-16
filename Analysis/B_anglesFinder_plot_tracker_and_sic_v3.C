@@ -191,9 +191,14 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    }   
    h_time[1]->SetLineColor(kRed);
 
-   TH1D *h_driftTime = new TH1D("h_driftTime","h_driftTime",1000.,0.5E+00,5.0E+00);
-   h_driftTime->GetXaxis()->SetTitle("driftTime (us)");
-   h_driftTime->GetYaxis()->SetTitle("counts");
+   TH1D *h_driftTime[5];
+   for(int i=0;i<5;i++){
+      sprintf(dummyString,"h_driftTime%i",i); 
+      h_driftTime[i] = new TH1D(dummyString,dummyString,500,0.5E+00,5.0E+00);
+      h_driftTime[i]->GetXaxis()->SetTitle("driftTime (us)");
+      h_driftTime[i]->GetYaxis()->SetTitle("counts");
+      h_driftTime[i]->SetLineColor(i+1);
+   }
 
    Int_t nbintheta=3600;
    Int_t nbinalpha=3600;   
@@ -344,9 +349,11 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
                   sicHits++;
                   SicLoopFlag=0;
                   FlagSicStop=1;
-                  driftTime = timeAverage[2]+timeinit-timeOffset-TimestampSic;
-                  //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
-                  h_driftTime->Fill(driftTime/1000000.);
+                  for(int m=0;m<5;m++){
+                     driftTime = timeAverage[m]+timeinit-timeOffset-TimestampSic;
+                     //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
+                     h_driftTime[m]->Fill(driftTime/1000000.);
+                  }
                }else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
                   sicWithoutTracks++;
                   sicHits++;
@@ -463,8 +470,15 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    h_angles[4]->Draw("same");
    h_angles[5]->Draw("same");
    C6->cd();
-   h_driftTime->Draw();
-   
+   for(int i=0;i<5;i++)
+      h_driftTime[i]->Draw("same");
+
+   TLegend *leg = new TLegend(0.80,0.65,0.90,0.85);
+   for(int i=0;i<5;i++){
+      sprintf(dummyString,"Row %i",i);
+      leg->AddEntry(h_driftTime[i],dummyString,"L");
+   }
+   leg->Draw("same");
    //cout << "Col sic: " << h_angles[2]->Integral(0,nbinalpha) << endl;
       
 }
