@@ -18,7 +18,7 @@
 //# 
 //###################################################################################################
 
-void B_anglesFinder_plot_tracker_and_sic_v3(int run)
+void B_anglesFinder_plot_tracker_and_sic_v4(int run)
 {
 
 ////////////////////////////////////////////////////////////////////
@@ -35,7 +35,9 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    Double_t timeOffset = 10.; // time (in ps) used to avoid that the time difference Timestamp-timeinit 
                               // is equal to zero for the first event entry (see where time histos are filled)
                               // This is important when you want to calculate the time average weighted by the charge
-                              
+
+   Double_t padWidth = 5.; // pad width in mm
+
    Double_t velocity = 50.;  // drift velocity (in mm/us) of electrons in isobutane;  
    Double_t velocity_mm_ps = velocity/1.0E+06;  // drift velocity (in mm/ps) of electrons in isobutane;
 
@@ -216,7 +218,7 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    h_angles[4]=new TH1D("h_phi_without_sic","h_phi_without_sic",nbinphi,binminphi,binmaxphi);
    h_angles[5]=new TH1D("h_phi_with_sic","h_phi_with_sic",nbinphi,binminphi,binmaxphi);
  
-   TH1D *h_alpha[3];   
+   TH1D *h_alpha[3];
    h_alpha[0]=new TH1D("h_alpha_","h_alpha",nbinalpha,binminalpha,binmaxalpha);
    h_alpha[1]=new TH1D("h_alpha_without_sic","h_alpha_without_sic",nbinalpha,binminalpha,binmaxalpha);
    h_alpha[2]=new TH1D("h_alpha_with_sic","h_alpha_with_sic",nbinalpha,binminalpha,binmaxalpha);
@@ -225,9 +227,9 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
        if (k<3){
           h_angles[k]->GetXaxis()->SetTitle("#theta (deg)");
           h_alpha[k]->GetYaxis()->SetTitle("counts");
-          h_alpha[k]->SetLineColor(k+1);  
+          h_alpha[k]->SetLineColor(k+1);
        }
-       else 
+       else
           h_angles[k]->GetXaxis()->SetTitle("#phi (deg)");
        
        h_angles[k]->GetYaxis()->SetTitle("counts");
@@ -237,8 +239,8 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
        else if (k%3==1)
           h_angles[k]->SetLineColor(kBlue);
        else if (k%3==2)
-          h_angles[k]->SetLineColor(kRed); 
-   } 
+          h_angles[k]->SetLineColor(kRed);
+   }
  
    TH2D *bg= new TH2D("bg","bg",130,70,200,107, 0,107);
    TGraph *grTrack=new TGraph(0);
@@ -324,8 +326,8 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
 	       }
       
  	       centroid[j] = row[j]->GetMean();
-	       centroid_mm[j] = centroid[j] * 5 + 2.5;
-	       if(max>100){grTrack->SetPoint(np++, centroid_mm[j],zrow[j]);}
+	       centroid_mm[j] = centroid[j] * 5 + padWidth/2.;
+	       if(max>100){grTrack->SetPoint(np++, zrow[j], centroid_mm[j]);}
 	       
       	       timeAverage[j] = (double)(timeAverage[j]/total_charge);
       	       yrow[j] = timeAverage[j]*velocity_mm_ps;
@@ -344,7 +346,8 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
                   SicLoopFlag=0;
                   FlagSicStop=0;  	
                }else if((timeinit-TimestampSic)>timeWindowlow && (TimestampTrackerEv-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
-		  cout << "+++++++++++ Event detected by the SiC" << tracksWithSic++<< endl;
+                  cout << "+++++++++++ Event detected by the SiC" << endl;
+                  tracksWithSic++;
                   sicHits++;
                   SicLoopFlag=0;
                   FlagSicStop=1;
@@ -354,10 +357,11 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
                      h_driftTime[m]->Fill(driftTime/1000000.);
                   }
                }else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
+                  sicWithoutTracks++;
                   sicHits++;
                   SicLoopFlag=1;
                   FlagSicStop=0;
-                  cout << "----------- Event without SiC" <<sicWithoutTracks++<< endl;
+                  cout << "----------- Event without SiC" << endl;
                }
             }
             //cout << "tracksWithoutSic " << tracksWithoutSic << "\t tracksWithSic " << tracksWithSic << "\t flagTrackWithSiC " << flagTrackWithSiC << "\t flagS " << flagS << endl;
@@ -370,12 +374,13 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    	    grTrack->Fit("lin1","RQ");
     	    intercept = lin1->GetParameter(0);
 	    slope = lin1->GetParameter(1);
-   	    alpha = TMath::ATan(slope);
-	    alpha_deg = alpha*180./TMath::Pi();
-	    theta_deg=-90-alpha_deg;
-	    if(theta_deg<-90){
-	       theta_deg=-90-alpha_deg+180;
-	    }
+   	    //alpha = TMath::ATan(slope);
+	    //alpha_deg = alpha*180./TMath::Pi();
+	    theta = TMath::ATan(slope);
+            theta_deg = theta*180./TMath::Pi();
+	    //if(theta_deg<-90){
+	    //   theta_deg=-90-alpha_deg+180;
+	    //}
             //cout << "slope " << slope << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
        	    grPhi->Fit("lin2","RQ");
     	    intercept = lin2->GetParameter(0);
@@ -391,15 +396,15 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
             //cout << "\n\n alpha_deg = " << alpha_deg << "\t theta_deg = " << theta_deg << "\t beta_deg = " << beta_deg << "\t phi_deg = " << phi_deg << "\n\n" << endl;
             //cin >> anykey;
             
-	    h_alpha[0]->Fill(alpha_deg);	       
+	    //h_alpha[0]->Fill(alpha_deg);	       
 	    h_angles[0]->Fill(theta_deg);
             h_angles[3]->Fill(phi_deg);
             if(FlagSicStop==0){
-               h_alpha[1]->Fill(alpha_deg);
+               //h_alpha[1]->Fill(alpha_deg);
       	       h_angles[1]->Fill(theta_deg);
                h_angles[4]->Fill(phi_deg);
             }else{
-               h_alpha[2]->Fill(alpha_deg);
+               //h_alpha[2]->Fill(alpha_deg);
                h_angles[2]->Fill(theta_deg);
                h_angles[5]->Fill(phi_deg);
                //cout << "alpha_deg " << alpha_deg << endl;
@@ -463,10 +468,18 @@ void B_anglesFinder_plot_tracker_and_sic_v3(int run)
    h_angles[0]->Draw();
    h_angles[1]->Draw("same");
    h_angles[2]->Draw("same");
+   TLegend *leg1 = new TLegend(0.75,0.8,0.85,0.85);
+   leg1->AddEntry(h_angles[2],"Tracks hitting the SiC","L");
+   leg1->AddEntry(h_angles[1],"Tracks not hitting the SiC","L");
+   leg1->AddEntry(h_angles[0],"Sum","L");
    C5->cd();
    h_angles[3]->Draw();
    h_angles[4]->Draw("same");
    h_angles[5]->Draw("same");
+   TLegend *leg2 = new TLegend(0.75,0.8,0.85,0.85);
+   leg2->AddEntry(h_angles[5],"Tracks hitting the SiC","L");
+   leg2->AddEntry(h_angles[4],"Tracks not hitting the SiC","L");
+   leg2->AddEntry(h_angles[3],"Sum","L");
    C6->cd();
    for(int i=0;i<5;i++)
       h_driftTime[i]->Draw("same");
