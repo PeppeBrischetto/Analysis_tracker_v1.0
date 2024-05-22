@@ -472,6 +472,8 @@ void B_anglesFinder_plot_tracker_and_sic_v4(int run)
    leg1->AddEntry(h_angles[2],"Tracks hitting the SiC","L");
    leg1->AddEntry(h_angles[1],"Tracks not hitting the SiC","L");
    leg1->AddEntry(h_angles[0],"Sum","L");
+   leg1->Draw("same");
+   C3->Update();
    C5->cd();
    h_angles[3]->Draw();
    h_angles[4]->Draw("same");
@@ -480,16 +482,18 @@ void B_anglesFinder_plot_tracker_and_sic_v4(int run)
    leg2->AddEntry(h_angles[5],"Tracks hitting the SiC","L");
    leg2->AddEntry(h_angles[4],"Tracks not hitting the SiC","L");
    leg2->AddEntry(h_angles[3],"Sum","L");
+   leg2->Draw("same");
+   C5->Update();
    C6->cd();
    for(int i=0;i<5;i++)
       h_driftTime[i]->Draw("same");
 
-   TLegend *leg = new TLegend(0.80,0.65,0.90,0.85);
+   TLegend *leg3 = new TLegend(0.80,0.65,0.90,0.85);
    for(int i=0;i<5;i++){
       sprintf(dummyString,"Row %i",i);
-      leg->AddEntry(h_driftTime[i],dummyString,"L");
+      leg3->AddEntry(h_driftTime[i],dummyString,"L");
    }
-   leg->Draw("same");
+   leg3->Draw("same");
    //cout << "Col sic: " << h_angles[2]->Integral(0,nbinalpha) << endl;
       
 }
