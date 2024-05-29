@@ -1,6 +1,6 @@
 #Temporary files
 *.*~
-*.exe	
+*.exe
 
 #Data directories
 Raw_data/
