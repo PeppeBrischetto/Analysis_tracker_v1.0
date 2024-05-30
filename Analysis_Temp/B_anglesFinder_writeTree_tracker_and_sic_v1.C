@@ -306,11 +306,11 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
          //Fill histos
          if (Charge > thresh) {
             for (int k=0; k<5; ++k) {
-                if (Row==k) {
-                   flag[k]=1;
-                   row[k]->Fill(pad,Charge);
-                   h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);
-                }
+               if (Row==k) {
+                  flag[k]=1;
+                  row[k]->Fill(pad,Charge);
+                  h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);
+               }
             }
          }
       } else {
@@ -475,20 +475,15 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
 	 }
          if (Charge > thresh) {
             for (int k=0; k<5; ++k) {
-                if (Row==k) {
-                   flag[k]=1;
-                   row[k]->Fill(pad,Charge);
-                   h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);
-                }
+               if (Row==k) {
+                  flag[k]=1;
+                  row[k]->Fill(pad,Charge);
+                  h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);
+               }
             }
          }
-
-
       }
    }
-
-
-   
 
    C1->cd();
    h_alpha[0]->Draw();
