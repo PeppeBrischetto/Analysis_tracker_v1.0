@@ -1,8 +1,10 @@
 //###################################################################################################
-//#   macro that take as input a single file from a single channel of SiC and a 
+//#   Purpose: macro that writes a root tree containing the theta and phi angles of the tracks,
+//#   as well as information on the centroid and rms on each row.
+//#   it takes as input a single file from a single channel of SiC and a 
 //#   merged file from the tracker.  
-//#   make a fit of five clusters of a track and return the slop. 
-//#   Plot the angles of the tracks.
+//#   make a fit of five clusters of a track and return the slope. 
+//#   it can plot the angles of the tracks, but it is not necessary
 //#   
 //#   required as argument the run number
 //#            as input the DeltaT, time interval that is used to define an event, and the Time window
@@ -12,9 +14,9 @@
 //#  theta instead is the angle respect to the z-axis 
 //#  theta is defined as  theta=-90-alpha  (it is negative since the x goes from rigth to left).
 //###################################################################################################
-//#   created april 2024 from A_eventFinder_plot.C by G. Brischetto
+//#   created may 2024 from B_anglesFinder_plot_tracker_and_sic_v4.C by G. Brischetto
 //#######################################
-//#   updated: 30-4-2024  cleaning, comments and correction D. Torresi
+//#   updated:
 //# 
 //###################################################################################################
 
@@ -61,8 +63,9 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
    ULong64_t TimestampSic;
    UShort_t BoardSic;
    UShort_t ChargeSic;
-   Double_t Charge_calSic;      
+   Double_t Charge_calSic;
    UInt_t FlagsSic;
+   Double_t energySic=-1000.;
    
    // fitting variables
    double slope,intercept;
@@ -170,13 +173,15 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
    sprintf(fileOutName,"tracks_run00%i.root",run);
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
-   //treeOut->Branch("centroid", centroid, "centroid[5]/D");
-   //treeOut->Branch("rms", rms, "rms[5]/D");
-   //treeOut->Branch("centroid_mm", centroid_mm, "centroid_mm[5]/D");
-   //treeOut->Branch("total_charge", total_charge, "total_charge[5]/D");
-   //treeOut->Branch("yrow", yrow, "yrow[5]/D");
+   treeOut->Branch("centroid", centroid, "centroid[5]/D");
+   treeOut->Branch("rms", rms, "rms[5]/D");
+   treeOut->Branch("centroid_mm", centroid_mm, "centroid_mm[5]/D");
+   treeOut->Branch("total_charge", total_charge, "total_charge[5]/D");
+   treeOut->Branch("yrow", yrow, "yrow[5]/D");
    treeOut->Branch("theta_deg",&theta_deg,"theta_deg/D");
-   //treeOut->Branch("phi_deg",&phi_deg,"phi_deg/D");
+   treeOut->Branch("phi_deg",&phi_deg,"phi_deg/D");
+   treeOut->Branch("sic_fired",&FlagSicStop,"sic_fired/I");
+   treeOut->Branch("energySic",&energySic,"energySic/D");
 
 //////////////////////////////////////////////////////////////////////////////
 // Dichiarazione Histo, Canvas, TGraph and Functions
@@ -298,7 +303,7 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
    treeSic->GetEntry(0);
    cout<<" time init SiC: "<<TimestampSic<<endl;
    
-   for(int i=0; i<100; i++){
+   for(int i=0; i<entriesTracker/100; i++){
       treeTracker->GetEntry(i);
       //if (i%1000==0) cout << "Entry: " << i << endl;
       //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
@@ -345,25 +350,27 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
                rms[j] = row[j]->GetRMS();
 	       centroid_mm[j] = centroid[j] * 5 + padWidth/2.;
 	       if(max>100){grTrack->SetPoint(np++, zrow[j], centroid_mm[j]);}
-	       
+
       	       timeAverage[j] = (double)(timeAverage[j]/total_charge[j]);
       	       yrow[j] = timeAverage[j]*velocity_mm_ps;
 	       //printf("timeAverage[%d] = %10.2f (ps) \t yrow[%d] = %6.2f (mm) \n\n", j, timeAverage[j], j, yrow[j]);
       	       if(max>100){grPhi->SetPoint(npTime++, zrow[j], yrow[j]);}
 
             }
-            
+
             // loop on the SiC file 
             finSic->cd();
             SicLoopFlag=1;
             while(SicLoopFlag){ 
             treeSic->GetEntry(sicHits);
+
 	       if (TimestampSic>(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
                   tracksWithoutSic++;
                   SicLoopFlag=0;
-                  FlagSicStop=0;  	
+                  FlagSicStop=0;
                }else if((timeinit-TimestampSic)>timeWindowlow && (TimestampTrackerEv-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
                   cout << "+++++++++++ Event detected by the SiC" << endl;
+                  energySic = ChargeSic;
                   tracksWithSic++;
                   sicHits++;
                   SicLoopFlag=0;
@@ -446,7 +453,7 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
                if(flagM)
                   cin>>anykey;
             }
- 
+
             if(anykey=='q'){ 
               fileOut->Write();
               fileOut->Close();
@@ -458,8 +465,8 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
       	    if(anykey=='c')flagM=0;     
 
       treeOut->Fill();
-      cout << "Filling the tree" << endl;
-                
+      //cout << "Filling the tree" << endl;
+      cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << endl;
 	 }
 
          
@@ -526,6 +533,6 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
    treeOut->Write();
    fileOut->Purge();
    fileOut->Close();
-   
-      
+
+
 }
