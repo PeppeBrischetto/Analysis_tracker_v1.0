@@ -1,5 +1,23 @@
 
 
+ - run con rivelatore front back invertito
+ 
+ - run con collimatore da 1 mm
+ 
+ - run con collimatare da 0.3 mm
+ 
+ - run senza sorgente
+ 
+ - run con alta intensita libera
+ 
+ - run con collimatare da 0.3 mm + sorgente alta intensita libera
+ 
+
+
+
+
+
+
 - Considera come nomicnare le pad successive alla 60 quand avrai più anodi
 
 - cambia flag pile up e saturazione

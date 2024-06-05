@@ -1,13 +1,8 @@
 //###################################################################################################
-//#   plot charge spectra of a single SiC
+//#   plot charge theta spectra 
 //#      
 //#   required as argument the run number
-//#            as input the DeltaT, time interval that is used to define an event, and the Time window
-//#            where to seek the tracks.
-//# 	       The array with the number of digitizers used			   array with the number of digitizers used
-//#  alpha is the angle taken as atan of the slope of the linear fit 
-//#  theta instead is the angle respect to the z-axis 
-//#  theta is defined as  theta=-90-alpha  (it is negative since the x goes from rigth to left).
+//#
 //###################################################################################################
 //#   created may 2024 by D. Torresi
 //#######################################
