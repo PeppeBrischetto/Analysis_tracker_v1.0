@@ -1,18 +1,16 @@
 //###################################################################################################
 //#   Purpose: macro that writes a third level root file containing a tree with the theta and phi angles of the tracks,
-//#   as well as information on the centroid and rms on each row.
+//#   as well as information on the centroid, rms, drift times for each row.
 //#   it takes as input a single file from a single channel of SiC and a 
 //#   merged file from the tracker.  
 //#   make a fit of five clusters of a track and return the slope. 
-//#   it can plot the angles of the tracks, but it is not necessary
+//#   it can plot the histograms with the angles of the tracks, but it is not necessary
 //#   
 //#   required as argument the run number
 //#            as input the DeltaT, time interval that is used to define an event, and the Time window
 //#            where to seek the tracks.
 //# 	       The array with the number of digitizers used			   array with the number of digitizers used
-//#  alpha is the angle taken as atan of the slope of the linear fit 
-//#  theta instead is the angle respect to the z-axis 
-//#  theta is defined as  theta=-90-alpha  (it is negative since the x goes from rigth to left).
+//#  theta and phi angles are defined with respect to the z-axis 
 //###################################################################################################
 //#   created may 2024 from B_anglesFinder_plot_tracker_and_sic_v4.C by G. Brischetto
 //#######################################
@@ -20,7 +18,7 @@
 //# 
 //###################################################################################################
 
-void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
+void B_trackGenerator(int run)
 {
 
 ////////////////////////////////////////////////////////////////////
@@ -385,8 +383,6 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
                    if (charge) {n_pads_fired[j]++; pads_fired[j].push_back(k);} 
 
 	       }
-
-
 
  	       centroid[j] = row[j]->GetMean();
                rms[j] = row[j]->GetRMS();

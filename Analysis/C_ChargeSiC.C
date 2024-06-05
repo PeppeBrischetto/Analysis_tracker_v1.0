@@ -31,16 +31,16 @@ void C_ChargeSiC(int run)
    
    char fileInName[50];
    if(run<10){
-      sprintf(fileInName, "tracks_run00%i.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run00%i.root", run);
    }else if(run <100){
-      sprintf(fileInName, "tracks_run0%i.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run0%i.root", run);
    }else{
-      sprintf(fileInName, "tracks_run%i.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run%i.root", run);
    } 
    TFile *fileIn = new TFile(fileInName);
    TTree *treeTracks = (TTree*)fileIn->Get("Data_R");
    
-   
+
    treeTracks->SetBranchAddress("centroid", centroid);
    treeTracks->SetBranchAddress("rms", rms);
    treeTracks->SetBranchAddress("n_pads_fired",n_pads_fired);

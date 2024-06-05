@@ -8,9 +8,7 @@
 //#            as input the DeltaT, time interval that is used to define an event, and the Time window
 //#            where to seek the tracks.
 //# 	       The array with the number of digitizers used			   array with the number of digitizers used
-//#  alpha is the angle taken as atan of the slope of the linear fit 
-//#  theta instead is the angle respect to the z-axis 
-//#  theta is defined as  theta=-90-alpha  (it is negative since the x goes from rigth to left).
+//#  theta and phi angles are defined with respect to the z-axis 
 //###################################################################################################
 //#   created april 2024 from A_eventFinder_plot.C by G. Brischetto
 //#######################################
