@@ -66,6 +66,7 @@ void A_plot_EnergyVsChannel(int run)
    // Ciclo sui dati   
    for(int i=0; i <entries; i++){
       tree->GetEntry(i);
+      cout<<"entry: "<<i<<endl;
       if(Board==board_id[0]){digit[0]->Fill(Channel,Charge);}
       if(Board==board_id[1]){digit[1]->Fill(Channel,Charge);}
       if(Board==board_id[2]){digit[2]->Fill(Channel,Charge);}

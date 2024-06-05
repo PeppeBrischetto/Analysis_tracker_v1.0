@@ -38,29 +38,38 @@ Info		General information files
 ###################################################################################################
 FILES
 ####################
-converter.C	converts raw data from binary to root, calibrates the charge and pads #
+converter_nudaq.C	converts the raw data produced by nudaq DAQ from binary to root, calibrates 
+		the charge and pads #
 		Input from   Raw_data
 			     channel2pad.txt	
 			     chargeCalib_PA.txt
 		Output to    Cal_data
                 
-                use:  converter.C("Raw_data/Run_18/dig22642.bin",22642,"Cal_data/out.root") 
+                use:  converter_nudaq.C("Raw_data/Run_18/dig22642.bin",22642,"Cal_data/out.root") 
 
-converter.cc	same as converter.C but do not use root, uses its libraries.
+converter_solaris_tracker.C	converts the raw data produced by solaris DAQ for the tracker from 
+		binary to root, calibrates 
+		the charge and pads #
+		Input from   Raw_data
+			     channel2pad.txt	
+			     chargeCalib_PA.txt
+		Output to    Cal_data
+                
+                use:  converter_solaris.C("Raw_data/~/solaris/RAW_data/tracker_and_sic/tracker_and_sic_116_01_22642_000.sol",22642,"Cal_data/out.root") 
+
+converter_solaris_tracker.cc	same as onverter_solaris_tracker.C but do not use root, uses its libraries.
 			
 		UNDER DEVELOPMENT
 		use: for the moment the input data name, the digitizer ID, the output
 		file name must be introduced explicitely inside the code.
 
-
 merger.C	merge 2 root files at a time
 		Input from Cal_data 
  		Output to Cal_data 
-
 		
-dataProcessing.sh  Shell script that use in a smart way converter.C and merger.C generating in
-		an automatic way the final merged file. Require in input just run number and the
-		correct path where the file are.
+dataProcessing.sh  Shell script that use converter_xxx_.C and merger.C generating in the final merged 
+		file in a single step. Require in input just run number
+		check the correct path where the file are.
 		$ dataProcessing n 
 		where n is the number of the run
 		
