@@ -1,5 +1,5 @@
 //###################################################################################################
-//#   Purpose: macro that writes a root tree containing the theta and phi angles of the tracks,
+//#   Purpose: macro that writes a third level root file containing a tree with the theta and phi angles of the tracks,
 //#   as well as information on the centroid and rms on each row.
 //#   it takes as input a single file from a single channel of SiC and a 
 //#   merged file from the tracker.  
@@ -60,7 +60,10 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
    //Int_t pads_fired[5][60]={-1000};
    //std::vector<Int_t> pads_fired0, pads_fired1, pads_fired2, pads_fired3, pads_fired4;
    std::vector<Int_t> pads_fired[5];
-   for (Int_t i=0; i<5; ++i) { pads_fired[i] = {-1000}; }
+   //for (Int_t i=0; i<5; ++i) { 
+   //    pads_fired[i] = {-1000};
+   //    cout << pads_fired[i] << endl;
+   //}
 
    // SiC variables
    UShort_t ChannelSic;
@@ -133,7 +136,13 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
 //////////////////////////////////////////////////////////////////////////////   
 // open tracker file
    char fileInTracker[50];
-   sprintf(fileInTracker, "../Merged_data/run_00%i/merg_00%i.root", run, run);
+      if(run<10){
+      sprintf(fileInTracker, "../Merged_data/run_00%i/merg_00%i.root", run, run);
+   }else if(run <100){
+      sprintf(fileInTracker, "../Merged_data/run_0%i/merg_0%i.root", run, run);
+   }else{
+      sprintf(fileInTracker, "../Merged_data/run_%i/merg_%i.root", run, run);
+   } 
    cout<<fileInTracker<<endl;
    TFile *finTracker = new TFile(fileInTracker);
    TTree *treeTracker = (TTree*)finTracker->Get("Data_R");
@@ -157,7 +166,13 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
 //////////////////////////////////////////////////////////////////////////////   
 // open Sic file
    char fileInSic[50];
-   sprintf(fileInSic, "../Merged_data/run_00%i/sic_00%i.root", run, run);
+   if(run<10){
+      sprintf(fileInSic, "../Merged_data/run_00%i/sic_00%i.root", run, run);
+   }else if(run <100){
+      sprintf(fileInSic, "../Merged_data/run_0%i/sic_0%i.root", run, run);
+   }else{
+      sprintf(fileInSic, "../Merged_data/run_%i/sic_%i.root", run, run);
+   } 
    cout<<fileInSic<<endl;
    TFile *finSic = new TFile(fileInSic);
    TTree *treeSic = (TTree*)finSic->Get("Data_R");
@@ -177,7 +192,7 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
 
 // OPEN output ROOT file //
    char fileOutName[50];
-   sprintf(fileOutName,"tracks_run00%i.root",run);
+   sprintf(fileOutName,"tracks_run%i.root",run);
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
    treeOut->Branch("centroid", centroid, "centroid[5]/D");
@@ -185,8 +200,8 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
    treeOut->Branch("n_pads_fired",n_pads_fired,"n_pads_fired[5]/I");
    //treeOut->Branch("n_pads_fired0",&n_pads_fired[0],"n_pads_fired0/I");
    //treeOut->Branch("n_pads_fired1",&n_pads_fired[1],"n_pads_fired1/I");
-   treeOut->Branch("pads_fired0",&pads_fired[0],"pads_fired0/I");
-   treeOut->Branch("pads_fired1",&pads_fired[1],"pads_fired1/I");
+   //treeOut->Branch("pads_fired0",&pads_fired[0],"pads_fired0[n_pads_fired0]/I");
+   //treeOut->Branch("pads_fired1",&pads_fired[1],"pads_fired1[n_pads_fired1]/I");
    treeOut->Branch("centroid_mm", centroid_mm, "centroid_mm[5]/D");
    treeOut->Branch("total_charge", total_charge, "total_charge[5]/D");
    treeOut->Branch("yrow", yrow, "yrow[5]/D");
@@ -315,7 +330,8 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
    treeSic->GetEntry(0);
    cout<<" time init SiC: "<<TimestampSic<<endl;
    
-   for(int i=0; i<100; i++){
+   for(int i=0; i<entriesTracker; i++){
+   //for(int i=0; i<50; i++){
       treeTracker->GetEntry(i);
       //if (i%1000==0) cout << "Entry: " << i << endl;
       //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
@@ -332,15 +348,24 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
          }
       } else {
       	 // The event is finished. Plot if there is something
-      	 // cout << "\n-------- Event finished ---------\n" << endl;
+      	  //cout << "\n-------- Event finished ---------\n" << endl;
 
          //total_charge = 0.;
       	 for (int j=0; j<5; j++) {
       	     timeAverage[j] = 0.;
       	     total_charge[j] = 0.;
              n_pads_fired[j] = 0;
+             pads_fired[j].clear();
          }
+
+         //for(int q=0; q<5; ++q) {
+         //   std::cout << "*** " << q << "\t" << pads_fired[q].size() << std::endl;
+         //   for(int h=0; h<pads_fired[q].size(); ++h)
+         //   std::cout << "+++" << q << "\t" << h << "\t" << pads_fired[q].at(h) << std::endl;
+         //}
+         
          theta_deg = -1000.;
+         phi_deg = -1000.;
          if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>rowMultiplicity){
             np=0;
             npTime=0;
@@ -361,10 +386,7 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
 
 	       }
 
-               for(int q=0; q<5; ++q) {
-               for(auto it=pads_fired[q].begin(); it != pads_fired[q].end(); ++it)
-               std::cout <<  << std::endl;
-               }
+
 
  	       centroid[j] = row[j]->GetMean();
                rms[j] = row[j]->GetRMS();
@@ -377,15 +399,23 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
       	       if(max>100){grPhi->SetPoint(npTime++, zrow[j], yrow[j]);}
 
             }
+            
+            //for (int q=0; q<5; ++q) {
+                //for(int h=0; h<pads_fired[q].size(); ++h)
+                //std::cout << "pads fired: " << q << "\t" << h << "\t" << pads_fired[q].at(h) << std::endl;
+            //}
 
             // loop on the SiC file 
             finSic->cd();
             SicLoopFlag=1;
-            while(SicLoopFlag){ 
+            while(SicLoopFlag){
+            //cout << "Inside the while" << endl;             
             treeSic->GetEntry(sicHits);
 
-	       if (TimestampSic>(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
+	       if (TimestampSic>=(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
+                  //cout << "********* Tracks without SiC" << endl;
                   tracksWithoutSic++;
+                  energySic = -1000.;
                   SicLoopFlag=0;
                   FlagSicStop=0;
                }else if((timeinit-TimestampSic)>timeWindowlow && (TimestampTrackerEv-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
@@ -400,12 +430,12 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
                      //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
                      h_driftTime[m]->Fill(driftTime/1000000.);
                   }
-               }else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
+               } else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
                   sicWithoutTracks++;
                   sicHits++;
                   SicLoopFlag=1;
                   FlagSicStop=0;
-                  cout << "----------- Event without SiC" << endl;
+                  cout << "----------- SiC without track" << endl;
                }
             }
             //cout << "tracksWithoutSic " << tracksWithoutSic << "\t tracksWithSic " << tracksWithSic << "\t flagTrackWithSiC " << flagTrackWithSiC << "\t flagS " << flagS << endl;
@@ -415,10 +445,14 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
             //h_time[0]->Draw("HIST");
             //h_time[1]->Draw("HIST same");
 	    
+	    
+	    //cout << "Before Fitting " << endl;
+	    
    	    grTrack->Fit("lin1","RQ");
     	    intercept = lin1->GetParameter(0);
 	    slope = lin1->GetParameter(1);
-   	    //alpha = TMath::ATan(slope);
+            //cout << "After Fitting 1" << endl;
+            //alpha = TMath::ATan(slope);
 	    //alpha_deg = alpha*180./TMath::Pi();
 	    theta = TMath::ATan(slope);
             theta_deg = theta*180./TMath::Pi();
@@ -439,7 +473,8 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
 	    phi_deg = phi*180./TMath::Pi();
             //cout << "\n\n alpha_deg = " << alpha_deg << "\t theta_deg = " << theta_deg << "\t beta_deg = " << beta_deg << "\t phi_deg = " << phi_deg << "\n\n" << endl;
             //cin >> anykey;
-            
+             //cout << "After Fitting 2" << endl;
+
 	    //h_alpha[0]->Fill(alpha_deg);	       
 	    h_angles[0]->Fill(theta_deg);
             h_angles[3]->Fill(phi_deg);
@@ -486,7 +521,7 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
 
       treeOut->Fill();
       //cout << "Filling the tree" << endl;
-      cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << endl;
+      cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
 	 }
 
          
@@ -499,6 +534,7 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
 	    row[j]->Reset("ICES");
 	    h_time[j]->Reset("ICES");
 	    flag[j]=0;
+
 	 }
          if (Charge > thresh) {
             for (int k=0; k<5; ++k) {

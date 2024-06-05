@@ -122,7 +122,13 @@ void B_anglesFinder_plot_tracker_and_sic_v4(int run)
 //////////////////////////////////////////////////////////////////////////////   
 // open tracker file
    char fileInTracker[50];
-   sprintf(fileInTracker, "../Merged_data/run_00%i/merg_00%i.root", run, run);
+      if(run<10){
+      sprintf(fileInTracker, "../Merged_data/run_00%i/merg_00%i.root", run, run);
+   }else if(run <100){
+      sprintf(fileInTracker, "../Merged_data/run_0%i/merg_0%i.root", run, run);
+   }else{
+      sprintf(fileInTracker, "../Merged_data/run_%i/merg_%i.root", run, run);
+   } 
    cout<<fileInTracker<<endl;
    TFile *finTracker = new TFile(fileInTracker);
    TTree *treeTracker = (TTree*)finTracker->Get("Data_R");
@@ -146,7 +152,13 @@ void B_anglesFinder_plot_tracker_and_sic_v4(int run)
 //////////////////////////////////////////////////////////////////////////////   
 // open Sic file
    char fileInSic[50];
-   sprintf(fileInSic, "../Merged_data/run_00%i/sic_00%i.root", run, run);
+   if(run<10){
+      sprintf(fileInSic, "../Merged_data/run_00%i/sic_00%i.root", run, run);
+   }else if(run <100){
+      sprintf(fileInSic, "../Merged_data/run_0%i/sic_0%i.root", run, run);
+   }else{
+      sprintf(fileInSic, "../Merged_data/run_%i/sic_%i.root", run, run);
+   } 
    cout<<fileInSic<<endl;
    TFile *finSic = new TFile(fileInSic);
    TTree *treeSic = (TTree*)finSic->Get("Data_R");
@@ -341,7 +353,7 @@ void B_anglesFinder_plot_tracker_and_sic_v4(int run)
             SicLoopFlag=1;
             while(SicLoopFlag){ 
             treeSic->GetEntry(sicHits);
-	       if (TimestampSic>(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
+	       if (TimestampSic>=(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
                   tracksWithoutSic++;
                   SicLoopFlag=0;
                   FlagSicStop=0;  	

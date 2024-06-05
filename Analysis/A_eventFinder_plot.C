@@ -27,7 +27,7 @@ int A_eventFinder_plot(int run)
 
   
    // window the define the event, opened with the first hit
-   float DeltaT=2000000;  //in ps
+   float DeltaT=1000000;  //in ps
    // energy threshold to defin an hit
    int thresh=0;
    // row multiplicity required to plot the event
