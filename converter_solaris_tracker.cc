@@ -265,7 +265,7 @@ void quicksort(UShort_t arr0[], ULong64_t arr1[], UShort_t arr2[], UShort_t arr3
 // Convert a binary file of a single digitizer in root, provide also calibration
 //void converter_solaris_tracker (const char *data_file_name_0, const UShort_t Board0 = 0, const char *output_file_name = "out.root") {
 int main(){
-   const char *data_file_name_0="tracker_and_sic_005_01_22642_000.sol";
+   const char *data_file_name_0="tracker_and_sic_110_00_25716_000.sol";
    
    const UShort_t Board0 = 22642;
    const char *output_file_name = "out.root";

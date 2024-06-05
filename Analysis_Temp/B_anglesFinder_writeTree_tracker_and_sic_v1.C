@@ -55,9 +55,15 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
    UInt_t Flags;
    UShort_t Row;
    UShort_t Section;
+ 
+   Int_t n_pads_fired[5]={0};
+   //Int_t pads_fired[5][60]={-1000};
+   //std::vector<Int_t> pads_fired0, pads_fired1, pads_fired2, pads_fired3, pads_fired4;
+   std::vector<Int_t> pads_fired[5];
+   for (Int_t i=0; i<5; ++i) { pads_fired[i] = {-1000}; }
 
-   // SiC variables 
-   UShort_t ChannelSic; 
+   // SiC variables
+   UShort_t ChannelSic;
    UShort_t FTSSic;
    ULong64_t CTSSic;
    ULong64_t TimestampSic;
@@ -65,6 +71,7 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
    UShort_t ChargeSic;
    Double_t Charge_calSic;
    UInt_t FlagsSic;
+
    Double_t energySic=-1000.;
    
    // fitting variables
@@ -175,6 +182,11 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
    TTree *treeOut = new TTree("Data_R", "Third level tree");
    treeOut->Branch("centroid", centroid, "centroid[5]/D");
    treeOut->Branch("rms", rms, "rms[5]/D");
+   treeOut->Branch("n_pads_fired",n_pads_fired,"n_pads_fired[5]/I");
+   //treeOut->Branch("n_pads_fired0",&n_pads_fired[0],"n_pads_fired0/I");
+   //treeOut->Branch("n_pads_fired1",&n_pads_fired[1],"n_pads_fired1/I");
+   treeOut->Branch("pads_fired0",&pads_fired[0],"pads_fired0/I");
+   treeOut->Branch("pads_fired1",&pads_fired[1],"pads_fired1/I");
    treeOut->Branch("centroid_mm", centroid_mm, "centroid_mm[5]/D");
    treeOut->Branch("total_charge", total_charge, "total_charge[5]/D");
    treeOut->Branch("yrow", yrow, "yrow[5]/D");
@@ -209,7 +221,7 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
    for(int i=0;i<5; i++){
      h_time[i]->GetXaxis()->SetTitle("pad");
      h_time[i]->GetYaxis()->SetTitle("timestamp");
-   }   
+   }
    h_time[1]->SetLineColor(kRed);
 
    TH1D *h_driftTime[5];
@@ -303,7 +315,7 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
    treeSic->GetEntry(0);
    cout<<" time init SiC: "<<TimestampSic<<endl;
    
-   for(int i=0; i<entriesTracker/100; i++){
+   for(int i=0; i<100; i++){
       treeTracker->GetEntry(i);
       //if (i%1000==0) cout << "Entry: " << i << endl;
       //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
@@ -326,6 +338,7 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
       	 for (int j=0; j<5; j++) {
       	     timeAverage[j] = 0.;
       	     total_charge[j] = 0.;
+             n_pads_fired[j] = 0;
          }
          theta_deg = -1000.;
          if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>rowMultiplicity){
@@ -343,9 +356,16 @@ void B_anglesFinder_writeTree_tracker_and_sic_v1(int run)
 	           //weigthed_pos[k] = (k-1)*charge/total_charge;
 	           //centroid[j] = centroid[j] + weigthed_pos[k];
 	           timeAverage[j] += charge*time;
-	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << total_charge << endl;
+	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << total_charge[j] << endl;
+                   if (charge) {n_pads_fired[j]++; pads_fired[j].push_back(k);} 
+
 	       }
-      
+
+               for(int q=0; q<5; ++q) {
+               for(auto it=pads_fired[q].begin(); it != pads_fired[q].end(); ++it)
+               std::cout <<  << std::endl;
+               }
+
  	       centroid[j] = row[j]->GetMean();
                rms[j] = row[j]->GetRMS();
 	       centroid_mm[j] = centroid[j] * 5 + padWidth/2.;

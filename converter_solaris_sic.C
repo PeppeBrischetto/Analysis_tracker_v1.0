@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// Converts the binary data files to root. 
+// Converts the binary data files to root for the SiC detector. 
 // Some additional variables are written
 // Charge_calib - calibrated charge
 // Single_Pads - pad number  
@@ -8,7 +8,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // use it
 // converter.C("PRaw_dataath/filename",board number, "outputfilename");
-// Example:  converter.C("Raw_data/Run_18/dig22642.bin",22642,"out.root")
+// Example:  converter_solaris_sic.C("home/solaris/RAW_data/tracker_and_sic/tracker_and_sic_110_00_25716_000.sol",25716,"sic_110.root")
 // ////////////////////////////////////////////////////////////////////////////////////////////////
 // created        July 2022  F. Dalaunay
 // modified: 	15 Nov 2022  F. Delaunay,  F.Soukeras
