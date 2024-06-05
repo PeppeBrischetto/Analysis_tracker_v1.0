@@ -114,14 +114,16 @@ int A_eventFinder_plot(int run)
    anodeTime->GetXaxis()->SetTitle("pad");
    anodeTime->GetYaxis()->SetTitle("row");
    anodeTime->GetYaxis()->SetNdivisions(-11); 		// setta il numero di divisioni per la grid
-   anodeTime->GetYaxis()->SetLabelSize(0);		// rimuovi il label di questo asse
+   anodeTime->GetYaxis()->SetLabelSize(0);
+   anodeTime->GetZaxis()->SetTitle("time (ps)");
+
    
    //crea un nuovo asse per il numero di row
    TGaxis *axis1 = new TGaxis(-0.5,-0.75,-0.5,4.75,-0.75,4.75,10,"+");
    axis1->SetLabelOffset(-0.025);
    axis1->SetTickLength(0.01);
 
-   TCanvas *C1=new TCanvas("c1","c1",800,0,900,350);
+   TCanvas *C1=new TCanvas("c1","c1",1400,0,900,350);
    C1->SetFillColor(kWhite);
    //C1->SetFrameFillColor(kWhite);
    /*TPad *pad1 = new TPad("pad1","pad1", 0.02,0.05,0.98,0.95,21);
@@ -136,7 +138,7 @@ int A_eventFinder_plot(int run)
    gPad->SetGridy();
    axis1->Draw();
 
-   TCanvas *C2=new TCanvas("c2","c2",200,550,900,350);
+   TCanvas *C2=new TCanvas("c2","c2",1400,450,900,350);
    C2->SetFillColor(kWhite);
 /*   TPad *pad2 = new TPad("pad2","pad2", 0.02,0.05,0.98,0.95,21);
    pad2->Draw();   
@@ -147,7 +149,7 @@ int A_eventFinder_plot(int run)
    pad2->GetFrame()->SetBorderSize(1);
    pad2->SetGridy(); 	
   */ 
-   TCanvas *C3=new TCanvas("c3","c3",800,500,900,350);
+   TCanvas *C3=new TCanvas("c3","c3",1400,850,900,350);
    C3->SetFillColor(kWhite);
    // Lettura file
   

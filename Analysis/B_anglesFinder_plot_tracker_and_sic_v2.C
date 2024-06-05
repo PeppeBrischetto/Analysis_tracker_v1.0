@@ -8,9 +8,9 @@
 //#            as input the DeltaT, time interval that is used to define an event, and the Time window
 //#            where to seek the tracks.
 //# 	       The array with the number of digitizers used			   array with the number of digitizers used
-//#  alpha is the angle taken as atan of the slope of the linear fit 
-//#  theta instead is the angle respect to the z-axis 
-//#  theta is defined as  theta=-90-alpha  (it is negative since the x goes from rigth to left).
+//#   alpha is the angle taken as atan of the slope of the linear fit 
+//#   theta instead is the angle respect to the z-axis 
+//#   theta is defined as  theta=-90-alpha  (it is negative since the x goes from rigth to left).
 //###################################################################################################
 //#   created april 2024 from A_eventFinder_plot.C by G. Brischetto
 //#######################################
@@ -73,7 +73,6 @@ void B_anglesFinder_plot_tracker_and_sic_v2(int run)
    Double_t theta=-1000., theta_deg=-1000.;
    Double_t alpha=-1000., alpha_deg=-1000.;
    Double_t phi=-1000., phi_deg=-1000.;
-   
 
    UInt_t flagTrackWithSiC=0;  
    UInt_t rowMultiplicity=4; 	// consider tracks with a number of hit row bigger than rowMultiplicity

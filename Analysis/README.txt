@@ -10,6 +10,8 @@ A_eventFinderTrSiC_plot.C Find an event in coincidence between one Sic ans the t
 
 A_plot_EnergyVsChannel.C plot the charge vs digitizer channel in a TH2 for each digitizer
 
+A_plot_EnergyVsPad.C	plot the charge vs pad in a TH2 for each row
+
 A_plotMap_entries	plot the map of hit on the anode for a given number of entries
 
 A_plotMap_time		plot the map of hit on the anode for a given interval of time
@@ -22,9 +24,9 @@ A_plot_padSpectrum_1.C  plot the charge spectrum of multiple pad in a single plo
 A_plot_padSpectrum_2.C  plot the charge spectrum of a single pad with a condition
 			on the hit multiplicity in a time window
 
+B_anglesFinder_plot_tracker_and_sic_v2.C   
 
 
-A_plot_EnergyVsPad.C	plot the charge vs pad in a TH2 for each row
 
 
 B_trackerFinder_plot.C 	find the tracks and plot them.
