@@ -428,7 +428,7 @@ void B_trackGeneratorb(int run)
                   ChargeSic= -1000;
                   SicLoopFlag=0;
                   FlagSicStop=0;
-               }else if((timeinit-TimestampSic)>timeWindowlow && (TimestampTrackerEv-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
+               }else if((timeinit-TimestampSic)>timeWindowlow && (timeinit-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
                   cout << "+++++++++++ Event detected by the SiC" << endl;
                   energySic = ChargeSic;
                   tracksWithSic++;
@@ -454,8 +454,7 @@ void B_trackGeneratorb(int run)
 	    C4->cd();
             //h_time[0]->Draw("HIST");
             //h_time[1]->Draw("HIST same");
-	    
-	    
+	       
 	    //cout << "Before Fitting " << endl;
 	    
    	    grTrack->Fit("lin1","RQ");
