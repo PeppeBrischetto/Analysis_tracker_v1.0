@@ -7,23 +7,26 @@
 //#   it can plot the histograms with the angles of the tracks, but it is not necessary
 //#   
 //#   required as argument the run number
-//#            as input the DeltaT, time interval that is used to define an event, and the Time window
-//#            where to seek the tracks.
-//# 	       The array with the number of digitizers used			   array with the number of digitizers used
-//#  theta and phi angles are defined with respect to the z-axis 
+//#           * as input the DeltaT, time interval that is used to define an event, and the Time window
+//#            		where to seek the tracks.
+//# 	       			
+//#   theta and phi angles are defined with respect to the z-axis 
 //###################################################################################################
 //#   created may 2024 from B_anglesFinder_plot_tracker_and_sic_v4.C by G. Brischetto
 //#######################################
-//#   updated:
+//#   updated: 6 june 2024 commenting 
+//# 			   renaming of variables  
+//#			   solved bug on track without sic    D. Torresi
 //# 
 //###################################################################################################
 
-void B_trackGenerator(int run)
+void B_trackGeneratorb(int run)
 {
 
 ////////////////////////////////////////////////////////////////////
 // Dichiarazione variabili
 
+  // setted parameters
    // window that define the event, opened with the first hit
    float DeltaT=1000000;  //in ps
    // energy threshold to defin an hit
@@ -41,7 +44,14 @@ void B_trackGenerator(int run)
    Double_t velocity = 50.;  // drift velocity (in mm/us) of electrons in isobutane;  
    Double_t velocity_mm_ps = velocity/1.0E+06;  // drift velocity (in mm/ps) of electrons in isobutane;
 
-    // tracker variables 
+   double *zrow = new double[5];  // zcoordinate (in mm) of the row
+   zrow[0]=18.60;		  // valid for the prototype 2
+   zrow[1]=39.80;
+   zrow[2]=61.00;
+   zrow[3]=82.20;
+   zrow[4]=103.40;
+   
+  // input file variables (tracker)
    UShort_t Channel; 
    UShort_t pad; 
    UShort_t FTS;
@@ -54,16 +64,7 @@ void B_trackGenerator(int run)
    UShort_t Row;
    UShort_t Section;
  
-   Int_t n_pads_fired[5]={0};
-   //Int_t pads_fired[5][60]={-1000};
-   //std::vector<Int_t> pads_fired0, pads_fired1, pads_fired2, pads_fired3, pads_fired4;
-   std::vector<Int_t> pads_fired[5];
-   //for (Int_t i=0; i<5; ++i) { 
-   //    pads_fired[i] = {-1000};
-   //    cout << pads_fired[i] << endl;
-   //}
-
-   // SiC variables
+  // input file variables (Sic)
    UShort_t ChannelSic;
    UShort_t FTSSic;
    ULong64_t CTSSic;
@@ -73,32 +74,49 @@ void B_trackGenerator(int run)
    Double_t Charge_calSic;
    UInt_t FlagsSic;
 
-   Double_t energySic=-1000.;
+
+  // output file variables
+   double cl_charge[5] = {0};	   	// charge sum of the pads belonging to a cluster
+   Int_t cl_padMult[5]={0};		// number of pads of a cluster
+   double cl_x[5];			// x centroid of a cluster in pads unit
+   double cl_x_mm[5];			// x centroid of a cluster in mm
+   double cl_x_rms[5];  		// rms of the charge distribution of a cluster in pads unit
+   double cl_y[5] = {0};		// y centroid of a cluster in time
+   double cl_y_mm[5] = {0};		// y centroid of a cluster in mm
+   Double_t theta=-1000;		// theta of the track in rad
+   Double_t theta_deg=-1000;		// theta of the track in deg
+   Double_t phi=-1000;
+   Double_t phi_deg=-1000;
+   Double_t sic_charge;
+   Double_t energySic=-1000; 
+  
+   //Int_t pads_fired[5][60]={-1000};
+   //std::vector<Int_t> pads_fired0, pads_fired1, pads_fired2, pads_fired3, pads_fired4;
+   std::vector<Int_t> pads_fired[5];
+   //for (Int_t i=0; i<5; ++i) { 
+   //    pads_fired[i] = {-1000};
+   //    cout << pads_fired[i] << endl;
+   //}
+
+// other variables
    
    // fitting variables
    double slope,intercept;
    double charge = 0.0;
-   double total_charge[5] = {0.0};
    double weigthed_pos[60];
-   double centroid[5], centroid_mm[5];
-   double rms[5];
+   Double_t alpha=-1000, alpha_deg=-1000;  // auxiliary angle for the calculation of theta
+   Double_t beta=-1000, beta_deg=-1000;    // auxiliary angle for the calculation of phi
 
    // Secondary variables  
    ULong64_t TimestampSicTemp;   
-   ULong64_t TimestampTrackerEv;	// variables used for checks
-   UInt_t SicLoopFlag;	// variable used to stop the loop on the Sic file
+   UInt_t SicLoopFlag;			// variable used to stop the loop on the Sic file
 
-   Double_t timeAverage[5] = {0.}; // variable used to calculate the average time (weighted by the charge) on a raw
-   Double_t time = 0.;             // variable used to store the time of a single pad (it is used for the calculation of the average time
-   Double_t driftTime = 0.;        // variable used to store the drift time of electrons corresponding to  row 2 (i.e. driftTime=timeSiC-timeRow2)
+   Double_t timeAverage[5] = {0.}; 	// variable used to calculate the average time (weighted by the charge) on a raw
+   Double_t time = 0.;             	// variable used to store the time of a single pad (it is used for the calculation of the average time
+   Double_t driftTime = 0.;        	// variable used to store the drift time of electrons corresponding to  row 2 (i.e. driftTime=timeSiC-timeRow2)
 
    int binmax=-100, max=-100;		// variables used to plot the histos
    // number of event in the run
-   
-   Double_t theta=-1000., theta_deg=-1000.;
-   Double_t alpha=-1000., alpha_deg=-1000.;  // auxiliary angle for the calculation of theta
-   Double_t phi=-1000., phi_deg=-1000.;
-   Double_t beta=-1000., beta_deg=-1000.;    // auxiliary angle for the calculation of phi
 
    UInt_t flagTrackWithSiC=0;  
    UInt_t rowMultiplicity=4; 	// consider tracks with a number of hit row bigger than rowMultiplicity
@@ -117,16 +135,6 @@ void B_trackGenerator(int run)
 
    int np=0; // number of point of the Tgraph
    int npTime=0; // number of point of the Tgraph of the time
-
-   double *zrow = new double[5];  // zcoordinate (in mm) of the row
-   zrow[0]=18.60;		  // valid for the prototype 2
-   zrow[1]=39.80;
-   zrow[2]=61.00;
-   zrow[3]=82.20;
-   zrow[4]=103.40;
-
-   double yrow[5] = {0.};
-
    char dummyString[50];
 
 // END: Dichiarazione variabili		//////////////////////////////////////
@@ -190,22 +198,28 @@ void B_trackGenerator(int run)
 
 // OPEN output ROOT file //
    char fileOutName[50];
-   sprintf(fileOutName,"tracks_run%i.root",run);
+   sprintf(fileOutName,"../Tracks/tracks_run%ib.root",run);
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
-   treeOut->Branch("centroid", centroid, "centroid[5]/D");
-   treeOut->Branch("rms", rms, "rms[5]/D");
-   treeOut->Branch("n_pads_fired",n_pads_fired,"n_pads_fired[5]/I");
-   //treeOut->Branch("n_pads_fired0",&n_pads_fired[0],"n_pads_fired0/I");
-   //treeOut->Branch("n_pads_fired1",&n_pads_fired[1],"n_pads_fired1/I");
-   //treeOut->Branch("pads_fired0",&pads_fired[0],"pads_fired0[n_pads_fired0]/I");
-   //treeOut->Branch("pads_fired1",&pads_fired[1],"pads_fired1[n_pads_fired1]/I");
-   treeOut->Branch("centroid_mm", centroid_mm, "centroid_mm[5]/D");
-   treeOut->Branch("total_charge", total_charge, "total_charge[5]/D");
-   treeOut->Branch("yrow", yrow, "yrow[5]/D");
+   
+   treeOut->Branch("cl_x", cl_x, "cl_x[5]/D");
+   treeOut->Branch("cl_x_mm", cl_x_mm, "cl_x_mm[5]/D"); 
+   treeOut->Branch("cl_y", timeAverage, "cl_y[5]/D");
+   treeOut->Branch("cl_y_mm", cl_y_mm, "cl_y_mm[5]/D");
+   treeOut->Branch("cl_x_rms", cl_x_rms, "cl_x_rms[5]/D");
+   treeOut->Branch("cl_padMult",cl_padMult,"cl_padMult[5]/I");
+   treeOut->Branch("cl_charge", cl_charge, "cl_charge[5]/D");
+   //treeOut->Branch("cl_padMult0",&cl_padMult[0],"cl_padMult0/I");
+   //treeOut->Branch("cl_padMult1",&cl_padMult[1],"cl_padMult1/I");
+   //treeOut->Branch("pads_fired0",&pads_fired[0],"pads_fired0[cl_padMult0]/I");
+   //treeOut->Branch("pads_fired1",&pads_fired[1],"pads_fired1[cl_padMult1]/I");
+   treeOut->Branch("phi",&phi,"phi/D");
+   treeOut->Branch("theta",&theta,"theta/D");
+   treeOut->Branch("phi_deg",&phi_deg,"phi_deg/D");      
    treeOut->Branch("theta_deg",&theta_deg,"theta_deg/D");
-   treeOut->Branch("phi_deg",&phi_deg,"phi_deg/D");
+   
    treeOut->Branch("sic_fired",&FlagSicStop,"sic_fired/I");
+   treeOut->Branch("sic_charge",&ChargeSic,"sic_charge/D");
    treeOut->Branch("energySic",&energySic,"energySic/D");
 
 //////////////////////////////////////////////////////////////////////////////
@@ -348,11 +362,11 @@ void B_trackGenerator(int run)
       	 // The event is finished. Plot if there is something
       	  //cout << "\n-------- Event finished ---------\n" << endl;
 
-         //total_charge = 0.;
+         //cl_charge = 0.;
       	 for (int j=0; j<5; j++) {
       	     timeAverage[j] = 0.;
-      	     total_charge[j] = 0.;
-             n_pads_fired[j] = 0;
+      	     cl_charge[j] = 0.;
+             cl_padMult[j] = 0;
              pads_fired[j].clear();
          }
 
@@ -368,31 +382,31 @@ void B_trackGenerator(int run)
             np=0;
             npTime=0;
 	    for(int j=0; j<5; j++){
-	       //centroid[j]=0;
+	       //cl_x[j]=0;
 	       binmax = row[j]->GetMaximumBin();
 	       max  = row[j]->GetBinContent(binmax);
 	       //cout<<binmax<<"  "<<max<<endl;
 	       for (int k=0; k<60; k++) {
                    charge = row[j]->GetBinContent(k);
                    time   = h_time[j]->GetBinContent(k);
-                   total_charge[j] = row[j]->Integral(0,59);
-	           //weigthed_pos[k] = (k-1)*charge/total_charge;
-	           //centroid[j] = centroid[j] + weigthed_pos[k];
+                   cl_charge[j] = row[j]->Integral(0,59);
+	           //weigthed_pos[k] = (k-1)*charge/cl_charge;
+	           //cl_x[j] = cl_x[j] + weigthed_pos[k];
 	           timeAverage[j] += charge*time;
-	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << total_charge[j] << endl;
-                   if (charge) {n_pads_fired[j]++; pads_fired[j].push_back(k);} 
+	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
+                   if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} 
 
 	       }
 
- 	       centroid[j] = row[j]->GetMean();
-               rms[j] = row[j]->GetRMS();
-	       centroid_mm[j] = centroid[j] * 5 + padWidth/2.;
-	       if(max>100){grTrack->SetPoint(np++, zrow[j], centroid_mm[j]);}
+ 	       cl_x[j] = row[j]->GetMean();
+               cl_x_rms[j] = row[j]->GetRMS();
+	       cl_x_mm[j] = cl_x[j] * 5 + padWidth/2.;
+	       if(max>100){grTrack->SetPoint(np++, zrow[j], cl_x_mm[j]);}
 
-      	       timeAverage[j] = (double)(timeAverage[j]/total_charge[j]);
-      	       yrow[j] = timeAverage[j]*velocity_mm_ps;
-	       //printf("timeAverage[%d] = %10.2f (ps) \t yrow[%d] = %6.2f (mm) \n\n", j, timeAverage[j], j, yrow[j]);
-      	       if(max>100){grPhi->SetPoint(npTime++, zrow[j], yrow[j]);}
+      	       timeAverage[j] = (double)(timeAverage[j]/cl_charge[j]);
+      	       cl_y_mm[j] = timeAverage[j]*velocity_mm_ps;
+	       //printf("timeAverage[%d] = %10.2f (ps) \t cl_y_mm[%d] = %6.2f (mm) \n\n", j, timeAverage[j], j, cl_y_mm[j]);
+      	       if(max>100){grPhi->SetPoint(npTime++, zrow[j], cl_y_mm[j]);}
 
             }
             
@@ -412,9 +426,10 @@ void B_trackGenerator(int run)
                   //cout << "********* Tracks without SiC" << endl;
                   tracksWithoutSic++;
                   energySic = -1000.;
+                  ChargeSic= -1000;
                   SicLoopFlag=0;
                   FlagSicStop=0;
-               }else if((timeinit-TimestampSic)>timeWindowlow && (TimestampTrackerEv-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
+               }else if((timeinit-TimestampSic)>timeWindowlow && (timeinit-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
                   cout << "+++++++++++ Event detected by the SiC" << endl;
                   energySic = ChargeSic;
                   tracksWithSic++;
@@ -440,8 +455,7 @@ void B_trackGenerator(int run)
 	    C4->cd();
             //h_time[0]->Draw("HIST");
             //h_time[1]->Draw("HIST same");
-	    
-	    
+	       
 	    //cout << "Before Fitting " << endl;
 	    
    	    grTrack->Fit("lin1","RQ");
