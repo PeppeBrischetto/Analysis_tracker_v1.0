@@ -29,7 +29,7 @@ B_anglesFinder_plot_tracker_and_sic_v2.C
 
 
 
-B_trackerFinder_plot.C 	find the tracks and plot them.
+B_trackFinder_plot.C 	find the tracks and plot them. OBSOLETE
 
 
 Z_check_mean.C		check the value of the mean of the istogram of a cluster
