@@ -198,7 +198,7 @@ void B_trackGenerator(int run)
 
 // OPEN output ROOT file //
    char fileOutName[50];
-   sprintf(fileOutName,"../Tracks/tracks_run%ib.root",run);
+   sprintf(fileOutName,"../Tracks/tracks_run%i.root",run);
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
    
