@@ -102,10 +102,10 @@ int findRow(int dig, int pad){
 int findColumn(int dig){
     int Column=-1;
     if(dig==board_id[0]){Column=0;}
-    else if(dig==board_id[1]){Column=1;}
-    else if(dig==board_id[2]){Column=2;}
-    else if(dig==board_id[3]){Column=3;}
-    else if(dig==board_id[4]){Column=4;}
+    else if(dig==board_id[1]){Column=0;}
+    else if(dig==board_id[2]){Column=0;}
+    else if(dig==board_id[3]){Column=0;}
+    else if(dig==board_id[4]){Column=0;}
     return Column;
 }
 
@@ -249,10 +249,6 @@ void quicksort(UShort_t arr0[], ULong64_t arr1[], UShort_t arr2[], UShort_t arr3
    if(i < high) 
       quicksort(arr0, arr1, arr2, arr3, arr4, arr5, arr6, arr7, arr8, i, high);
 };
-
-
-
-
 
 
 

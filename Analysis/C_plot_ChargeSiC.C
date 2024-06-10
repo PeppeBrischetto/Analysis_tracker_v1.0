@@ -10,7 +10,7 @@
 //# 
 //###################################################################################################
 
-void C_ChargeSiC(int run)
+void C_plot_ChargeSiC(int run)
 {
 
    double cl_charge[5] = {0};	   	// charge sum of the pads belonging to a cluster
@@ -31,11 +31,11 @@ void C_ChargeSiC(int run)
    
    char fileInName[50];
    if(run<10){
-      sprintf(fileInName, "../Tracks/tracks_run00%ib.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run00%i.root", run);
    }else if(run <100){
-      sprintf(fileInName, "../Tracks/tracks_run0%ib.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run0%i.root", run);
    }else{
-      sprintf(fileInName, "../Tracks/tracks_run%ib.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run%i.root", run);
    } 
    TFile *fileIn = new TFile(fileInName);
    TTree *treeTracks = (TTree*)fileIn->Get("Data_R");

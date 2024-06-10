@@ -13,8 +13,8 @@
 // created        July 2022  F. Dalaunay
 // modified: 	15 Nov 2022  F. Delaunay,  F.Soukeras
 // modified:    25 Nov 2022  added row and section variables in the output file  D. Torresi
-// last update: 20 Mar 2024  read and convert the data format from SOLARIS G. A. Brischetto, A. Pitronaci
-//
+// modified:    20 Mar 2024  read and convert the data format from SOLARIS G. A. Brischetto, A. Pitronaci
+// last update: 10 Jun 2024  corrected a bug: the row bigger than four where not assigned  D. Trresi, A. Pitronaci
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // To do
 // option to do not convert the event with no trapezoid flag or zero charge
@@ -74,33 +74,33 @@ struct data {
 int findRow(int dig, int pad){
     int row=-1;
     if(dig==board_id[0]){
-       if(pad==1000){
+       if(pad==100){
           row=5;
        }else{
           row=0;
        }
     }else if(dig==board_id[1]){
-       if(pad==1000){
+       if(pad==100){
           row=6;
        }else{
           row=1;
        }
     }else if(dig==board_id[2]){
-    	if(pad==1000){
+    	if(pad==100){
           row=7;
        }else{
     	  row=2;
        }
     }else if(dig==board_id[3]){
-       if(pad==1000){
+       if(pad==100){
           row=8;
        }else{
           row=3;
        }
     }else if(dig==board_id[4]){
-       if(pad==1000){
+       if(pad==100){
           row=9;
-       }else if(pad==1001){
+       }else if(pad==101){
           row=10;
        }else{
           row=4;
