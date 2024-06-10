@@ -395,9 +395,7 @@ void B_trackGenerator(int run)
 	           timeAverage[j] += charge*time;
 	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
                    if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} 
-
 	       }
-
  	       cl_x[j] = row[j]->GetMean();
                cl_x_rms[j] = row[j]->GetRMS();
 	       cl_x_mm[j] = cl_x[j] * 5 + padWidth/2.;
@@ -422,7 +420,7 @@ void B_trackGenerator(int run)
             //cout << "Inside the while" << endl;             
             treeSic->GetEntry(sicHits);
 
-	       if (TimestampSic>=(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
+	       if(TimestampSic>=(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
                   //cout << "********* Tracks without SiC" << endl;
                   tracksWithoutSic++;
                   energySic = -1000.;
@@ -441,7 +439,7 @@ void B_trackGenerator(int run)
                      //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
                      h_driftTime[m]->Fill(driftTime/1000000.);
                   }
-               } else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
+               }else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
                   sicWithoutTracks++;
                   sicHits++;
                   SicLoopFlag=1;
@@ -454,8 +452,7 @@ void B_trackGenerator(int run)
 
 	    C4->cd();
             //h_time[0]->Draw("HIST");
-            //h_time[1]->Draw("HIST same");
-	       
+            //h_time[1]->Draw("HIST same");	       
 	    //cout << "Before Fitting " << endl;
 	    
    	    grTrack->Fit("lin1","RQ");
@@ -529,9 +526,9 @@ void B_trackGenerator(int run)
   	    }
       	    if(anykey=='c')flagM=0;     
 
-      treeOut->Fill();
-      //cout << "Filling the tree" << endl;
-      cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
+            treeOut->Fill();
+            //cout << "Filling the tree" << endl;
+            cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
 	 }
 
          
