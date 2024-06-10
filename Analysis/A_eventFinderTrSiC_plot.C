@@ -1,7 +1,7 @@
 //###################################################################################################
 //#   macro that take as input a single file from a single channel of SiC and a 
 //#   merged file from the tracker.
-//#   It plot the anode map of an event when there is a SiC in coincidence.
+//#   It Plot the anode map of an event when there is a SiC in coincidence.
 //#   The SiC file is used as a master, a time window is open and the tracks of the gas detector
 //#   are seeked inside the time window.
 //#   
@@ -275,7 +275,7 @@ int A_eventFinderTrSiC_plot(int run)
          
       }else{
          if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>rowMultiplicity){
-            
+          
             // loop on the SiC file 
             finSic->cd();
             SicLoopFlag=1;

@@ -2,7 +2,7 @@
 # README file for the data analysius of the tracker data.
 # created november 2022 by V. Soukeras, D. Torresi
 #
-# lasta update 25-11-2022
+# last update 25-11-2022
 ###################################################################################################
 
 DIRECTORIES

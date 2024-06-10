@@ -1,0 +1,20 @@
+******************************************************************************************************************
+*                                                                                                                *
+*                                       HISTORY ANTONINO PITRONACI                                               *
+*                                                                                                                *
+******************************************************************************************************************
+*                                                                                                                *
+*   This file contains a history about analysis tracker after 05/06/2024, using macros you can find in previous  *
+*   directories.                                                                                                 *
+*                                                                                                                *
+*   ------                                                                                                       *
+*   07/06/2024: Copy of C_plot_theta.C from previous macro available on ../Analysis. All updates as follows.     *
+*         - plot theta distribution without constraint;								 *
+*	  - plot theta distribution with threshold in sic_charge (sic_charge >2000);				 *
+*         - plot theta distribution with additional threshold in rms (rms<2.5, to avoid double tracks);		 *
+*   ------													 *
+*   07/06/2024: Creation of C_plot_phi.C from C_plot_theta.C. All updates as follows.           		 *
+*         - plot phi distribution without constraint;								 *
+*	  - plot phi distribution with threshold in sic_charge (sic_charge >2000);				 *
+*         - plot phi distribution with additional threshold in rms (rms<2.5, to avoid double tracks);		 *
+*   ------													 *
