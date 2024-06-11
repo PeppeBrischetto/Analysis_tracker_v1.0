@@ -4,22 +4,22 @@
 //#   required as argument the run number
 //#
 //###################################################################################################
-//#   created june 2024 by A. Pitronaci, based on D. Torresi previous macro available in ../Analysis
+//#   created 7 Jun 2024 by A. Pitronaci, based on C_plot_theta.C available in the present directory
 //#######################################
-//#   updated: june 2024
+//#   updated: 10 June 2024, extended for no-segmeneted rows, i.e. 5,6,7,8,9,10 (strips)
 //# 
 //###################################################################################################
 
 void C_plot_theta(int run)
 {
    /* Main variables referred to input-tree */
-   Double_t cl_x[5] = {0.};
-   Double_t cl_x_mm[5] = {0.};
-   Double_t cl_y[5] = {0.};
-   Double_t cl_y_mm[5] = {0.};
-   Double_t cl_x_rms[5] = {0.};
-   Double_t cl_charge[5] = {0.};
-   Int_t cl_padMult[5] = {0};
+   Double_t cl_x[11] = {0.};
+   Double_t cl_x_mm[11] = {0.};
+   Double_t cl_y[11] = {0.};
+   Double_t cl_y_mm[11] = {0.};
+   Double_t cl_x_rms[11] = {0.};
+   Double_t cl_charge[11] = {0.};
+   Int_t cl_padMult[11] = {0};
    Double_t phi = 0.;
    Double_t theta = 0.;
    Double_t phi_deg = 0.;
@@ -31,11 +31,11 @@ void C_plot_theta(int run)
    /* Reading block variables */  
    char fileInName[50];
    if(run<10){
-      sprintf(fileInName, "../Tracks/tracks_run00%i.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run00%itent.root", run);
    }else if(run <100){
-      sprintf(fileInName, "../Tracks/tracks_run0%i.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run0%itent.root", run);
    }else{
-      sprintf(fileInName, "../Tracks/tracks_run%i.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run%itent.root", run);
    } 
    TFile *fileIn = new TFile(fileInName);
    TTree *treeTracks = (TTree*)fileIn->Get("Data_R");

@@ -4,13 +4,13 @@
 //#   required as argument the run number
 //#
 //###################################################################################################
-//#   created 7 Jun 2024 by A. Pitronaci, based on C_plot_theta.C available in the present directory
+//#   created june 2024 by A. Pitronaci, based on C_plot_theta.C available in the present directory
 //#######################################
-//#   updated: 10 June 2024, extended for no-segmeneted rows, i.e. 5,6,7,8,9,10 (strips)
+//#   updated: june 2024
 //# 
 //###################################################################################################
 
-void C_plot_phi(int run)
+void C_plot_clcharge(int run)
 {
    /* Main variables referred to input-tree */
    Double_t cl_x[11] = {0.};
@@ -59,91 +59,84 @@ void C_plot_phi(int run)
    int entries=treeTracks->GetEntries();
    cout<<"Entries tracks file "<< entries <<endl;
      
-   TH1F *histoPhi=new TH1F("","",1000,-160,160);
-   histoPhi->SetStats(0);
-   histoPhi->GetXaxis()->SetTitle("#phi (deg)");
-   histoPhi->GetYaxis()->SetTitle("Counts");
+   vector<TH1F*> h_clcharge;
    
-   /* phi histogram with 1st threshold on charge: 2000*/
-   TH1F* h_phi_geq2000 = new TH1F("","",1000,-160,160);
-   h_phi_geq2000->SetStats(0);
-   h_phi_geq2000->GetXaxis()->SetTitle("#phi (deg)");
-   h_phi_geq2000->GetYaxis()->SetTitle("Counts");
-   h_phi_geq2000->SetLineColor(kRed);
+   TH1F *totalCharge_rows = new TH1F("","",1000,0,50000);
+   totalCharge_rows->SetTitle("#Sigma_{row=0}^{4} Histo_{row}");
+   totalCharge_rows->GetXaxis()->SetTitle("Total charge");
+   totalCharge_rows->GetXaxis()->SetTitle("Counts");
    
-   /* phi histogram with treshold on rms: all <2.5 */
-   TH1F* h_phi_rms = new TH1F("","",1000,-160,160);
-   h_phi_rms->SetStats(0);
-   h_phi_rms->GetXaxis()->SetTitle("#phi (deg)");
-   h_phi_rms->GetYaxis()->SetTitle("Counts");
-   h_phi_rms->SetLineColor(kGreen+2);
+   TH1F *totalCharge_strips = new TH1F("","",1000,0,50000);
+   totalCharge_strips->SetTitle("#Sigma_{row=5}^{10} Histo_{row}");
+   totalCharge_strips->GetXaxis()->SetTitle("Total charge");
+   totalCharge_strips->GetXaxis()->SetTitle("Counts");
    
-   for(int i=0; i<entries; i++){
+   /*format vector<TH1F*>* */
+   for(Int_t r=0; r<11; r++){
+      TString name;
+      name.Form("Row.%d",r);
+      TString title;
+      title.Form("Row.%d",r);
+      h_clcharge.push_back(new TH1F(name,title,1000,0,50000));
+   }
+   
+   for(Int_t i=0; i<entries; i++){
    //for(int i=0; i<50; i++){
       treeTracks->GetEntry(i);
-      histoPhi->Fill(phi_deg);
+      for(Int_t j=0; j<11;j++){
+         h_clcharge.at(j)->Fill(cl_charge[j]);
+         if(j<5){
+           totalCharge_rows->Add(h_clcharge[j]);
+         }
+         else if(j>=5){
+           totalCharge_strips->Add(h_clcharge[j]);
+         }
+      }
       
       /*if(cl_charge[0] >2000 && cl_charge[1] >2000 && cl_charge[2] >2000 && cl_charge[3] >2000 && cl_charge[4] >2000){
         h_phi_geq2000->Fill(phi_deg);
         }*/
-      if(energySic>2000){
+      /*if(energySic>2000){
         h_phi_geq2000->Fill(phi_deg);
         }
         
       if(energySic>2000 && cl_x_rms[0] < 2.5 && cl_x_rms[1] < 2.5 && cl_x_rms[3] < 2.5 && cl_x_rms[4] < 2.5){
         h_phi_rms->Fill(phi_deg);
-      }
+      }*/
     }
    
    
    
    /* Visualisation Block*/
-   TCanvas *c1=new TCanvas("c1","alpha",1600, 100,1000.,600.);
-   c1->cd();
-   c1->SetLogy();
-   c1->SetFillColor(kWhite);
-   histoPhi->Draw();
-   h_phi_geq2000->Draw("same");
-   h_phi_rms->Draw("same");
-   TLegend* l = new TLegend();
-   l->SetTextSize(0.035);
-   l->AddEntry(histoPhi, "Counts(#phi)", "lep");
-   l->AddEntry(h_phi_geq2000, "Counts(#phi,E_{SiC}>2000)","lep");
-   l->AddEntry(h_phi_rms, "Counts(#phi, E_{SiC}>2000,rms<2.5)","lep");
-   l->Draw("same");
-   TLegend* l1 = new TLegend();
-   l1->SetTextSize(0.035);
-   l1->AddEntry(histoPhi, "Counts(#phi)", "lep");
-   TLegend* l2 = new TLegend();
-   l2->SetTextSize(0.035);
-   l2->AddEntry(h_phi_geq2000, "Counts(#phi,E_{SiC}>2000)","lep");
-   TLegend* l3 = new TLegend();
-   l3->SetTextSize(0.035);
-   l3->AddEntry(h_phi_rms, "Counts(#phi, E_{SiC}>2000,rms<2.5)","lep");
+   TCanvas *c = new TCanvas("c","Row charge distribution",1600, 100,1000.,600.);
+   c->Divide(3,2);
+   c->cd(1);
+   h_clcharge.at(0)->Draw();
+   c->cd(2);
+   h_clcharge.at(1)->Draw();
+   c->cd(3);
+   h_clcharge.at(2)->Draw();
+   c->cd(4);
+   h_clcharge.at(3)->Draw();
+   c->cd(5);
+   h_clcharge.at(4)->Draw();
+   c->cd(6);
+   totalCharge_rows->Draw();
    
-   TCanvas *c2 = new TCanvas("c2","alpha-division",1600,100,1000,600);
-   c2->Divide(2,2);
-   c2->cd(1);
-   c2->SetLogy();
-   c2->SetFillColor(kWhite);
-   histoPhi->Draw();
-   l1->Draw("same");
-   c2->cd(2);
-   c2->SetLogy();
-   c2->SetFillColor(kWhite);
-   h_phi_geq2000->Draw();
-   l2->Draw("same");
-   c2->cd(3);
-   c2->SetLogy();
-   c2->SetFillColor(kWhite);
-   h_phi_rms->Draw();
-   l3->Draw("same");
-   c2->cd(4);
-   c2->SetLogy();
-   c2->SetFillColor(kWhite);
-   histoPhi->Draw();
-   h_phi_geq2000->Draw("same");
-   h_phi_rms->Draw("same");
-   l->Draw("same");
+   TCanvas *c1 = new TCanvas("c1","Row charge distribution",1600, 100,1000.,600.);
+   c1->Divide(3,2);
+   c1->cd(1);
+   h_clcharge.at(5)->Draw();
+   c1->cd(2);
+   h_clcharge.at(6)->Draw();
+   c1->cd(3);
+   h_clcharge.at(7)->Draw();
+   c1->cd(4);
+   h_clcharge.at(8)->Draw();
+   c1->cd(5);
+   h_clcharge.at(9)->Draw();
+   c1->cd(6);
+   totalCharge_strips->Draw();
+   
    
  }

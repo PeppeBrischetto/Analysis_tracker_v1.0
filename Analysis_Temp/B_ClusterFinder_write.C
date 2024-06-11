@@ -2,7 +2,7 @@
 //#   macro that take as input a merged file and look for clusters
 //#   
 //#   required as argument the run number
-//#            as input the DeltaT, time interval where you llok for the cluster
+//#            as input the DeltaT, time interval where you look for the cluster
 //#		This time should be larger of the duration of a cluster and small
 //#		enough to make the probability of the overposition of two cluters
 //# 		neglegible.
