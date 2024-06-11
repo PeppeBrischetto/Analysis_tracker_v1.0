@@ -13,13 +13,13 @@
 void C_plot_theta(int run)
 {
    /* Main variables referred to input-tree */
-   Double_t cl_x[11] = {0.};
-   Double_t cl_x_mm[11] = {0.};
-   Double_t cl_y[11] = {0.};
-   Double_t cl_y_mm[11] = {0.};
-   Double_t cl_x_rms[11] = {0.};
+   Double_t cl_x[5] = {0.};
+   Double_t cl_x_mm[5] = {0.};
+   Double_t cl_y[5] = {0.};
+   Double_t cl_y_mm[5] = {0.};
+   Double_t cl_x_rms[5] = {0.};
    Double_t cl_charge[11] = {0.};
-   Int_t cl_padMult[11] = {0};
+   Int_t cl_padMult[5] = {0};
    Double_t phi = 0.;
    Double_t theta = 0.;
    Double_t phi_deg = 0.;

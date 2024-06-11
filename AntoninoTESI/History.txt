@@ -9,7 +9,8 @@
 *                                                                                                                *
 *   --------------------------------------------------------------------------------------------------------     *
 *														 *
-*   11/06/2024: Updates on macro C_plot_clcharge.C taking into account of the extensions.                        *
+*   11/06/2024: Writing macros C_plot_clcharge.C, C_plot_clchargeE2000.C and C_plot_clchargeE2000RMS2e5.C        *
+*   taking into account all of the extensions.                                                                   *
 *														 *
 *   --------------------------------------------------------------------------------------------------------     *
 *														 *
