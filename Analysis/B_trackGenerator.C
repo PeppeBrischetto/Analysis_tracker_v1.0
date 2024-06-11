@@ -200,7 +200,7 @@ void B_trackGenerator(int run)
 
 // OPEN output ROOT file //
    char fileOutName[50];
-   sprintf(fileOutName,"../Tracks/tracks_run%i.root",run);
+   sprintf(fileOutName,"../Tracks/tracks_run%i_prova.root",run);
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
    
@@ -366,7 +366,7 @@ void B_trackGenerator(int run)
          }
       } else {
       	 // The event is finished. Plot if there is something
-      	  //cout << "\n-------- Event finished ---------\n" << endl;
+      	 cout << "\n-------- End Event ---------\n" << endl;
 
          //cl_charge = 0.;
       	 for (int j=0; j<5; j++) {
@@ -399,7 +399,7 @@ void B_trackGenerator(int run)
 	           //weigthed_pos[k] = (k-1)*charge/cl_charge;
 	           //cl_x[j] = cl_x[j] + weigthed_pos[k];
 	           timeAverage[j] += charge*time;
-	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
+	           cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
                    if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} 
 	       }
  	       cl_x[j] = row[j]->GetMean();
