@@ -8,7 +8,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // use it
 // converter.C("PRaw_dataath/filename",board number, "outputfilename");
-// Example:  converter_solaris_sic.C("home/solaris/RAW_data/tracker_and_sic/tracker_and_sic_110_00_25716_000.sol",25716,"sic_110.root")
+// Example:  converter_solaris_sic.C("/home/numen/solaris/RAW_data/tracker_and_sic/tracker_and_sic_110_00_25716_000.sol",25716,"sic_110.root")
 // ////////////////////////////////////////////////////////////////////////////////////////////////
 // created        July 2022  F. Dalaunay
 // modified: 	15 Nov 2022  F. Delaunay,  F.Soukeras

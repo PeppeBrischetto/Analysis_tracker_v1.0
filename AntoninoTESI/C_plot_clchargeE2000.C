@@ -27,6 +27,8 @@ void C_plot_clchargeE2000(int run)
    Int_t sic_fired = 0;
    Double_t sic_charge = 0.;
    Double_t energySic = 0.;
+   Double_t somma_R;
+   Double_t somma_S;
   
    /* Reading block variables */  
    char fileInName[50];
@@ -61,15 +63,15 @@ void C_plot_clchargeE2000(int run)
    
    vector<TH1F*> h_clcharge_1;
    
-   TH1F *totalCharge_rows1 = new TH1F("","",80,0,50000);
+   TH1F *totalCharge_rows1 = new TH1F("","",80,0,70000);
    totalCharge_rows1->SetTitle("#Sigma_{row=0}^{4} Histo_{row} - E_{SiC}>2000");
    totalCharge_rows1->GetXaxis()->SetTitle("Total charge");
-   totalCharge_rows1->GetXaxis()->SetTitle("Counts");
+   totalCharge_rows1->GetYaxis()->SetTitle("Counts");
    
-   TH1F *totalCharge_strips1 = new TH1F("","",80,0,50000);
+   TH1F *totalCharge_strips1 = new TH1F("","",80,0,70000);
    totalCharge_strips1->SetTitle("#Sigma_{row=5}^{10} Histo_{row} - E_{SiC}>2000");
    totalCharge_strips1->GetXaxis()->SetTitle("Total charge");
-   totalCharge_strips1->GetXaxis()->SetTitle("Counts");
+   totalCharge_strips1->GetYaxis()->SetTitle("Counts");
    
    /*format vector<TH1F*>* */
    for(Int_t r=0; r<11; r++){
@@ -77,26 +79,32 @@ void C_plot_clchargeE2000(int run)
       name1.Form("Row.%d",r);
       TString title1;
       title1.Form("Row.%d, E_{SiC}>2000",r);
-      h_clcharge_1.push_back(new TH1F(name1,title1,80,0,50000));
+      h_clcharge_1.push_back(new TH1F(name1,title1,80,0,70000));
    }
    
    for(Int_t i=0; i<entries; i++){
-   //for(int i=0; i<50; i++){
+      somma_R = 0.;
+      somma_S = 0.;
       treeTracks->GetEntry(i);
       if(energySic>2000){
         for(Int_t j=0; j<11;j++){
            h_clcharge_1.at(j)->Fill(cl_charge[j]);
            if(j<5){
-             totalCharge_rows1->Add(h_clcharge_1[j]);
+             somma_R += cl_charge[j];
+             //cout << "somma_R: " << somma_R << endl;
+             totalCharge_rows1->Fill(somma_R);
            }
            else{
-             totalCharge_strips1->Add(h_clcharge_1[j]);
+             somma_S += cl_charge[j];
+             //cout << "somma_S: " << somma_S << endl;
+             totalCharge_strips1->Fill(somma_S);
            }
         }
       }
+      
+      
     }
-   
-   
+       
    
    /* Visualisation Block*/
    TCanvas *c2 = new TCanvas("c2","Row charge distribution",1600, 100,1000.,600.);
