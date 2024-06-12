@@ -27,6 +27,8 @@ void C_plot_clcharge(int run)
    Int_t sic_fired = 0;
    Double_t sic_charge = 0.;
    Double_t energySic = 0.;
+   Double_t somma_R = 0.;
+   Double_t somma_S = 0.;
   
    /* Reading block variables */  
    char fileInName[50];
@@ -61,15 +63,15 @@ void C_plot_clcharge(int run)
      
    vector<TH1F*> h_clcharge;
    
-   TH1F *totalCharge_rows = new TH1F("","",1000,0,50000);
+   TH1F *totalCharge_rows = new TH1F("","",1000,0,70000);
    totalCharge_rows->SetTitle("#Sigma_{row=0}^{4} Histo_{row}");
    totalCharge_rows->GetXaxis()->SetTitle("Total charge");
-   totalCharge_rows->GetXaxis()->SetTitle("Counts");
+   totalCharge_rows->GetYaxis()->SetTitle("Counts");
    
-   TH1F *totalCharge_strips = new TH1F("","",1000,0,50000);
+   TH1F *totalCharge_strips = new TH1F("","",1000,0,70000);
    totalCharge_strips->SetTitle("#Sigma_{row=5}^{10} Histo_{row}");
    totalCharge_strips->GetXaxis()->SetTitle("Total charge");
-   totalCharge_strips->GetXaxis()->SetTitle("Counts");
+   totalCharge_strips->GetYaxis()->SetTitle("Counts");
    
    /*format vector<TH1F*>* */
    for(Int_t r=0; r<11; r++){
@@ -77,21 +79,28 @@ void C_plot_clcharge(int run)
       name.Form("Row.%d",r);
       TString title;
       title.Form("Row.%d",r);
-      h_clcharge.push_back(new TH1F(name,title,1000,0,50000));
+      h_clcharge.push_back(new TH1F(name,title,1000,0,70000));
    }
    
    for(Int_t i=0; i<entries; i++){
-   //for(int i=0; i<50; i++){
+      somma_R = 0.;
+      somma_S = 0.;
       treeTracks->GetEntry(i);
       for(Int_t j=0; j<11;j++){
          h_clcharge.at(j)->Fill(cl_charge[j]);
          if(j<5){
-           totalCharge_rows->Add(h_clcharge[j]);
+           somma_R += cl_charge[j];
+           //cout << "somma_R: " << somma_R << endl;
+           totalCharge_rows->Fill(somma_R);
          }
          else{
-           totalCharge_strips->Add(h_clcharge[j]);
+           somma_S += cl_charge[j];
+           //cout << "somma_S: " << somma_S << endl;
+           totalCharge_strips->Fill(somma_S);
          }
       }
+      somma_R = 0.;
+      somma_S = 0.;
    }
    
    /* Visualisation Block*/
