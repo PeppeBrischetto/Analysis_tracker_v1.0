@@ -92,10 +92,12 @@ void B_trackGenerator(int run)
    Double_t chiSquarePhi;
    Double_t sic_charge;
    Double_t energySic=-1000; 
+   Int_t firstEntry;
   
+   Int_t cl_pads[5][60];
    //Int_t pads_fired[5][60]={-1000};
    //std::vector<Int_t> pads_fired0, pads_fired1, pads_fired2, pads_fired3, pads_fired4;
-   std::vector<Int_t> pads_fired[5];
+   //std::vector<Int_t> pads_fired[5];
    //for (Int_t i=0; i<5; ++i) { 
    //    pads_fired[i] = {-1000};
    //    cout << pads_fired[i] << endl;
@@ -213,10 +215,10 @@ void B_trackGenerator(int run)
    treeOut->Branch("cl_x_rms", cl_x_rms, "cl_x_rms[5]/D");
    treeOut->Branch("cl_padMult",cl_padMult,"cl_padMult[5]/I");
    treeOut->Branch("cl_charge", cl_charge, "cl_charge[11]/D");
-   //treeOut->Branch("cl_padMult0",&cl_padMult[0],"cl_padMult0/I");
-   //treeOut->Branch("cl_padMult1",&cl_padMult[1],"cl_padMult1/I");
-   //treeOut->Branch("pads_fired0",&pads_fired[0],"pads_fired0[cl_padMult0]/I");
-   //treeOut->Branch("pads_fired1",&pads_fired[1],"pads_fired1[cl_padMult1]/I");
+   
+   //treeOut->Branch("cl_pads",&cl_pads,"cl_pads[60]/I");
+
+   treeOut->Branch("firstEntry",&firstEntry,"firstEntry/D");
    treeOut->Branch("phi",&phi,"phi/D");
    treeOut->Branch("theta",&theta,"theta/D");
    treeOut->Branch("phi_deg",&phi_deg,"phi_deg/D");      
@@ -359,12 +361,15 @@ void B_trackGenerator(int run)
    cout<<" time init tracker: "<<timeinit<<endl;
    treeSic->GetEntry(0);
    cout<<" time init SiC: "<<TimestampSic<<endl;
+   firstEntry=0;
+   int l=0;
    
    for(int i=0; i<entriesTracker; i++){
    //for(int i=0; i<50; i++){
       treeTracker->GetEntry(i);
       //if (i%1000==0) cout << "Entry: " << i << endl;
       //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
+
       if((Timestamp-timeinit)<DeltaT){
          //Fill histos
          if (Charge > thresh) {
@@ -373,6 +378,8 @@ void B_trackGenerator(int run)
                   flag[k]=1;
                   row[k]->Fill(pad,Charge);
                   h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);                  
+                  cl_pads[k][l++]=pad;
+                  cl_padMult[k]++;
                }
             }
             //filling the charge for row from 5 to 10
@@ -384,21 +391,31 @@ void B_trackGenerator(int run)
             }
          }
       }else {
-        
+         firstEntry=i;
       	 // The event is finished. Plot if there is something
-      	 //cout << "\n-------- End Event ---------\n" << endl;
+      	 cout << "\n-------- End Event ---------\n" << endl;
+         
+         
+         for(int yh=0; yh < 5; yh++){
+            cout<<" mult "<<cl_padMult[yh]<<endl;
+            for(int fe=0; fe < 10; fe++){
+               cout <<yh<<"  "<<fe<<" "<<cl_pads[yh][fe]<<endl;;
+            }
+         }
+         cout<<"@@#@#@#@#@#@#@#"<<endl;
+         cin>>anykey;
 
          //cl_charge = 0.;
       	 for (int j=0; j<5; j++) {
       	     timeAverage[j] = 0.;
              cl_padMult[j] = 0;
              cl_charge[j] = 0.;
-             pads_fired[j].clear();
+             //cl_pads[j].clear();
          }
          for (int j=5; j<11; j++) {
              cl_charge[j] = 0.;
          }
-         
+         l=0;
          np=0;
          npTime=0;
          
@@ -428,7 +445,7 @@ void B_trackGenerator(int run)
 	           //cl_charge[j] = row[j]->Integral(0,57);
 	           cl_charge[j] += charge;
 	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
-                   if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} 
+                   //if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} 
 	       }
  	       cl_x[j] = row[j]->GetMean();
                cl_x_rms[j] = row[j]->GetRMS();
@@ -545,8 +562,7 @@ void B_trackGenerator(int run)
             cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
 	 }
 
-         
-	 // Start a new Event
+         // Reset plot and histo	 
 	 timeinit=Timestamp;
 	 grTheta->Set(0);
 	 grPhi->Set(0);
@@ -559,12 +575,24 @@ void B_trackGenerator(int run)
          for(int j=5;j<11; j++){
 	    row[j]->Reset("ICES");
 	 }
-         if (Charge > thresh) {
-            for (int k=0; k<5; ++k) {
+			 
+	 // Start a new Event	
+	 
+	 if (Charge > thresh) {
+            for (int k=0; k<5; ++k) {	
                if (Row==k) {
                   flag[k]=1;
                   row[k]->Fill(pad,Charge);
-                  h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);
+                  h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);                  
+                  cl_pads[k][l++]=pad;
+                  cl_padMult[k]++;
+               }
+            }
+            //filling the charge for row from 5 to 10
+            for (int k=5; k<11; ++k) {
+               if (Row==k) {
+                  flag[k]=1;
+                  row[k]->Fill(binStrip,Charge);
                }
             }
          }
