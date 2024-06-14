@@ -60,15 +60,16 @@ void C_plot_clcharge(int run)
    /* Start reading block */
    int entries=treeTracks->GetEntries();
    cout<<"Entries tracks file "<< entries <<endl;
-     
+   TF1* gaus = new TF1("gaus","gaus",0.,70000);
+   gaus->SetParameters(0.,0.,0.);  
    vector<TH1F*> h_clcharge;
    
-   TH1F *totalCharge_rows = new TH1F("","",1000,0,70000);
+   TH1F *totalCharge_rows = new TH1F("","",1000,0,360000);
    totalCharge_rows->SetTitle("#Sigma_{row=0}^{4} Histo_{row}");
    totalCharge_rows->GetXaxis()->SetTitle("Total charge");
    totalCharge_rows->GetYaxis()->SetTitle("Counts");
    
-   TH1F *totalCharge_strips = new TH1F("","",1000,0,70000);
+   TH1F *totalCharge_strips = new TH1F("","",1000,0,360000);
    totalCharge_strips->SetTitle("#Sigma_{row=5}^{10} Histo_{row}");
    totalCharge_strips->GetXaxis()->SetTitle("Total charge");
    totalCharge_strips->GetYaxis()->SetTitle("Counts");
@@ -91,17 +92,55 @@ void C_plot_clcharge(int run)
          if(j<5){
            somma_R += cl_charge[j];
            //cout << "somma_R: " << somma_R << endl;
-           totalCharge_rows->Fill(somma_R);
+           
          }
          else{
            somma_S += cl_charge[j];
            //cout << "somma_S: " << somma_S << endl;
-           totalCharge_strips->Fill(somma_S);
+           
          }
       }
-      somma_R = 0.;
-      somma_S = 0.;
+   totalCharge_rows->Fill(somma_R);
+   totalCharge_strips->Fill(somma_S);
    }
+   
+   
+   /* Gaussian fitting for resolution evaluation */
+   /*Double_t max[11] = {0};
+   Double_t sigma[11] = {0};
+   Double_t resolution[11] = {0};
+   for(Int_t t=0;t<11;t++){
+      h_clcharge.at(t)->Fit("gaus","LERS",0,70000);
+      max[t] = gaus->GetParameter(1);
+      sigma[t] = gaus->GetParameter(2);
+      resolution[t] = (2.35*sigma[t])/(max[t]);
+      cout << "Resolution %d" << t << ": " << resolution[t] << endl;
+   }*/
+   
+   /* Resolution evaluation by hand */
+   Double_t max[11] = {0};
+   Double_t res[11] = {0};
+   Float_t centroid[11] = {0};
+   Double_t resolution[11] = {0};
+   for(Int_t t=0;t<11;t++){
+      max[t] = h_clcharge.at(t)->GetMaximum();
+      centroid[t] = h_clcharge.at(t)->GetMean();
+      res[t] = max[t]/centroid[t];
+      
+      cout << "Max: " << max[t] << "  Centroid: " << centroid[t] << "  Resolution: " << res[t] << endl;
+   }
+   
+   Double_t maxTot[2] = {0.};
+   Double_t resTot[2] = {0.};
+   Double_t centroidTot[2] = {0.};
+   
+   maxTot[0] = totalCharge_rows->GetMaximum();
+   centroid[0] = totalCharge_rows->GetMaximumBin()*70;
+   resTot[0] = maxTot[0]/centroid[0];
+   maxTot[1] = totalCharge_strips->GetMaximum();
+   centroid[1] = totalCharge_strips->GetMaximumBin()*70;
+   resTot[1] = maxTot[1]/centroid[1];
+   cout << "Resolution total rows: " << resTot[0] << "  Resolution total strips: " << resTot[1] << endl;
    
    /* Visualisation Block*/
    TCanvas *c = new TCanvas("c","Row charge distribution",1600, 100,1000.,600.);

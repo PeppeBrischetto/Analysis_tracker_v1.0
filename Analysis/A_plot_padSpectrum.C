@@ -27,7 +27,7 @@ void A_plot_padSpectrum(int run)
 
    // Apertura file
    char fileIn[50];
-   sprintf(fileIn, "../Merged_data/run_00%i/merg_00%i.root", run, run);
+   sprintf(fileIn, "../Merged_data/run_%i/merg_%i.root", run, run);
 
    TFile *fin = new TFile(fileIn);
    TTree *tree = (TTree*)fin->Get("Data_R");
@@ -66,7 +66,7 @@ void A_plot_padSpectrum(int run)
    for(int i=0;i <entries; i++){
       tree->GetEntry(i);
       modf((((float)i/entries)*10),&intpart);
-      if(pad==10){chargepad[(int)intpart]->Fill(Charge);}                 
+      if(pad==20 && Row==0){chargepad[(int)intpart]->Fill(Charge);}                 
    }
    
    

@@ -90,7 +90,7 @@ void C_plot_theta(int run)
         h_theta_geq2000->Fill(theta_deg);
         }
         
-      if(energySic>2000 && cl_x_rms[0] < 2.5 && cl_x_rms[1] < 2.5 && cl_x_rms[3] < 2.5 && cl_x_rms[4] < 2.5){
+      if(/*energySic>2000 &&*/ cl_x_rms[0] < 2.5 && cl_x_rms[1] < 2.5 && cl_x_rms[3] < 2.5 && cl_x_rms[4] < 2.5){
         h_theta_rms->Fill(theta_deg);
       }
     }
@@ -98,6 +98,16 @@ void C_plot_theta(int run)
    
    
    /* Visualisation Block*/
+   TLine* theta_min = new TLine(-41.75,0,-41.75,100);
+   theta_min->SetLineColor(kOrange+2);
+   TLine* theta_max = new TLine(-38.25,0,-38.25,100);
+   theta_max->SetLineColor(kOrange+2);
+   
+   TLine* theta_min1 = new TLine(-41.75,0,-41.75,6500);
+   theta_min1->SetLineColor(kOrange+2);
+   TLine* theta_max1 = new TLine(-38.25,0,-38.25,6500);
+   theta_max1->SetLineColor(kOrange+2);
+   
    TCanvas *c1=new TCanvas("c1","alpha",1600, 100,1000.,600.);
    c1->cd();
    c1->SetLogy();
@@ -110,6 +120,7 @@ void C_plot_theta(int run)
    l->AddEntry(histoTheta, "Counts(#theta)", "lep");
    l->AddEntry(h_theta_geq2000, "Counts(#theta,E_{SiC}>2000)","lep");
    l->AddEntry(h_theta_rms, "Counts(#theta, E_{SiC}>2000,rms<2.5)","lep");
+   l->AddEntry(theta_min, "#theta_{theo}-Predictions - [38.25;41.75] (deg)","lep");
    l->Draw("same");
    TLegend* l1 = new TLegend();
    l1->SetTextSize(0.035);
@@ -120,6 +131,7 @@ void C_plot_theta(int run)
    TLegend* l3 = new TLegend();
    l3->SetTextSize(0.035);
    l3->AddEntry(h_theta_rms, "Counts(#theta, E_{SiC}>2000,rms<2.5)","lep");
+   l3->AddEntry(theta_min, "#theta_{theo}-Predictions - [38.25;41.75] (deg)","lep");
    
    TCanvas *c2 = new TCanvas("c2","alpha-division",1600,100,1000,600);
    c2->Divide(2,2);
@@ -137,6 +149,8 @@ void C_plot_theta(int run)
    c2->SetLogy();
    c2->SetFillColor(kWhite);
    h_theta_rms->Draw();
+   theta_min->Draw("same");
+   theta_max->Draw("same");
    l3->Draw("same");
    c2->cd(4);
    c2->SetLogy();
@@ -144,6 +158,8 @@ void C_plot_theta(int run)
    histoTheta->Draw();
    h_theta_geq2000->Draw("same");
    h_theta_rms->Draw("same");
+   theta_min1->Draw("same");
+   theta_max1->Draw("same");
    l->Draw("same");
    
  }

@@ -8,6 +8,10 @@
 *   directories.                                                                                                 *
 *                                                                                                                *
 *   --------------------------------------------------------------------------------------------------------     *
+*   13/06/2024: Updates on C_plot_clcharge.C, C_plot_clchargeE2000.C and C_plot_clchargeE2000RMS2e5.C, now you   *
+*   can find information either on the individual resolution and on the total charge (rows and strips respect.). *
+*														 *
+*   --------------------------------------------------------------------------------------------------------     *
 *														 *
 *   11/06/2024: Writing macros C_plot_clcharge.C, C_plot_clchargeE2000.C and C_plot_clchargeE2000RMS2e5.C        *
 *   taking into account all of the extensions.                                                                   *

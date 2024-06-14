@@ -14,17 +14,13 @@
 //###################################################################################################
 //#   created may 2024 from B_anglesFinder_plot_tracker_and_sic_v4.C by G. Brischetto
 //#######################################
-<<<<<<< HEAD
-//#   updated: 6 june 2024 commenting and renaming of variables  D. Torresi
-=======
 //#   updated: 6 june 2024 commenting 
 //# 			   renaming of variables  
 //#			   solved bug on track without sic    D. Torresi
->>>>>>> 4fe2a5e94309e743e9b19076f428ed56c7f468e1
 //# 
 //###################################################################################################
 
-void B_trackGeneratorb(int run)
+void B_trackGenerator(int run)
 {
 
 ////////////////////////////////////////////////////////////////////
@@ -91,6 +87,8 @@ void B_trackGeneratorb(int run)
    Double_t theta_deg=-1000;		// theta of the track in deg
    Double_t phi=-1000;
    Double_t phi_deg=-1000;
+   Double_t chiSquareTheta;
+   Double_t chiSquarePhi;
    Double_t sic_charge;
    Double_t energySic=-1000; 
   
@@ -105,7 +103,7 @@ void B_trackGeneratorb(int run)
 // other variables
    
    // fitting variables
-   double slope,intercept;
+   double slope, intercept, chi2;
    double charge = 0.0;
    double weigthed_pos[60];
    Double_t alpha=-1000, alpha_deg=-1000;  // auxiliary angle for the calculation of theta
@@ -113,10 +111,6 @@ void B_trackGeneratorb(int run)
 
    // Secondary variables  
    ULong64_t TimestampSicTemp;   
-<<<<<<< HEAD
-   ULong64_t TimestampTrackerEv;	// variables used for checks
-=======
->>>>>>> 4fe2a5e94309e743e9b19076f428ed56c7f468e1
    UInt_t SicLoopFlag;			// variable used to stop the loop on the Sic file
 
    Double_t timeAverage[5] = {0.}; 	// variable used to calculate the average time (weighted by the charge) on a raw
@@ -206,7 +200,7 @@ void B_trackGeneratorb(int run)
 
 // OPEN output ROOT file //
    char fileOutName[50];
-   sprintf(fileOutName,"../Tracks/tracks_run%ib.root",run);
+   sprintf(fileOutName,"../Tracks/tracks_run%i_prova.root",run);
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
    
@@ -225,9 +219,10 @@ void B_trackGeneratorb(int run)
    treeOut->Branch("theta",&theta,"theta/D");
    treeOut->Branch("phi_deg",&phi_deg,"phi_deg/D");      
    treeOut->Branch("theta_deg",&theta_deg,"theta_deg/D");
-   
+   treeOut->Branch("chiSquareTheta",&chiSquareTheta,"chiSquareTheta/D");   
+   treeOut->Branch("chiSquarePhi",&chiSquarePhi,"chiSquarePhi/D");      
    treeOut->Branch("sic_fired",&FlagSicStop,"sic_fired/I");
-   treeOut->Branch("sic_charge",&ChargeSic,"sic_charge/D");
+   treeOut->Branch("sic_charge",&sic_charge,"sic_charge/D");
    treeOut->Branch("energySic",&energySic,"energySic/D");
 
 //////////////////////////////////////////////////////////////////////////////
@@ -308,19 +303,22 @@ void B_trackGeneratorb(int run)
           h_angles[k]->SetLineColor(kRed);
    }
  
+  
+   // Fitting TGraphs and functions
    TH2D *bg= new TH2D("bg","bg",130,70,200,107, 0,107);
-   TGraph *grTrack=new TGraph(0);
-   grTrack->SetMarkerStyle(20);
-   grTrack->SetMarkerSize(1);
-   
+   //fit x vs z  
+   TGraph *grTheta=new TGraph(0);
+   grTheta->SetMarkerStyle(20);
+   grTheta->SetMarkerSize(1);
+   TF1 *lin1 = new TF1("lin1","[0]+([1]*x)",0,300);
+   TFitResultPtr fitResultTheta;
+
+   //fit y vs z
    TGraph *grPhi=new TGraph(0);
    grPhi->SetMarkerStyle(20);
    grPhi->SetMarkerSize(1);
-
-   TF1 *lin1 = new TF1("lin1","[0]+([1]*x)",0,300);
-   TF1 *fit_result;
-
    TF1 *lin2 = new TF1("lin2","[0]+([1]*x)",0,200);
+   TFitResultPtr fitResultPhi;
 
    TCanvas *C1=new TCanvas("c1","alpha",900.,800.);
    C1->SetFillColor(kWhite);
@@ -368,7 +366,7 @@ void B_trackGeneratorb(int run)
          }
       } else {
       	 // The event is finished. Plot if there is something
-      	  //cout << "\n-------- Event finished ---------\n" << endl;
+      	 cout << "\n-------- End Event ---------\n" << endl;
 
          //cl_charge = 0.;
       	 for (int j=0; j<5; j++) {
@@ -401,15 +399,13 @@ void B_trackGeneratorb(int run)
 	           //weigthed_pos[k] = (k-1)*charge/cl_charge;
 	           //cl_x[j] = cl_x[j] + weigthed_pos[k];
 	           timeAverage[j] += charge*time;
-	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
+	           cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
                    if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} 
-
 	       }
-
  	       cl_x[j] = row[j]->GetMean();
                cl_x_rms[j] = row[j]->GetRMS();
 	       cl_x_mm[j] = cl_x[j] * 5 + padWidth/2.;
-	       if(max>100){grTrack->SetPoint(np++, zrow[j], cl_x_mm[j]);}
+	       if(max>100){grTheta->SetPoint(np++, zrow[j], cl_x_mm[j]);}
 
       	       timeAverage[j] = (double)(timeAverage[j]/cl_charge[j]);
       	       cl_y_mm[j] = timeAverage[j]*velocity_mm_ps;
@@ -430,7 +426,7 @@ void B_trackGeneratorb(int run)
             //cout << "Inside the while" << endl;             
             treeSic->GetEntry(sicHits);
 
-	       if (TimestampSic>=(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
+	       if(TimestampSic>=(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
                   //cout << "********* Tracks without SiC" << endl;
                   tracksWithoutSic++;
                   energySic = -1000.;
@@ -440,6 +436,7 @@ void B_trackGeneratorb(int run)
                }else if((timeinit-TimestampSic)>timeWindowlow && (timeinit-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
                   cout << "+++++++++++ Event detected by the SiC" << endl;
                   energySic = ChargeSic;
+                  sic_charge = ChargeSic;
                   tracksWithSic++;
                   sicHits++;
                   SicLoopFlag=0;
@@ -449,7 +446,7 @@ void B_trackGeneratorb(int run)
                      //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
                      h_driftTime[m]->Fill(driftTime/1000000.);
                   }
-               } else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
+               }else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
                   sicWithoutTracks++;
                   sicHits++;
                   SicLoopFlag=1;
@@ -461,68 +458,43 @@ void B_trackGeneratorb(int run)
 	    row[4]->GetYaxis()->SetRangeUser(0,max*2);
 
 	    C4->cd();
-            //h_time[0]->Draw("HIST");
-            //h_time[1]->Draw("HIST same");
-	       
-	    //cout << "Before Fitting " << endl;
-	    
-   	    grTrack->Fit("lin1","RQ");
-    	    intercept = lin1->GetParameter(0);
-	    slope = lin1->GetParameter(1);
-            //cout << "After Fitting 1" << endl;
-            //alpha = TMath::ATan(slope);
-	    //alpha_deg = alpha*180./TMath::Pi();
-	    theta = TMath::ATan(slope);
-            theta_deg = theta*180./TMath::Pi();
-	    //if(theta_deg<-90){
-	    //   theta_deg=-90-alpha_deg+180;
-	    //}
-            //cout << "slope " << slope << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
-       	    grPhi->Fit("lin2","RQ");
-    	    intercept = lin2->GetParameter(0);
-	    slope = lin2->GetParameter(1);
-   	    //beta = TMath::ATan(slope);
-	    //beta_deg = beta*180./TMath::Pi();
-	    //phi_deg=90-beta_deg;
-            //if (beta_deg<0) {
-            //   phi_deg=
-            //}
-            phi = TMath::ATan(slope);
-	    phi_deg = phi*180./TMath::Pi();
-            //cout << "\n\n alpha_deg = " << alpha_deg << "\t theta_deg = " << theta_deg << "\t beta_deg = " << beta_deg << "\t phi_deg = " << phi_deg << "\n\n" << endl;
-            //cin >> anykey;
-             //cout << "After Fitting 2" << endl;
-
-	    //h_alpha[0]->Fill(alpha_deg);	       
-	    h_angles[0]->Fill(theta_deg);
-            h_angles[3]->Fill(phi_deg);
-            if(FlagSicStop==0){
-               //h_alpha[1]->Fill(alpha_deg);
-      	       h_angles[1]->Fill(theta_deg);
-               h_angles[4]->Fill(phi_deg);
+         
+   	    fitResultTheta=grTheta->Fit("lin1","S");
+   	    if(fitResultTheta==0){
+   	       cout<<"### TF ### "<<fitResultTheta<<endl;
+       	       intercept = fitResultTheta->Value(0);
+	       slope = fitResultTheta->Value(1);
+    	       chiSquareTheta = fitResultTheta->Chi2();
+    	       cout<<"chi2 "<<chiSquareTheta<<endl;
+               
+	       theta = TMath::ATan(slope);
+               theta_deg = theta*180./TMath::Pi();
             }else{
-               //h_alpha[2]->Fill(alpha_deg);
-               h_angles[2]->Fill(theta_deg);
-               h_angles[5]->Fill(phi_deg);
-               //cout << "alpha_deg " << alpha_deg << endl;
-               //cin >> anykey;
-            }  
+               theta = -1000;
+               theta_deg = -1000;
+            }
+            //cout << "slope " << slope << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
+       	    fitResultPhi=grPhi->Fit("lin2","S");
+            if(fitResultPhi==0){
+    	       intercept = fitResultPhi->Value(0);
+   	       slope = fitResultPhi->Value(1);
+	       chiSquarePhi = fitResultPhi->Chi2();
+               
+               phi = TMath::ATan(slope);
+	       phi_deg = phi*180./TMath::Pi();
+            }else{
+               phi = -1000;
+               phi_deg = -1000;
+            }
             
             if(FlagSicStop==1 && flagM==1 ){           
                C2->cd(0);
                if(np>0){
-                  grTrack->Draw("P");
-                  grTrack->Fit("lin1","Q");
+                  grTheta->Draw("P");
+                  grTheta->Fit("lin1","Q");
                }
-               
-               C2->Update();
-               C3->Update();
-               C4->Update();
-               //cout << "alpha_deg " << alpha_deg << endl;
-               //cout << "slope " << slope << endl;
-               //cout << lin1->GetParameter(1)<<"  "<<90-abs(atan(lin1->GetParameter(1))*180/3.1415)<<endl;
-              
-               cout<<"press any key to continue, q to quit, s to save a plot, c to continue till the end"<<endl; 
+                            
+               cout<<"press any key to continue, q to quit, c to continue till the end"<<endl; 
                if(flagM)
                   cin>>anykey;
             }
@@ -532,20 +504,18 @@ void B_trackGeneratorb(int run)
               fileOut->Close();
               return; // Per uscire dal programma
             }
-            if(anykey=='s'){ 		 // Salvi il plot
-              C2->Print("c2.eps");
-  	    }
+
       	    if(anykey=='c')flagM=0;     
 
-      treeOut->Fill();
-      //cout << "Filling the tree" << endl;
-      cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
+            treeOut->Fill();
+            //cout << "Filling the tree" << endl;
+            cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
 	 }
 
          
 	 // Start a new Event
 	 timeinit=Timestamp;
-	 grTrack->Set(0);
+	 grTheta->Set(0);
 	 grPhi->Set(0);
 	
    	 for(int j=0;j<5; j++){

@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# This script convert all the binary file of a run in root by mean
-# of converter.C and merge all the root file in a single root file
+# This script all the binary file of a run in root by mean
+# of converter_solaris_tracker.C and merge all the root file in a single root file
 # by mean of merger.C
 # requires as input the run number and the correct path of the input
 # and output directories

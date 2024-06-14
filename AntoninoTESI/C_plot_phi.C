@@ -90,7 +90,7 @@ void C_plot_phi(int run)
         h_phi_geq2000->Fill(phi_deg);
         }
         
-      if(energySic>2000 && cl_x_rms[0] < 2.5 && cl_x_rms[1] < 2.5 && cl_x_rms[3] < 2.5 && cl_x_rms[4] < 2.5){
+      if(/*energySic>2000 &&*/ cl_x_rms[0] < 2.5 && cl_x_rms[1] < 2.5 && cl_x_rms[3] < 2.5 && cl_x_rms[4] < 2.5){
         h_phi_rms->Fill(phi_deg);
       }
     }
@@ -98,6 +98,16 @@ void C_plot_phi(int run)
    
    
    /* Visualisation Block*/
+   TLine* phi_min = new TLine(-1.75,0,-1.75,135);
+   phi_min->SetLineColor(kOrange+2);
+   TLine* phi_max = new TLine(1.75,0,1.75,135);
+   phi_max->SetLineColor(kOrange+2);
+   
+   TLine* phi_min1 = new TLine(-1.75,0,-1.75,13380);
+   phi_min1->SetLineColor(kOrange+2);
+   TLine* phi_max1 = new TLine(1.75,0,1.75,13380);
+   phi_max1->SetLineColor(kOrange+2);
+   
    TCanvas *c1=new TCanvas("c1","alpha",1600, 100,1000.,600.);
    c1->cd();
    c1->SetLogy();
@@ -110,6 +120,7 @@ void C_plot_phi(int run)
    l->AddEntry(histoPhi, "Counts(#phi)", "lep");
    l->AddEntry(h_phi_geq2000, "Counts(#phi,E_{SiC}>2000)","lep");
    l->AddEntry(h_phi_rms, "Counts(#phi, E_{SiC}>2000,rms<2.5)","lep");
+   l->AddEntry(phi_min, "#phi_{theo}-Predictions - [-1.75;1.75] (deg)","lep");
    l->Draw("same");
    TLegend* l1 = new TLegend();
    l1->SetTextSize(0.035);
@@ -120,6 +131,7 @@ void C_plot_phi(int run)
    TLegend* l3 = new TLegend();
    l3->SetTextSize(0.035);
    l3->AddEntry(h_phi_rms, "Counts(#phi, E_{SiC}>2000,rms<2.5)","lep");
+   l3->AddEntry(phi_min, "#phi_{theo}-Predictions - [-1.75;1.75] (deg)","lep");
    
    TCanvas *c2 = new TCanvas("c2","alpha-division",1600,100,1000,600);
    c2->Divide(2,2);
@@ -137,6 +149,8 @@ void C_plot_phi(int run)
    c2->SetLogy();
    c2->SetFillColor(kWhite);
    h_phi_rms->Draw();
+   phi_min->Draw("same");
+   phi_max->Draw("same");
    l3->Draw("same");
    c2->cd(4);
    c2->SetLogy();
@@ -144,6 +158,8 @@ void C_plot_phi(int run)
    histoPhi->Draw();
    h_phi_geq2000->Draw("same");
    h_phi_rms->Draw("same");
+   phi_min1->Draw("same");
+   phi_max1->Draw("same");
    l->Draw("same");
    
  }

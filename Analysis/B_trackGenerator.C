@@ -14,9 +14,10 @@
 //###################################################################################################
 //#   created may 2024 from B_anglesFinder_plot_tracker_and_sic_v4.C by G. Brischetto
 //#######################################
-//#   updated: 6 june 2024 commenting 
+//#   modified: 6 Jun 2024 commenting 
 //# 			   renaming of variables  
 //#			   solved bug on track without sic    D. Torresi
+//#   updated : 10 Jun 2024 extension to no-segmented rows (i.e. pads), transforming 5 -> 10    A. Pitronaci
 //# 
 //###################################################################################################
 
@@ -76,7 +77,7 @@ void B_trackGenerator(int run)
 
 
   // output file variables
-   double cl_charge[5] = {0};	   	// charge sum of the pads belonging to a cluster
+   double cl_charge[11] = {0};	   	// charge sum of the pads belonging to a cluster
    Int_t cl_padMult[5]={0};		// number of pads of a cluster
    double cl_x[5];			// x centroid of a cluster in pads unit
    double cl_x_mm[5];			// x centroid of a cluster in mm
@@ -120,12 +121,13 @@ void B_trackGenerator(int run)
    int binmax=-100, max=-100;		// variables used to plot the histos
    // number of event in the run
 
+   double binStrip=0;
    UInt_t flagTrackWithSiC=0;  
    UInt_t rowMultiplicity=4; 	// consider tracks with a number of hit row bigger than rowMultiplicity
    
-   char anykey;		// variable used to pause the macro
-   int flag[5];		// variable that are true when there is at least one hit in the Row
-   for(int i =0; i<5; i++) flag[i]=0;
+   char anykey;			// variable used to pause the macro
+   int flag[11];		// variable that are true when there is at least one hit in the Row
+   for(int i =0; i<11; i++) flag[i]=0;
    int flagM=1;				// Flag used to contine the macro without interruption
    int Fstrip=1;			// flag to plot strip: 0 plot, 1 no plot
    UInt_t FlagSicStop=0;  		// variable used to pause the macro with a SiC   
@@ -200,7 +202,7 @@ void B_trackGenerator(int run)
 
 // OPEN output ROOT file //
    char fileOutName[50];
-   sprintf(fileOutName,"../Tracks/tracks_run%i_prova.root",run);
+   sprintf(fileOutName,"../Tracks/tracks_run%itenta.root",run);
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
    
@@ -210,7 +212,7 @@ void B_trackGenerator(int run)
    treeOut->Branch("cl_y_mm", cl_y_mm, "cl_y_mm[5]/D");
    treeOut->Branch("cl_x_rms", cl_x_rms, "cl_x_rms[5]/D");
    treeOut->Branch("cl_padMult",cl_padMult,"cl_padMult[5]/I");
-   treeOut->Branch("cl_charge", cl_charge, "cl_charge[5]/D");
+   treeOut->Branch("cl_charge", cl_charge, "cl_charge[11]/D");
    //treeOut->Branch("cl_padMult0",&cl_padMult[0],"cl_padMult0/I");
    //treeOut->Branch("cl_padMult1",&cl_padMult[1],"cl_padMult1/I");
    //treeOut->Branch("pads_fired0",&pads_fired[0],"pads_fired0[cl_padMult0]/I");
@@ -227,19 +229,22 @@ void B_trackGenerator(int run)
 
 //////////////////////////////////////////////////////////////////////////////
 // Dichiarazione Histo, Canvas, TGraph and Functions
-   TH1F *row[5];
+   TH1F *row[11];
    for (int i=0; i<5; ++i){
        sprintf(dummyString,"r%i",i);
-       row[i]=new TH1F(dummyString,dummyString,62,-0.5,61.5);
+       row[i]=new TH1F(dummyString,dummyString,60,-0.5,59.5);
    }
-
+   for (int i=5; i<11; ++i){
+       sprintf(dummyString,"r%i",i);
+       row[i]=new TH1F(dummyString,dummyString,4,-0.5,3.5);
+   }
    TH1D *h_time[5];
    for (int i=0; i<5; ++i) {
        sprintf(dummyString,"h_time%i",i);
-       h_time[i]=new TH1D(dummyString,dummyString,64,-0.5,63.5);
+       h_time[i]=new TH1D(dummyString,dummyString,60,-0.5,59.5);
    }
 
-   for(int i=0;i<5; i++){
+   for(int i=0;i<11; i++){
      row[i]->GetXaxis()->SetTitle("pad");
      row[i]->GetYaxis()->SetTitle("counts");
    }
@@ -247,6 +252,12 @@ void B_trackGenerator(int run)
    row[2]->SetLineColor(kBlue);
    row[3]->SetLineColor(kGreen);
    row[4]->SetLineColor(kViolet);
+   row[5]->SetLineColor(kGray+2);
+   row[6]->SetLineColor(kGray+2);
+   row[7]->SetLineColor(kGray+2);
+   row[8]->SetLineColor(kGray+2);
+   row[9]->SetLineColor(kGray+2);
+   row[10]->SetLineColor(kGray+2);
    
    for(int i=0;i<5; i++){
      h_time[i]->GetXaxis()->SetTitle("pad");
@@ -255,7 +266,7 @@ void B_trackGenerator(int run)
    h_time[1]->SetLineColor(kRed);
 
    TH1D *h_driftTime[5];
-   for(int i=0;i<5;i++){
+   for(int i=0;i<11;i++){
       sprintf(dummyString,"h_driftTime%i",i); 
       h_driftTime[i] = new TH1D(dummyString,dummyString,500,0.5E+00,5.0E+00);
       h_driftTime[i]->GetXaxis()->SetTitle("driftTime (us)");
@@ -278,6 +289,7 @@ void B_trackGenerator(int run)
    h_angles[3]=new TH1D("h_phi","h_phi",nbinphi,binminphi,binmaxphi);
    h_angles[4]=new TH1D("h_phi_without_sic","h_phi_without_sic",nbinphi,binminphi,binmaxphi);
    h_angles[5]=new TH1D("h_phi_with_sic","h_phi_with_sic",nbinphi,binminphi,binmaxphi);
+  
  
    TH1D *h_alpha[3];
    h_alpha[0]=new TH1D("h_alpha_","h_alpha",nbinalpha,binminalpha,binmaxalpha);
@@ -356,26 +368,40 @@ void B_trackGenerator(int run)
       if((Timestamp-timeinit)<DeltaT){
          //Fill histos
          if (Charge > thresh) {
-            for (int k=0; k<5; ++k) {
+            for (int k=0; k<5; ++k) {	
                if (Row==k) {
                   flag[k]=1;
                   row[k]->Fill(pad,Charge);
-                  h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);
+                  h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);                  
+               }
+            }
+            //filling the charge for row from 5 to 10
+            for (int k=5; k<11; ++k) {
+               if (Row==k) {
+                  flag[k]=1;
+                  row[k]->Fill(binStrip,Charge);
                }
             }
          }
-      } else {
+      }else {
+        
       	 // The event is finished. Plot if there is something
-      	 cout << "\n-------- End Event ---------\n" << endl;
+      	 //cout << "\n-------- End Event ---------\n" << endl;
 
          //cl_charge = 0.;
       	 for (int j=0; j<5; j++) {
       	     timeAverage[j] = 0.;
-      	     cl_charge[j] = 0.;
              cl_padMult[j] = 0;
+             cl_charge[j] = 0.;
              pads_fired[j].clear();
          }
-
+         for (int j=5; j<11; j++) {
+             cl_charge[j] = 0.;
+         }
+         
+         np=0;
+         npTime=0;
+         
          //for(int q=0; q<5; ++q) {
          //   std::cout << "*** " << q << "\t" << pads_fired[q].size() << std::endl;
          //   for(int h=0; h<pads_fired[q].size(); ++h)
@@ -384,27 +410,29 @@ void B_trackGenerator(int run)
          
          theta_deg = -1000.;
          phi_deg = -1000.;
+         //if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]+flag[5]+flag[6]+flag[7]+flag[8]+flag[9]+flag[10]>rowMultiplicity){
          if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>rowMultiplicity){
-            np=0;
-            npTime=0;
+
 	    for(int j=0; j<5; j++){
 	       //cl_x[j]=0;
 	       binmax = row[j]->GetMaximumBin();
 	       max  = row[j]->GetBinContent(binmax);
 	       //cout<<binmax<<"  "<<max<<endl;
+	      
 	       for (int k=0; k<60; k++) {
                    charge = row[j]->GetBinContent(k);
-                   time   = h_time[j]->GetBinContent(k);
-                   cl_charge[j] = row[j]->Integral(0,59);
-	           //weigthed_pos[k] = (k-1)*charge/cl_charge;
+                   time   = h_time[j]->GetBinContent(k+1);
+                   //weigthed_pos[k] = (k-1)*charge/cl_charge;
 	           //cl_x[j] = cl_x[j] + weigthed_pos[k];
 	           timeAverage[j] += charge*time;
-	           cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
+	           //cl_charge[j] = row[j]->Integral(0,57);
+	           cl_charge[j] += charge;
+	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
                    if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} 
 	       }
  	       cl_x[j] = row[j]->GetMean();
                cl_x_rms[j] = row[j]->GetRMS();
-	       cl_x_mm[j] = cl_x[j] * 5 + padWidth/2.;
+	       cl_x_mm[j] = cl_x[j] * padWidth + padWidth/2.;
 	       if(max>100){grTheta->SetPoint(np++, zrow[j], cl_x_mm[j]);}
 
       	       timeAverage[j] = (double)(timeAverage[j]/cl_charge[j]);
@@ -414,6 +442,11 @@ void B_trackGenerator(int run)
 
             }
             
+            for(int j=5; j<11; j++){
+               charge = row[j]->GetBinContent(1);
+               cl_charge[j] = charge;
+            }
+                        
             //for (int q=0; q<5; ++q) {
                 //for(int h=0; h<pads_fired[q].size(); ++h)
                 //std::cout << "pads fired: " << q << "\t" << h << "\t" << pads_fired[q].at(h) << std::endl;
@@ -522,7 +555,9 @@ void B_trackGenerator(int run)
 	    row[j]->Reset("ICES");
 	    h_time[j]->Reset("ICES");
 	    flag[j]=0;
-
+         }
+         for(int j=5;j<11; j++){
+	    row[j]->Reset("ICES");
 	 }
          if (Charge > thresh) {
             for (int k=0; k<5; ++k) {
@@ -561,11 +596,11 @@ void B_trackGenerator(int run)
    leg2->Draw("same");
    C5->Update();
    C6->cd();
-   for(int i=0;i<5;i++)
+   for(int i=0;i<11;i++)
       h_driftTime[i]->Draw("same");
 
    TLegend *leg3 = new TLegend(0.80,0.65,0.90,0.85);
-   for(int i=0;i<5;i++){
+   for(int i=0;i<11;i++){
       sprintf(dummyString,"Row %i",i);
       leg3->AddEntry(h_driftTime[i],dummyString,"L");
    }
