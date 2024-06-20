@@ -34,11 +34,11 @@ void C_plot_clchargeE2000RMS2e5(int run)
    /* Reading block variables */  
    char fileInName[50];
    if(run<10){
-      sprintf(fileInName, "../Tracks/tracks_run00%itenta.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run00%i.root", run);
    }else if(run <100){
-      sprintf(fileInName, "../Tracks/tracks_run0%itenta.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run0%i.root", run);
    }else{
-      sprintf(fileInName, "../Tracks/tracks_run%itenta.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run%i.root", run);
    } 
    TFile *fileIn = new TFile(fileInName);
    TTree *treeTracks = (TTree*)fileIn->Get("Data_R");
@@ -65,22 +65,22 @@ void C_plot_clchargeE2000RMS2e5(int run)
    gaus->SetParameters(0.,0.,0.);  
    vector<TH1F*> h_clcharge_1;
    
-   TH1F *totalCharge_rows1 = new TH1F("","",600,0,350000);
+   TH1F *totalCharge_rows1 = new TH1F("","",200,0,350000);
    totalCharge_rows1->SetTitle("#Sigma_{row=0}^{4} Histo_{row} - E_{SiC}>2000 #wedge RMS<2.5");
    totalCharge_rows1->GetXaxis()->SetTitle("Total charge (a.u.)");
    totalCharge_rows1->GetYaxis()->SetTitle("Counts");
    
-   TH1F *totalCharge_strips1 = new TH1F("","",600,0,350000);
+   TH1F *totalCharge_strips1 = new TH1F("","",200,0,350000);
    totalCharge_strips1->SetTitle("#Sigma_{row=5}^{10} Histo_{row} - E_{SiC}>2000 #wedge RMS<2.5");
    totalCharge_strips1->GetXaxis()->SetTitle("Total charge (a.u.)");
    totalCharge_strips1->GetYaxis()->SetTitle("Counts");
    
-   TH1F *totalCharge = new TH1F("","",600,0,350000);
+   TH1F *totalCharge = new TH1F("","",200,0,350000);
    totalCharge->SetTitle("#Sigma_{row=0}^{10} Histo_{row} - E_{SiC}>2000 #wedge RMS<2.5");
    totalCharge->GetXaxis()->SetTitle("Total charge (a.u.)");
    totalCharge->GetYaxis()->SetTitle("Counts");
    
-   TH1F *totalCharge_best = new TH1F("","",600,0,350000);
+   TH1F *totalCharge_best = new TH1F("","",200,0,350000);
    totalCharge_best->SetTitle("#Sigma_{row=0,row#neq 5,10}^{10} Histo_{row} - E_{SiC}>2000 #wedge RMS<2.5");
    totalCharge_best->GetXaxis()->SetTitle("Total charge (a.u.)");
    totalCharge_best->GetYaxis()->SetTitle("Counts");
@@ -91,7 +91,7 @@ void C_plot_clchargeE2000RMS2e5(int run)
       name1.Form("Row.%d",r);
       TString title1;
       title1.Form("Row.%d, E_{SiC}>2000 #wedge RMS<2.5",r);
-      h_clcharge_1.push_back(new TH1F(name1,title1,120,0,70000));
+      h_clcharge_1.push_back(new TH1F(name1,title1,200,0,70000));
    }
    
    for(Int_t i=0; i<entries; i++){

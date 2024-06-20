@@ -371,10 +371,11 @@ void B_trackGenerator(int run)
    for(int i=0; i<entriesTracker; i++){
    //for(int i=0; i<50; i++){
       treeTracker->GetEntry(i);
-      
+      cout << "Entry: " << i << endl;
       //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
       if((Timestamp-timeinit)<DeltaT){
          //Fill histos
+         
          if (Charge > thresh) {
             for (int k=0; k<5; ++k) {	
                if (Row==k) {

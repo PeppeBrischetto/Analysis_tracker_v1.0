@@ -28,14 +28,16 @@ void C_plot_theta(int run)
    Double_t sic_charge = 0.;
    Double_t energySic = 0.;
   
+   int sicCounts=0;		// counter that return the tracks with a SiC
+  
    /* Reading block variables */  
    char fileInName[50];
    if(run<10){
-      sprintf(fileInName, "../Tracks/tracks_run00%itenta.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run00%i.root", run);
    }else if(run <100){
-      sprintf(fileInName, "../Tracks/tracks_run0%itenta.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run0%i.root", run);
    }else{
-      sprintf(fileInName, "../Tracks/tracks_run%itenta.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run%i_A.root", run);
    } 
    TFile *fileIn = new TFile(fileInName);
    TTree *treeTracks = (TTree*)fileIn->Get("Data_R");
@@ -78,6 +80,7 @@ void C_plot_theta(int run)
    h_theta_rms->GetYaxis()->SetTitle("Counts");
    h_theta_rms->SetLineColor(kGreen+2);
    
+
    for(int i=0; i<entries; i++){
    //for(int i=0; i<50; i++){
       treeTracks->GetEntry(i);
@@ -92,6 +95,7 @@ void C_plot_theta(int run)
         
       if(energySic>2000 && cl_x_rms[0] < 2.5 && cl_x_rms[1] < 2.5 && cl_x_rms[3] < 2.5 && cl_x_rms[4] < 2.5){
         h_theta_rms->Fill(theta_deg);
+        sicCounts++;
       }
     }
    
@@ -161,5 +165,6 @@ void C_plot_theta(int run)
    theta_min1->Draw("same");
    theta_max1->Draw("same");
    l->Draw("same");
+   cout<<sicCounts<<endl;
    
  }
