@@ -21,7 +21,7 @@
 //# 
 //###################################################################################################
 
-void B_trackGenerator(int run)
+void B_trackGenerator_bis(int run)
 {
 
 ////////////////////////////////////////////////////////////////////
@@ -33,8 +33,8 @@ void B_trackGenerator(int run)
    // energy threshold to defin an hit
    int thresh=0;
 
-   Float_t timeWindowlow = 0.5E+06; // time (in ps) that the primary electrons need to reach the anode
-   Float_t timeWindowhigh = 3.0E+06;
+   Long64_t timeWindowlow = 0.5E+06; // time (in ps) that the primary electrons need to reach the anode
+   Long64_t timeWindowhigh = 3.0E+06;
 
    Double_t timeOffset = 10.; // time (in ps) used to avoid that the time difference Timestamp-timeinit 
                               // is equal to zero for the first event entry (see where time histos are filled)
@@ -113,6 +113,7 @@ void B_trackGenerator(int run)
    // Secondary variables  
    ULong64_t TimestampSicTemp;   
    UInt_t SicLoopFlag;			// variable used to stop the loop on the Sic file
+   Long64_t TimeDiff;
 
    Double_t timeAverage[5] = {0.}; 	// variable used to calculate the average time (weighted by the charge) on a raw
    Double_t time = 0.;             	// variable used to store the time of a single pad (it is used for the calculation of the average time
@@ -131,7 +132,7 @@ void B_trackGenerator(int run)
    int flagM=1;				// Flag used to contine the macro without interruption
    int Fstrip=1;			// flag to plot strip: 0 plot, 1 no plot
    UInt_t FlagSicStop=0;  		// variable used to pause the macro with a SiC   
-   UInt_t sicHits=0;    		// number of SiC hit
+   UInt_t sicHits=0;    		// entry of SiC file
    UInt_t eventNumber=0;		// number of tracker event (tracks) in the run
    UInt_t tracksWithoutSic=0;
    UInt_t tracksWithSic=0;
@@ -148,7 +149,7 @@ void B_trackGenerator(int run)
    int tracksSiCCounter=0;	// counts event with tracks and Sic (over threshold
    int SiCCounter=0;		// counts total Sic event over a threshold
    int EventEntries=0;		// entries per event
-
+   int SicNoTrackCounter=0;
 // END: Dichiarazione variabili		//////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////   
@@ -340,10 +341,10 @@ void B_trackGenerator(int run)
    TF1 *lin2 = new TF1("lin2","[0]+([1]*x)",0,200);
    TFitResultPtr fitResultPhi;
 
-   TCanvas *C1=new TCanvas("c1","alpha",900.,800.);
+   TCanvas *C1=new TCanvas("c1","c1",900.,800.);
    C1->SetFillColor(kWhite);
    C1->SetLogy();
-   TCanvas *C2=new TCanvas("C2","C2",900.,800.);
+   /*TCanvas *C2=new TCanvas("C2","C2",900.,800.);
    bg->Draw();
    bg->SetStats(0);
    TCanvas *C3=new TCanvas("C3","theta",900.,800.);
@@ -355,6 +356,12 @@ void B_trackGenerator(int run)
    C5->SetFillColor(kWhite);
    TCanvas *C6 = new TCanvas("C6","C6",900.,800.);
    C6->SetFillColor(kWhite);
+   */
+   
+   TH1D *energySicTot = new TH1D("h1","h1",1000,0,10000);
+   TH1D *energySicTracks = new TH1D("h2_","h2",1000,0,10000);
+   TH1D *energySicnoTracks = new TH1D("h3","h3",1000,0,10000);
+
    
 // END Histo and Canvas 	////////////////////////////////////
 
@@ -368,14 +375,15 @@ void B_trackGenerator(int run)
    treeSic->GetEntry(0);
    cout<<" time init SiC: "<<TimestampSic<<endl;
    
-   for(int i=0; i<entriesTracker; i++){
+
+   for(int i=0; i<entriesTracker/10; i++){     // loop on data
    //for(int i=0; i<50; i++){
       treeTracker->GetEntry(i);
-      cout << "Entry: " << i << endl;
+      //cout << "Entry: " << i << endl;
       //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
-      if((Timestamp-timeinit)<DeltaT){
+      if((Timestamp-timeinit)<DeltaT){      // inside the event
          //Fill histos
-         
+         EventEntries++;
          if (Charge > thresh) {
             for (int k=0; k<5; ++k) {	
                if (Row==k) {
@@ -392,12 +400,12 @@ void B_trackGenerator(int run)
                }
             }
          }
-      }else{
+      }else{				// end the event
         
       	 // The event is finished. Plot if there is something
       	 //cout << "\n-------- End Event ---------\n" << endl;
 
-         //cl_charge = 0.;
+         //zeroes variables
       	 for (int j=0; j<5; j++) {
       	     timeAverage[j] = 0.;
              cl_padMult[j] = 0;
@@ -407,23 +415,21 @@ void B_trackGenerator(int run)
          for (int j=5; j<11; j++) {
              cl_charge[j] = 0.;
          }
-         
          np=0;
          npTime=0;
-         
+         theta_deg = -100;
+         phi_deg = -100;
+         theta=-100;
+         phi=-100;        
          //for(int q=0; q<5; ++q) {
          //   std::cout << "*** " << q << "\t" << pads_fired[q].size() << std::endl;
          //   for(int h=0; h<pads_fired[q].size(); ++h)
          //   std::cout << "+++" << q << "\t" << h << "\t" << pads_fired[q].at(h) << std::endl;
          //}
          
-         theta_deg = -100;
-         phi_deg = -100;
-         theta=-100;
-         phi=-100;
-         //if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]+flag[5]+flag[6]+flag[7]+flag[8]+flag[9]+flag[10]>rowMultiplicity){
          if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>rowMultiplicity){
-
+            tracksCounter++;    	// increment of the counter of all tracks
+            //Fill row variables
 	    for(int j=0; j<5; j++){
 	       //cl_x[j]=0;
 	       binmax = row[j]->GetMaximumBin();
@@ -452,7 +458,7 @@ void B_trackGenerator(int run)
       	       if(max>100){grPhi->SetPoint(npTime++, zrow[j], cl_y_mm[j]);}
 
             }
-            
+            //Fill strip variables
             for(int j=5; j<11; j++){
                charge = row[j]->GetBinContent(1);
                cl_charge[j] = charge;
@@ -466,18 +472,30 @@ void B_trackGenerator(int run)
             // loop on the SiC file 
             finSic->cd();
             SicLoopFlag=1;
+            TimeDiff=timeinit-TimestampSic;
+            cout<< "timeinit "<<timeinit<<endl;
+            cout<< "TimestampSic "<<TimestampSic<<endl;
+            cout<< "Time Diff "<<TimeDiff<<endl;
+            cout<< "Time Windowlow "<<timeWindowlow<<endl;
+            cout<< "Time Windowhigh "<<timeWindowhigh<<endl;
+            
             while(SicLoopFlag){
-            //cout << "Inside the while" << endl;             
-            treeSic->GetEntry(sicHits);
-
-	       if(TimestampSic>=(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
+               //cout << "Inside the while" << endl;     
+               
+               treeSic->GetEntry(sicHits);
+               TimeDiff=timeinit-TimestampSic;
+               cout<< timeinit<<"  "<<TimestampSic<<endl;;
+               cout<< "Time Diff "<<TimeDiff<<"   "<<sicHits <<endl;
+               energySicTot->Fill(sic_charge);
+	       if(TimeDiff<= timeWindowlow){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
                   //cout << "********* Tracks without SiC" << endl;
                   tracksWithoutSic++;
                   energySic = -100;
                   ChargeSic= -100;
                   SicLoopFlag=0;
                   FlagSicStop=0;
-               }else if((timeinit-TimestampSic)>timeWindowlow && (timeinit-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
+                  trackNoSicsCounter++;    // icrement of the counter track without sic
+               }else if(TimeDiff>timeWindowlow && TimeDiff<timeWindowhigh){  // the time of SiC is compatible with the track
                   cout << "+++++++++++ Event detected by the SiC" << endl;
                   energySic = ChargeSic;
                   sic_charge = ChargeSic;
@@ -490,22 +508,29 @@ void B_trackGenerator(int run)
                      //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
                      h_driftTime[m]->Fill(driftTime/1000000);
                   }
-               }else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
+                  tracksSiCCounter++;	 	// icrement of the counter track with sic
+                  SiCCounter++;			// icrement of the counter sic
+                  energySicTracks->Fill(sic_charge);
+               }else if(TimeDiff >= timeWindowhigh) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
                   sicWithoutTracks++;
                   sicHits++;
                   SicLoopFlag=1;
                   FlagSicStop=0;
+                  SiCCounter++;			// icrement of the counter sic
+                  SicNoTrackCounter++;		// icrement of the counter sic without track
                   cout << "----------- SiC without track" << endl;
+                  energySicnoTracks->Fill(sic_charge);
                }
+               //cin>>anykey;
             }
             //cout << "tracksWithoutSic " << tracksWithoutSic << "\t tracksWithSic " << tracksWithSic << "\t flagTrackWithSiC " << flagTrackWithSiC << "\t flagS " << flagS << endl;
 	    row[4]->GetYaxis()->SetRangeUser(0,max*2);
 
-	    C4->cd();
+	    //C4->cd();
          
    	    fitResultTheta=grTheta->Fit("lin1","S");
    	    if(fitResultTheta==0){
-   	       cout<<"### TF ### "<<fitResultTheta<<endl;
+   	       //cout<<"### TF ### "<<fitResultTheta<<endl;
        	       intercept = fitResultTheta->Value(0);
 	       slope = fitResultTheta->Value(1);
     	       chiSquareTheta = fitResultTheta->Chi2();
@@ -532,7 +557,7 @@ void B_trackGenerator(int run)
             }
             
             if(FlagSicStop==1 && flagM==1 ){           
-               C2->cd(0);
+              //	 C2->cd(0);
                if(np>0){
                   grTheta->Draw("P");
                   grTheta->Fit("lin1","Q");
@@ -553,7 +578,12 @@ void B_trackGenerator(int run)
 
             treeOut->Fill();
             //cout << "Filling the tree" << endl;
-            cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
+            cout << "\nTracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
+            cout << "Sic entry  "<<sicHits<<endl;
+            cout << "Time track "<< timeinit<<endl;
+            cout << "Time Sic   "<< TimestampSic<<endl;
+            cout << "time diff  "<< timeinit-TimestampSic<<endl;
+            cout << "		"<< TimeDiff<<endl;
 	 }
 
          
@@ -582,8 +612,16 @@ void B_trackGenerator(int run)
       }
    }
 
-   C1->cd();
-   h_alpha[0]->Draw();
+   
+   energySicTot->SetLineColor(kBlue);
+   energySicTracks->SetLineColor(kRed);
+   energySicnoTracks->SetLineColor(kGreen);
+   energySicTot->Draw();
+   energySicTracks->Draw("same");
+   energySicnoTracks->Draw("same");
+   C1->Update();
+   
+  /* h_alpha[0]->Draw();
    h_alpha[1]->Draw("same");
    h_alpha[2]->Draw("same");
    C3->cd();
@@ -605,9 +643,9 @@ void B_trackGenerator(int run)
    leg2->AddEntry(h_angles[4],"Tracks not hitting the SiC","L");
    leg2->AddEntry(h_angles[3],"Sum","L");
    leg2->Draw("same");
-   C5->Update();
-   C6->cd();
-   for(int i=0;i<11;i++)
+   //C5->Update();
+   //C6->cd();
+   /*for(int i=0;i<11;i++)
       h_driftTime[i]->Draw("same");
 
    TLegend *leg3 = new TLegend(0.80,0.65,0.90,0.85);
@@ -617,12 +655,25 @@ void B_trackGenerator(int run)
    }
    leg3->Draw("same");
    //cout << "Col sic: " << h_angles[2]->Integral(0,nbinalpha) << endl;
-
+   */
+   
+   cout<<"--------------------------------------"<<endl;
+   cout<<" tracksCounter         "<<tracksCounter<<endl;
+   cout<<" trackNoSicsCounter    "<<trackNoSicsCounter<<endl;
+   cout<<" tracksSiCCounter      "<<tracksSiCCounter<<endl;
+   cout<<" SiCCounter   	 "<<SiCCounter<<endl;
+   cout<<" EventEntries   	 "<<EventEntries<<endl; 
+   cout<<"--------------------------------------"<<endl;
+   
    cout << "Before writing file output" << endl;
    fileOut->cd();
    treeOut->Write();
    fileOut->Purge();
    fileOut->Close();
+
+
+
+
 
 
 }
