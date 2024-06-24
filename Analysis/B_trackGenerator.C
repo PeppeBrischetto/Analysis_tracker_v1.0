@@ -141,6 +141,8 @@ void B_trackGenerator(int run)
    int npTime=0; // number of point of the Tgraph of the time
    char dummyString[50];
 
+   bool sicFileOpen = true; // if the SiC was not mounted in a run, this variable is to be set to false
+   TString sicOrNot;
 
    // control variables
    int tracksCounter=0;		// counts all the tracks
@@ -181,31 +183,40 @@ void B_trackGenerator(int run)
    cout<<"Entries tracker file "<< entriesTracker <<endl;
 // END: open tracker file	//////////////////////////////////////////////
 
+
+
+
+  cout << "Does this run have a SiC file? [Y]es or [N]o" << endl;
+  cin << sicOrNot;
+  sicFileOpen = (sicOrNot=="N" || sicOrNot=="No")? false : true;
+
 //////////////////////////////////////////////////////////////////////////////   
 // open Sic file
    char fileInSic[50];
-   if(run<10){
-      sprintf(fileInSic, "../Merged_data/run_00%i/sic_00%i.root", run, run);
-   }else if(run <100){
-      sprintf(fileInSic, "../Merged_data/run_0%i/sic_0%i.root", run, run);
-   }else{
-      sprintf(fileInSic, "../Merged_data/run_%i/sic_%i.root", run, run);
-   } 
-   cout<<fileInSic<<endl;
-   TFile *finSic = new TFile(fileInSic);
-   TTree *treeSic = (TTree*)finSic->Get("Data_R");
+   if (sicFileOpen) {
+      if(run<10){
+         sprintf(fileInSic, "../Merged_data/run_00%i/sic_00%i.root", run, run);
+      }else if(run <100){
+         sprintf(fileInSic, "../Merged_data/run_0%i/sic_0%i.root", run, run);
+      }else{
+         sprintf(fileInSic, "../Merged_data/run_%i/sic_%i.root", run, run);
+      } 
+      cout<<fileInSic<<endl;
+      TFile *finSic = new TFile(fileInSic);
+      TTree *treeSic = (TTree*)finSic->Get("Data_R");
    
-   treeSic->SetBranchAddress("Board",&BoardSic);
-   treeSic->SetBranchAddress("Channel",&ChannelSic);
-   treeSic->SetBranchAddress("FineTSInt",&FTSSic);
-   treeSic->SetBranchAddress("CoarseTSInt",&CTSSic);
-   treeSic->SetBranchAddress("Timestamp",&TimestampSic);
-   treeSic->SetBranchAddress("Charge",&ChargeSic);
-   treeSic->SetBranchAddress("Flags",&FlagsSic);
-   treeSic->SetBranchAddress("Charge_cal",&Charge_calSic);
+      treeSic->SetBranchAddress("Board",&BoardSic);
+      treeSic->SetBranchAddress("Channel",&ChannelSic);
+      treeSic->SetBranchAddress("FineTSInt",&FTSSic);
+      treeSic->SetBranchAddress("CoarseTSInt",&CTSSic);
+      treeSic->SetBranchAddress("Timestamp",&TimestampSic);
+      treeSic->SetBranchAddress("Charge",&ChargeSic);
+      treeSic->SetBranchAddress("Flags",&FlagsSic);
+      treeSic->SetBranchAddress("Charge_cal",&Charge_calSic);
    
-   int entriesSic=treeSic->GetEntries();
-   cout<<"Entries sic file "<< entriesSic <<endl;
+      int entriesSic=treeSic->GetEntries();
+      cout<<"Entries sic file "<< entriesSic <<endl;
+   }
 // END: open SiC file	//////////////////////////////////////////////////////
 
 // OPEN output ROOT file //
@@ -463,84 +474,87 @@ void B_trackGenerator(int run)
             //}
 
             // loop on the SiC file 
-            finSic->cd();
-            SicLoopFlag=1;
-            while(SicLoopFlag){
-            //cout << "Inside the while" << endl;             
-            treeSic->GetEntry(sicHits);
+            if (sicFileOpen) {
+               finSic->cd();
+               SicLoopFlag=1;
+               while(SicLoopFlag){
+                  //cout << "Inside the while" << endl;             
+                  treeSic->GetEntry(sicHits);
 
-	       if(TimestampSic>=(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
-                  //cout << "********* Tracks without SiC" << endl;
-                  tracksWithoutSic++;
-                  energySic = -100;
-                  ChargeSic= -100;
-                  SicLoopFlag=0;
-                  FlagSicStop=0;
-               }else if((timeinit-TimestampSic)>timeWindowlow && (timeinit-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
-                  cout << "+++++++++++ Event detected by the SiC" << endl;
-                  energySic = ChargeSic;
-                  sic_charge = ChargeSic;
-                  tracksWithSic++;
-                  sicHits++;
-                  SicLoopFlag=0;
-                  FlagSicStop=1;
-                  for(int m=0;m<5;m++){
-                     driftTime = timeAverage[m]+timeinit-timeOffset-TimestampSic;
-                     //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
-                     h_driftTime[m]->Fill(driftTime/1000000);
+	          if(TimestampSic>=(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
+                     //cout << "********* Tracks without SiC" << endl;
+                     tracksWithoutSic++;
+                     energySic = -100;
+                     ChargeSic= -100;
+                     SicLoopFlag=0;
+                     FlagSicStop=0;
+                  }else if((timeinit-TimestampSic)>timeWindowlow && (timeinit-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
+                     cout << "+++++++++++ Event detected by the SiC" << endl;
+                     energySic = ChargeSic;
+                     sic_charge = ChargeSic;
+                     tracksWithSic++;
+                     sicHits++;
+                     SicLoopFlag=0;
+                     FlagSicStop=1;
+                     for(int m=0;m<5;m++){
+                        driftTime = timeAverage[m]+timeinit-timeOffset-TimestampSic;
+                        //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
+                        h_driftTime[m]->Fill(driftTime/1000000);
+                     }
+                  }else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
+                     sicWithoutTracks++;
+                     sicHits++;
+                     SicLoopFlag=1;
+                     FlagSicStop=0;
+                     cout << "----------- SiC without track" << endl;
                   }
-               }else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
-                  sicWithoutTracks++;
-                  sicHits++;
-                  SicLoopFlag=1;
-                  FlagSicStop=0;
-                  cout << "----------- SiC without track" << endl;
                }
-            }
-            //cout << "tracksWithoutSic " << tracksWithoutSic << "\t tracksWithSic " << tracksWithSic << "\t flagTrackWithSiC " << flagTrackWithSiC << "\t flagS " << flagS << endl;
-	    row[4]->GetYaxis()->SetRangeUser(0,max*2);
 
-	    C4->cd();
+               //cout << "tracksWithoutSic " << tracksWithoutSic << "\t tracksWithSic " << tracksWithSic << "\t flagTrackWithSiC " << flagTrackWithSiC << "\t flagS " << flagS << endl;
+            }
+	       row[4]->GetYaxis()->SetRangeUser(0,max*2);
+
+	       C4->cd();
          
-   	    fitResultTheta=grTheta->Fit("lin1","S");
-   	    if(fitResultTheta==0){
-   	       cout<<"### TF ### "<<fitResultTheta<<endl;
-       	       intercept = fitResultTheta->Value(0);
-	       slope = fitResultTheta->Value(1);
-    	       chiSquareTheta = fitResultTheta->Chi2();
-    	       cout<<"chi2 "<<chiSquareTheta<<endl;
+              fitResultTheta=grTheta->Fit("lin1","S");
+   	      if(fitResultTheta==0){
+   	         cout<<"### TF ### "<<fitResultTheta<<endl;
+       	         intercept = fitResultTheta->Value(0);
+	         slope = fitResultTheta->Value(1);
+    	         chiSquareTheta = fitResultTheta->Chi2();
+    	         cout<<"chi2 "<<chiSquareTheta<<endl;
                
-	       theta = TMath::ATan(slope);
-               theta_deg = theta*180./TMath::Pi();
-            }else{
-               theta = -100;
-               theta_deg = -100;
-            }
-            //cout << "slope " << slope << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
-       	    fitResultPhi=grPhi->Fit("lin2","S");
-            if(fitResultPhi==0){
-    	       intercept = fitResultPhi->Value(0);
-   	       slope = fitResultPhi->Value(1);
-	       chiSquarePhi = fitResultPhi->Chi2();
+	         theta = TMath::ATan(slope);
+                 theta_deg = theta*180./TMath::Pi();
+              }else{
+                 theta = -100;
+                 theta_deg = -100;
+              }
+              //cout << "slope " << slope << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
+       	      fitResultPhi=grPhi->Fit("lin2","S");
+              if(fitResultPhi==0){
+    	         intercept = fitResultPhi->Value(0);
+   	         slope = fitResultPhi->Value(1);
+	         chiSquarePhi = fitResultPhi->Chi2();
                
-               phi = TMath::ATan(slope);
-	       phi_deg = phi*180./TMath::Pi();
-            }else{
-               phi = -100;
-               phi_deg = -100;
-            }
+                 phi = TMath::ATan(slope);
+	         phi_deg = phi*180./TMath::Pi();
+              }else{
+                 phi = -100;
+                 phi_deg = -100;
+              }
             
-            if(FlagSicStop==1 && flagM==1 ){           
-               C2->cd(0);
-               if(np>0){
-                  grTheta->Draw("P");
-                  grTheta->Fit("lin1","Q");
-               }
+              if(FlagSicStop==1 && flagM==1 ){           
+                 C2->cd(0);
+                 if(np>0){
+                    grTheta->Draw("P");
+                    grTheta->Fit("lin1","Q");
+                 }
                             
-               cout<<"press any key to continue, q to quit, c to continue till the end"<<endl; 
-               if(flagM)
-                  cin>>anykey;
-            }
+                 cout<<"press any key to continue, q to quit, c to continue till the end"<<endl; 
+                 if(flagM)
+                    cin>>anykey;
+                 }
 
             if(anykey=='q'){ 
               fileOut->Write();
