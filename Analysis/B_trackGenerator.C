@@ -18,7 +18,7 @@
 //# 			   renaming of variables  
 //#			   solved bug on track without sic    D. Torresi
 //#   updated : 10 Jun 2024 extension to no-segmented rows (i.e. pads), transforming 5 -> 10    A. Pitronaci
-//# 
+//#   updated : 24 Jun 2024 insert option to not consider the SiC file  G. Brischetto
 //###################################################################################################
 
 void B_trackGenerator(int run)
@@ -566,7 +566,11 @@ void B_trackGenerator(int run)
 
             treeOut->Fill();
             //cout << "Filling the tree" << endl;
-            cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
+            if (sicFileOpen) 
+               cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
+
+           else 
+               cout << "Tracks " << tracksWithoutSic << endl;
 	 }
 
          
