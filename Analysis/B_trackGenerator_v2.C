@@ -26,7 +26,7 @@
 #pragma link C++ class vector<float>+;
 #endif
 
-void B_trackGenerator(int run)
+void B_trackGenerator_v2(int run)
 {
 
 ////////////////////////////////////////////////////////////////////
@@ -98,23 +98,8 @@ void B_trackGenerator(int run)
    Double_t sic_charge;
    Double_t energySic; 
   
-   //Int_t pads_fired[5][60]={-1000};
+   Int_t a_pads_fired[5][100];
    
-   //std::vector<Int_t> pads_fired0, pads_fired1, pads_fired2, pads_fired3, pads_fired4;
-   //pads_fired0.push_back(999);
-   //pads_fired0.push_back(999);
-   
-   //std::vector<Int_t> * ptr_pads_fired0 = &pads_fired0;
-      
-   std::vector<Int_t> pads_fired[5];
-   
-   //for (Int_t i=0; i<5; ++i) { 
-   //    pads_fired[i] = {-1000};
-       //std::cout << "*** " << i << "\t" << pads_fired[i].size() << std::endl;       
-       //for(int h=0; h<pads_fired[i].size(); ++h)
-          //std::cout << "********* " << i << "\t" << h << "\t" << pads_fired[i].at(h) << std::endl;
-   //}
-
 // other variables
    
    // fitting variables
@@ -164,6 +149,8 @@ void B_trackGenerator(int run)
    int tracksSiCCounter=0;	// counts event with tracks and Sic (over threshold
    int SiCCounter=0;		// counts total Sic event over a threshold
    int EventEntries=0;		// entries per event
+   
+   int kk=0;
 
 // END: Dichiarazione variabili		//////////////////////////////////////
 
@@ -248,18 +235,17 @@ void B_trackGenerator(int run)
    treeOut->Branch("cl_y_mm", cl_y_mm, "cl_y_mm[5]/D");
    treeOut->Branch("cl_x_rms", cl_x_rms, "cl_x_rms[5]/D");
    treeOut->Branch("cl_charge", cl_charge, "cl_charge[11]/D");
-   treeOut->Branch("cl_padMult",cl_padMult,"cl_padMult[5]/I");
+   //treeOut->Branch("cl_padMult",cl_padMult,"cl_padMult[5]/I");
    treeOut->Branch("cl_padMult0",&cl_padMult[0],"cl_padMult0/I");
    treeOut->Branch("cl_padMult1",&cl_padMult[1],"cl_padMult1/I");
    treeOut->Branch("cl_padMult2",&cl_padMult[2],"cl_padMult2/I");
    treeOut->Branch("cl_padMult3",&cl_padMult[3],"cl_padMult3/I");
    treeOut->Branch("cl_padMult4",&cl_padMult[4],"cl_padMult4/I");
-   //treeOut->Branch("pads_fired0","std::vector<Int_t>",&ptr_pads_fired0);
-   //treeOut->Branch("pads_fired0",&ptr_pads_fired0);
-   //treeOut->Branch("pads_fired1",&(pads_fired[1].at(1)),"pads_fired1[cl_padMult1]/i");
-   //treeOut->Branch("pads_fired2",&pads_fired[2].at(2),"pads_fired2[cl_padMult2]/i");
-   //treeOut->Branch("pads_fired3",&pads_fired[3].at(3),"pads_fired3[cl_padMult3]/i");
-   //treeOut->Branch("pads_fired4",&pads_fired[4].at(4),"pads_fired4[cl_padMult4]/i");      
+   treeOut->Branch("pads_fired0",&a_pads_fired[0],"a_pads_fired0[cl_padMult0]/I");
+   treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[cl_padMult1]/I");
+   treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[cl_padMult2]/I");
+   treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[cl_padMult3]/I");
+   treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[cl_padMult4]/I");       
    treeOut->Branch("phi",&phi,"phi/D");
    treeOut->Branch("theta",&theta,"theta/D");
    treeOut->Branch("phi_deg",&phi_deg,"phi_deg/D");      
@@ -444,7 +430,6 @@ void B_trackGenerator(int run)
       	     timeAverage[j] = 0.;
              cl_padMult[j] = 0;
              cl_charge[j] = 0.;
-             pads_fired[j].clear();
          }
          for (int j=5; j<11; j++) {
              cl_charge[j] = 0.;
@@ -453,16 +438,10 @@ void B_trackGenerator(int run)
          np=0;
          npTime=0;
          
-         //for(int q=0; q<5; ++q) {
-         //   std::cout << "*** " << q << "\t" << pads_fired[q].size() << std::endl;
-         //   for(int h=0; h<pads_fired[q].size(); ++h)
-         //   std::cout << "+++" << q << "\t" << h << "\t" << pads_fired[q].at(h) << std::endl;
-         //}
-         
-         theta_deg = -100;
-         phi_deg = -100;
-         theta=-100;
-         phi=-100;
+         theta_deg = -1000;
+         phi_deg = -1000;
+         theta=-1000;
+         phi=-1000;
          //if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]+flag[5]+flag[6]+flag[7]+flag[8]+flag[9]+flag[10]>rowMultiplicity){
          if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>rowMultiplicity){
 
@@ -481,8 +460,22 @@ void B_trackGenerator(int run)
 	           //cl_charge[j] = row[j]->Integral(0,57);
 	           cl_charge[j] += charge;
 	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
-                   if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} 
+                   //if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} // commented out 2024-06-26 by G.B.
+                   if (charge) {cl_padMult[j]++;}
+                   
 	       }
+	       
+	       //cout << "****** " << cl_padMult[j] << endl;
+	       kk=0;
+	       for (int k=0; k<60; k++) {
+                   if (row[j]->GetBinContent(k)) {
+                      a_pads_fired[j][kk]=k; 
+                      //cout << "j " << j << "\t kk " << kk << "\t" << a_pads_fired[j][kk] << endl;
+                      kk++;
+                   }
+               }  
+
+	       
  	       cl_x[j] = row[j]->GetMean();
                cl_x_rms[j] = row[j]->GetRMS();
 	       cl_x_mm[j] = cl_x[j] * padWidth + padWidth/2;
@@ -605,11 +598,10 @@ void B_trackGenerator(int run)
 
       	    if(anykey=='c') flagM=0;   
 
-
-            for (int q=0; q<5; ++q) {
-                for (int h=0; h<pads_fired[q].size(); ++h)
-                    std::cout << "------------  pads fired: " << q << "\t" << h << "\t" << pads_fired[q].at(h) << std::endl;
-            }
+            //for (int q=0; q<5; ++q) {
+                //for (int h=0; h<cl_padMult[q]; ++h)
+                    //std::cout << "------------  pads fired: " << q << "\t" << h << "\t" << a_pads_fired[q][h] << std::endl;
+            //}
             
             treeOut->Fill();
             //cout << "Filling the tree" << endl;
