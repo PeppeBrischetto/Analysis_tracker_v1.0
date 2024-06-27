@@ -22,10 +22,6 @@
 //###################################################################################################
 
 
-#ifdef __MAKECINT__
-#pragma link C++ class vector<float>+;
-#endif
-
 void B_trackGenerator_v2(int run)
 {
 
@@ -245,7 +241,8 @@ void B_trackGenerator_v2(int run)
    treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[cl_padMult1]/I");
    treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[cl_padMult2]/I");
    treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[cl_padMult3]/I");
-   treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[cl_padMult4]/I");       
+   treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[cl_padMult4]/I");
+   //treeOut->Branch("lastEntryEvent",&last,"a_pads_fired4[cl_padMult4]/I");          
    treeOut->Branch("phi",&phi,"phi/D");
    treeOut->Branch("theta",&theta,"theta/D");
    treeOut->Branch("phi_deg",&phi_deg,"phi_deg/D");      
@@ -355,7 +352,7 @@ void B_trackGenerator_v2(int run)
    grTheta->SetMarkerSize(1);
    TF1 *lin1 = new TF1("lin1","[0]+([1]*x)",0,300);
    TFitResultPtr fitResultTheta;
-   TF1 *theta_fit_result; // this function is only for drawing the fit result
+   TF1 *theta_fit_result = new TF1("theta_fit_result","[0]+([1]*x)",0.,107.);; // this function is only for drawing the fit result
 
    //fit y vs z
    TGraph *grPhi=new TGraph(0);
@@ -396,8 +393,8 @@ void B_trackGenerator_v2(int run)
    cout<<" time init SiC: "<<TimestampSic<<endl;
    }
    
-//   for(int i=0; i<entriesTracker; i++){
-   for(int i=0; i<100; i++){
+   for(int i=0; i<entriesTracker/10; i++){
+//   for(int i=0; i<10000; i++){
       treeTracker->GetEntry(i);
       
       //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
@@ -537,12 +534,14 @@ void B_trackGenerator_v2(int run)
 	    C4->cd();
 	    C4->Update();
          
-            fitResultTheta=grTheta->Fit("lin1","S");
+            fitResultTheta=grTheta->Fit("lin1","SQ");
    	    if(fitResultTheta==0){
    	       cout<<"### TF ### "<<fitResultTheta<<endl;
        	       intercept = fitResultTheta->Value(0);
 	       slope = fitResultTheta->Value(1);
-	       theta_fit_result = new TF1("theta_fit_result",Form("%f+(%f*x)",intercept,slope),0.,107.);
+	       //theta_fit_result = new TF1("theta_fit_result",Form("%f+(%f*x)",intercept,slope),0.,107.);
+	       theta_fit_result->SetParameter(0,intercept);
+	       theta_fit_result->SetParameter(1,slope);	       
     	       chiSquareTheta = fitResultTheta->Chi2();
     	       cout<<"intercept "<< intercept <<"\t slope "<< slope << "\t chi2 "<< chiSquareTheta << endl;
 	       theta = TMath::ATan(slope);
@@ -553,7 +552,7 @@ void B_trackGenerator_v2(int run)
             }
             
             //cout << "slope " << slope << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
-       	    fitResultPhi=grPhi->Fit("lin2","S");
+       	    fitResultPhi=grPhi->Fit("lin2","SQ");
             if(fitResultPhi==0){
     	       intercept = fitResultPhi->Value(0);
    	       slope = fitResultPhi->Value(1);
@@ -590,10 +589,10 @@ void B_trackGenerator_v2(int run)
 
       	    if(anykey=='c') flagM=0;   
 
-            for (int q=0; q<5; ++q) {
-                for (int h=0; h<cl_padMult[q]; ++h)
-                    std::cout << "------------  pads fired: " << q << "\t" << h << "\t" << a_pads_fired[q][h] << std::endl;
-            }
+            //for (int q=0; q<5; ++q) {
+                //for (int h=0; h<cl_padMult[q]; ++h)
+                    //std::cout << "------------  pads fired: " << q << "\t" << h << "\t" << a_pads_fired[q][h] << std::endl;
+            //}
             
             treeOut->Fill();
             //cout << "Filling the tree" << endl;
