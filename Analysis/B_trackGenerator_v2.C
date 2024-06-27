@@ -451,6 +451,7 @@ void B_trackGenerator_v2(int run)
 	       max  = row[j]->GetBinContent(binmax);
 	       //cout<<binmax<<"  "<<max<<endl;
 	      
+               kk=0;
 	       for (int k=0; k<60; k++) {
                    charge = row[j]->GetBinContent(k);
                    time   = h_time[j]->GetBinContent(k+1);
@@ -461,20 +462,11 @@ void B_trackGenerator_v2(int run)
 	           cl_charge[j] += charge;
 	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
                    //if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} // commented out 2024-06-26 by G.B.
-                   if (charge) {cl_padMult[j]++;}
+                   if (charge) {cl_padMult[j]++; a_pads_fired[j][kk]=k; kk++;}  // 2024-06-26 G.B. writing the fired pads in a 2D array, one array for each row
                    
 	       }
 	       
 	       //cout << "****** " << cl_padMult[j] << endl;
-	       kk=0;
-	       for (int k=0; k<60; k++) {
-                   if (row[j]->GetBinContent(k)) {
-                      a_pads_fired[j][kk]=k; 
-                      //cout << "j " << j << "\t kk " << kk << "\t" << a_pads_fired[j][kk] << endl;
-                      kk++;
-                   }
-               }  
-
 	       
  	       cl_x[j] = row[j]->GetMean();
                cl_x_rms[j] = row[j]->GetRMS();
@@ -598,10 +590,10 @@ void B_trackGenerator_v2(int run)
 
       	    if(anykey=='c') flagM=0;   
 
-            //for (int q=0; q<5; ++q) {
-                //for (int h=0; h<cl_padMult[q]; ++h)
-                    //std::cout << "------------  pads fired: " << q << "\t" << h << "\t" << a_pads_fired[q][h] << std::endl;
-            //}
+            for (int q=0; q<5; ++q) {
+                for (int h=0; h<cl_padMult[q]; ++h)
+                    std::cout << "------------  pads fired: " << q << "\t" << h << "\t" << a_pads_fired[q][h] << std::endl;
+            }
             
             treeOut->Fill();
             //cout << "Filling the tree" << endl;
