@@ -39,9 +39,9 @@ void C_plot_theta_v2(int run)
    /* Reading block variables */  
    char fileInName[50];
    if(run<10){
-      sprintf(fileInName, "../Tracks/tracks_run00%i.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run00%i_A.root", run);
    }else if(run <100){
-      sprintf(fileInName, "../Tracks/tracks_run0%i.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run0%i_A.root", run);
    }else{
       sprintf(fileInName, "../Tracks/tracks_run%i_A.root", run);
    } 
@@ -82,7 +82,7 @@ void C_plot_theta_v2(int run)
    histoTheta->GetXaxis()->SetTitle("#theta (deg)");
    histoTheta->GetYaxis()->SetTitle("Counts");
    histoTheta->SetLineWidth(2);  
-   histoTheta->GetYaxis()->SetRangeUser(0.9,1000.);    
+   //histoTheta->GetYaxis()->SetRangeUser(0.9,1000.);    
 
    TH1F *histoThetaWithoutLastPad=new TH1F("","",1000,-70.,20.);
    histoThetaWithoutLastPad->SetStats(0);
