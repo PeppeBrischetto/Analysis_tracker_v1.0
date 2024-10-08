@@ -19,6 +19,7 @@
 //#			   solved bug on track without sic    D. Torresi
 //#   updated : 10 Jun 2024 extension to no-segmented rows (i.e. pads), transforming 5 -> 10    A. Pitronaci
 //#   updated : 24 Jun 2024 insert option to not consider the SiC file  G. Brischetto
+//#   updated :  8 oct 2024 corrected the zcoordinate D. Torresi
 //###################################################################################################
 
 
@@ -46,12 +47,12 @@ void B_trackGenerator_v2(int run)
    Double_t velocity = 50.;  // drift velocity (in mm/us) of electrons in isobutane;  
    Double_t velocity_mm_ps = velocity/1.0E+06;  // drift velocity (in mm/ps) of electrons in isobutane;
 
-   double *zrow = new double[5];  // zcoordinate (in mm) of the row
-   zrow[0]=18.60;		  // valid for the prototype 2
-   zrow[1]=39.80;
-   zrow[2]=61.00;
-   zrow[3]=82.20;
-   zrow[4]=103.40;
+   double *zrow = new double[5];  // zcoordinate (in mm) of the row from the begnning of the active volume
+   zrow[0]=18.60-7;		  // valid for the prototype 2
+   zrow[1]=39.80-7;
+   zrow[2]=61.00-7;
+   zrow[3]=82.20-7;
+   zrow[4]=103.40-7;
    
   // input file variables (tracker)
    UShort_t Channel; 
@@ -508,8 +509,7 @@ void B_trackGenerator_v2(int run)
                */
                
                while(SicLoopFlag){
-                  //cout << "Inside the while" << endl;             
-                  
+
                   treeSic->GetEntry(sicHits);
                   TimeDiff=timeinit-TimestampSic;
                   //cout<< timeinit<<"  "<<TimestampSic<<endl;;
