@@ -2,15 +2,17 @@
 # README file for the data analysius of the tracker data.
 # created november 2022 by V. Soukeras, D. Torresi
 #
-# last update 25-11-2022
+# updated 25-11-2022
+# last update 07-10-2024  D.Torresi
 ###################################################################################################
 
 DIRECTORIES
 ################
 Raw_data 	raw binary files from DAQ. One file for each digitizer.
+                Raw data could be directly red from the output directory of the DAQ
 
 Calib_files	Calibration files. They are used by converter.C to get the charge calibration and 
-		the physical physical channel from the electronics channel.
+		the physical physical channel from the electronics channel. 
 -----------
 	*	channel2pad.txt		pad mapping. from electronics channel to pad number.
 		pad# corresponds to channels 0,1,2,...n
@@ -21,6 +23,7 @@ Calib_files	Calibration files. They are used by converter.C to get the charge ca
 		!!Do not change data formatting and the number of comment lines!!
 
 Cal_data	calibrated root files, still one file for each digitizer.
+		Not really necessary after Merged data are produced, can be erased.
 
 Merged_data	One file for each run, all the data form different digitizers are merged in a 
 		single file where the entries are ordered by time (raw+fine)
@@ -28,9 +31,9 @@ Merged_data	One file for each run, all the data form different digitizers are me
 Clusterd_data	File where all the data from Merged data are reorganized in cluster
 		Each entry is now a cluster no more an hit.
 
-Analysis	Analys Macros
+Analysis	Analysis Macros that can be considered working properly and are 
 
-Analysis_Temp	
+Analysis_Temp	Analysis directory where are te
 
 Info		General information files
 

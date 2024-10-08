@@ -113,7 +113,7 @@ void B_trackGenerator_bis(int run)
    // Secondary variables  
    ULong64_t TimestampSicTemp;   
    UInt_t SicLoopFlag;			// variable used to stop the loop on the Sic file
-   Long64_t TimeDiff;
+   Long64_t TimeDiff;	
 
    Double_t timeAverage[5] = {0.}; 	// variable used to calculate the average time (weighted by the charge) on a raw
    Double_t time = 0.;             	// variable used to store the time of a single pad (it is used for the calculation of the average time
@@ -211,7 +211,7 @@ void B_trackGenerator_bis(int run)
 
 // OPEN output ROOT file //
    char fileOutName[50];
-   sprintf(fileOutName,"../Tracks/tracks_run%i_A.root",run);
+   sprintf(fileOutName,"../Tracks/tracks_run%i_B.root",run);
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
    

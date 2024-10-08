@@ -393,7 +393,7 @@ void B_trackGenerator_v2(int run)
    cout<<" time init SiC: "<<TimestampSic<<endl;
    }
    
-   for(int i=0; i<entriesTracker/10; i++){
+   for(int i=0; i<entriesTracker; i++){
 //   for(int i=0; i<10000; i++){
       treeTracker->GetEntry(i);
       
