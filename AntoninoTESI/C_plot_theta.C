@@ -27,6 +27,11 @@ void C_plot_theta(int run)
    Int_t sic_fired = 0;
    Double_t sic_charge = 0.;
    Double_t energySic = 0.;
+
+   Int_t cl_padMult0,cl_padMult1,cl_padMult2,cl_padMult3,cl_padMult4;
+   Int_t a_pads_fired0[100],a_pads_fired1[100],a_pads_fired2[100],a_pads_fired3[100],a_pads_fired4[100]; 
+  
+   Int_t flagLastPad=0;
   
    int sicCounts=0;		// counter that return the tracks with a SiC
   
@@ -48,6 +53,17 @@ void C_plot_theta(int run)
    treeTracks->SetBranchAddress("cl_y", &cl_y);
    treeTracks->SetBranchAddress("cl_y_mm", &cl_y_mm);
    treeTracks->SetBranchAddress("cl_x_rms", &cl_x_rms);
+   //treeTracks->SetBranchAddress("cl_padMult", &cl_padMult);
+   treeTracks->SetBranchAddress("cl_padMult0",&cl_padMult0);
+   treeTracks->SetBranchAddress("cl_padMult1",&cl_padMult1);
+   treeTracks->SetBranchAddress("cl_padMult2",&cl_padMult2);
+   treeTracks->SetBranchAddress("cl_padMult3",&cl_padMult3);
+   treeTracks->SetBranchAddress("cl_padMult4",&cl_padMult4);
+   treeTracks->SetBranchAddress("pads_fired0",a_pads_fired0);
+   treeTracks->SetBranchAddress("pads_fired1",a_pads_fired1);
+   treeTracks->SetBranchAddress("pads_fired2",a_pads_fired2);
+   treeTracks->SetBranchAddress("pads_fired3",a_pads_fired3);
+   treeTracks->SetBranchAddress("pads_fired4",a_pads_fired4);   
    treeTracks->SetBranchAddress("cl_charge", &cl_charge);
    treeTracks->SetBranchAddress("phi", &phi);
    treeTracks->SetBranchAddress("theta", &theta);

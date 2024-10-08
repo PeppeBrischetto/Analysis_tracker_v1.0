@@ -108,6 +108,8 @@ void B_trackGenerator_v2(int run)
    // Secondary variables  
    ULong64_t TimestampSicTemp;   
    UInt_t SicLoopFlag;			// variable used to stop the loop on the Sic file
+   
+   Long64_t TimeDiff;                   // variable needed to properly calculate the difference between timeinit and timestampSic, otherwise it is not a Long64 but maybe an Int
 
    Double_t timeAverage[5] = {0.}; 	// variable used to calculate the average time (weighted by the charge) on a raw
    Double_t time = 0.;             	// variable used to store the time of a single pad (it is used for the calculation of the average time
@@ -192,6 +194,8 @@ void B_trackGenerator_v2(int run)
    sicFileOpen = (sicOrNot=="n" || sicOrNot=="N" || sicOrNot=="No")? false : true;
    //cout << sicFileOpen << endl;
 
+   int entriesSic = 0;
+   
    char fileInSic[50];
    if (sicFileOpen) {
       if(run<10){
@@ -214,14 +218,14 @@ void B_trackGenerator_v2(int run)
       treeSic->SetBranchAddress("Flags",&FlagsSic);
       treeSic->SetBranchAddress("Charge_cal",&Charge_calSic);
    
-      int entriesSic=treeSic->GetEntries();
+      entriesSic=treeSic->GetEntries();
       cout<<"Entries sic file "<< entriesSic <<endl;
    }
 // END: open SiC file	//////////////////////////////////////////////////////
 
 // OPEN output ROOT file //
    char fileOutName[50];
-   sprintf(fileOutName,"../Tracks/tracks_run%i_A.root",run);
+   sprintf(fileOutName,"../Tracks/tracks_run%i_B.root",run);
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
 
@@ -491,12 +495,28 @@ void B_trackGenerator_v2(int run)
             if (sicFileOpen) {
                finSic->cd();
                SicLoopFlag=1;
+               
+               TimeDiff=timeinit-TimestampSic;
+               
+               /*
+               cout<< "*** Sic entry  "<<sicHits<<endl;
+               cout<< "*** timeinit "<<timeinit<<endl;
+               cout<< "*** TimestampSic "<<TimestampSic<<endl;
+               cout<< "*** Time Diff "<<TimeDiff<<endl;
+               cout<< "*** Time Windowlow "<<timeWindowlow<<endl;
+               cout<< "*** Time Windowhigh "<<timeWindowhigh<<endl;
+               */
+               
                while(SicLoopFlag){
                   //cout << "Inside the while" << endl;             
                   
                   treeSic->GetEntry(sicHits);
-
-	          if(TimestampSic>=(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
+                  TimeDiff=timeinit-TimestampSic;
+                  //cout<< timeinit<<"  "<<TimestampSic<<endl;;
+                  //cout<< "Time Diff "<<TimeDiff<<"   "<<sicHits <<endl;
+                  //energySicTot->Fill(sic_charge);
+                  
+	          if(TimeDiff<= timeWindowlow){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
                      //cout << "********* Tracks without SiC" << endl;
                      tracksWithoutSic++;
                      sic_charge = -100;
@@ -504,7 +524,7 @@ void B_trackGenerator_v2(int run)
                      ChargeSic= -100;
                      SicLoopFlag=0;
                      FlagSicStop=0;
-                  }else if((timeinit-TimestampSic)>timeWindowlow && (timeinit-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
+                  }else if(TimeDiff>timeWindowlow && TimeDiff<timeWindowhigh){  // the time of SiC is compatible with the track
                      cout << "+++++++++++ Event detected by the SiC" << endl;
                      energySic = ChargeSic;
                      sic_charge = ChargeSic;
@@ -517,12 +537,15 @@ void B_trackGenerator_v2(int run)
                         //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
                         h_driftTime[m]->Fill(driftTime/1000000); // drift time expressed in us
                      }
-                  }else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
+                  }else if(TimeDiff >= timeWindowhigh) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
                      sicWithoutTracks++;
                      sicHits++;
                      SicLoopFlag=1;
                      FlagSicStop=0;
                      cout << "----------- SiC without track" << endl;
+                     if (sicHits > entriesSic)
+                        break;
+
                   }
                }
 
@@ -571,7 +594,7 @@ void B_trackGenerator_v2(int run)
                    grTheta->Draw("P");
                    //grTheta->Fit("lin1","Q");
                    theta_fit_result->Draw("same");
-                   cout << "\n\n ++++++++++++++++++ theta_fit_result formula: " << theta_fit_result->GetExpFormula() << endl;
+                   cout << "\n\n +++++++++++++++++++++++++++++++++++ theta_fit_result formula: " << theta_fit_result->GetExpFormula() << "\n\n" << endl;
                }
                             
                cout<<"press any key to continue, q to quit, c to continue till the end"<<endl; 
@@ -600,6 +623,13 @@ void B_trackGenerator_v2(int run)
                cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
             else 
                cout << "Tracks " << tracksWithoutSic << endl;
+            /*
+            cout << "########## Sic entry  "<<sicHits<<endl;
+            cout << "########## Time track "<< timeinit<<endl;
+            cout << "########## Time Sic   "<< TimestampSic<<endl;
+            cout << "########## time diff  "<< timeinit-TimestampSic<<endl;
+            cout << "########## TimeDiff   "<< TimeDiff<<endl;
+            */
 	 }
 
          
@@ -668,6 +698,15 @@ void B_trackGenerator_v2(int run)
    }
    leg3->Draw("same");
    //cout << "Col sic: " << h_angles[2]->Integral(0,nbinalpha) << endl;
+   
+   //cout<<"--------------------------------------"<<endl;
+   //cout<<" tracksCounter         "<<tracksCounter<<endl;
+   //cout<<" trackNoSicsCounter    "<<trackNoSicsCounter<<endl;
+   //cout<<" tracksSiCCounter      "<<tracksSiCCounter<<endl;
+   //cout<<" SiCCounter   	 "<<SiCCounter<<endl;
+   //cout<<" EventEntries   	 "<<EventEntries<<endl; 
+   //cout<<"--------------------------------------"<<endl;
+      
 
    cout << "Before writing file output" << endl;
    fileOut->cd();
