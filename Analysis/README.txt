@@ -1,6 +1,6 @@
 Macros
 -------------------
-A_checkTime.C          Check that the event are ordered by total time.
+A_checkTime.C          Check that the event are ordered by total time. OBSOLETE
 
 A_eventFinder_plot.C	find event and plot an anode map of charge and time.
 			print on screen also the entry of the first pad of the event

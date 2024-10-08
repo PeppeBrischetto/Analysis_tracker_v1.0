@@ -1,6 +1,8 @@
 // Check that all the event are ordered by the total time (sum of the coarse and fine time).
 // if the etry i+1 has a time smaer than entry i give a warning.
 
+// OBSOLETE has been written for an old file format
+
 void A_checkTime(int run)
 {
 
