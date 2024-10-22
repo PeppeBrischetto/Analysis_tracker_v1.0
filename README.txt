@@ -28,14 +28,16 @@ Cal_data	calibrated root files, still one file for each digitizer.
 Merged_data	One file for each run, all the data form different digitizers are merged in a 
 		single file where the entries are ordered by time (raw+fine)
 
-Clusterd_data	File where all the data from Merged data are reorganized in cluster
-		Each entry is now a cluster no more an hit.
+#Clusterd_data	File where all the data from Merged data are reorganized in cluster
+		Each entry is now a cluster no more an hit.  OBSOLETE
 
 Analysis	Analysis Macros that can be considered working properly and are 
 
 Analysis_Temp	Analysis directory where are te
 
 Info		General information files
+
+Tracks          File where all the data from Merged data are reorganized in tracks
 
 
 ###################################################################################################
@@ -65,6 +67,9 @@ converter_solaris_tracker.cc	same as onverter_solaris_tracker.C but do not use r
 		UNDER DEVELOPMENT
 		use: for the moment the input data name, the digitizer ID, the output
 		file name must be introduced explicitely inside the code.
+
+converter_solaris_Sic.C	
+
 
 merger.C	merge 2 root files at a time
 		Input from Cal_data 

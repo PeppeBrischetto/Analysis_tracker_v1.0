@@ -92,8 +92,10 @@ void B_trackGenerator_v2(int run)
    Double_t phi_deg;
    Double_t chiSquareTheta;
    Double_t chiSquarePhi;
+   
    Double_t sic_charge;
    Double_t energySic; 
+  
   
    Int_t a_pads_fired[5][100];
    
@@ -226,10 +228,11 @@ void B_trackGenerator_v2(int run)
 
 // OPEN output ROOT file //
    char fileOutName[50];
-   sprintf(fileOutName,"../Tracks/tracks_run%i_B.root",run);
+   sprintf(fileOutName,"../Tracks/tracks_run%i.root",run);
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
 
+   // Tracker Variables
    treeOut->Branch("cl_x", cl_x, "cl_x[5]/D");
    treeOut->Branch("cl_x_mm", cl_x_mm, "cl_x_mm[5]/D"); 
    treeOut->Branch("cl_y", timeAverage, "cl_y[5]/D");
@@ -248,12 +251,18 @@ void B_trackGenerator_v2(int run)
    treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[cl_padMult3]/I");
    treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[cl_padMult4]/I");
    //treeOut->Branch("lastEntryEvent",&last,"a_pads_fired4[cl_padMult4]/I");          
+   
+   // Fit variables
    treeOut->Branch("phi",&phi,"phi/D");
    treeOut->Branch("theta",&theta,"theta/D");
    treeOut->Branch("phi_deg",&phi_deg,"phi_deg/D");      
    treeOut->Branch("theta_deg",&theta_deg,"theta_deg/D");
    treeOut->Branch("chiSquareTheta",&chiSquareTheta,"chiSquareTheta/D");   
    treeOut->Branch("chiSquarePhi",&chiSquarePhi,"chiSquarePhi/D");      
+   treeOut->Branch("slope",&slope,"slope/D");      
+   treeOut->Branch("intercept",&intercept,"intercept/D");      
+
+   // Sic variables
    treeOut->Branch("sic_fired",&FlagSicStop,"sic_fired/I");
    treeOut->Branch("sic_charge",&sic_charge,"sic_charge/D");
    treeOut->Branch("energySic",&energySic,"energySic/D");
@@ -366,22 +375,6 @@ void B_trackGenerator_v2(int run)
    TF1 *lin2 = new TF1("lin2","[0]+([1]*x)",0,200);
    TFitResultPtr fitResultPhi;
    TF1 *phi_fit_result; // this function is only for drawing the fit result
-   
-   TCanvas *C1=new TCanvas("c1","alpha",900.,800.);
-   C1->SetFillColor(kWhite);
-   C1->SetLogy();
-   TCanvas *C2=new TCanvas("C2","theta fit",900.,800.);
-   bg->Draw();
-   bg->SetStats(0);
-   TCanvas *C3=new TCanvas("C3","theta histo",900.,800.);
-   C3->SetFillColor(kWhite);
-   C3->SetLogy();
-   TCanvas *C4=new TCanvas("C4","C4",900.,800.);
-   C4->SetFillColor(kWhite);
-   TCanvas *C5=new TCanvas("C5","phi histo",900.,800.);
-   C5->SetFillColor(kWhite);
-   TCanvas *C6 = new TCanvas("C6","Drift time",900.,800.);
-   C6->SetFillColor(kWhite);
    
 // END Histo and Canvas 	////////////////////////////////////
 
@@ -553,9 +546,6 @@ void B_trackGenerator_v2(int run)
             }
 	    
 	    row[4]->GetYaxis()->SetRangeUser(0,max*2);
-
-	    C4->cd();
-	    C4->Update();
          
             fitResultTheta=grTheta->Fit("lin1","SQ");
    	    if(fitResultTheta==0){
@@ -588,29 +578,15 @@ void B_trackGenerator_v2(int run)
             }
             
             if(FlagSicStop==1 && flagM==1 ){           
-               C2->cd(0);
-               C2->Update();
+
                if(np>0){
                    grTheta->Draw("P");
                    //grTheta->Fit("lin1","Q");
                    theta_fit_result->Draw("same");
                    cout << "\n\n +++++++++++++++++++++++++++++++++++ theta_fit_result formula: " << theta_fit_result->GetExpFormula() << "\n\n" << endl;
                }
-                            
-               cout<<"press any key to continue, q to quit, c to continue till the end"<<endl; 
-               if(flagM)
-                  cin>>anykey;
+          
             }
-
-            if(anykey=='q'){ 
-               fileOut->cd();
-               treeOut->Write();
-               fileOut->Purge();
-               fileOut->Close();
-               return; // Per uscire dal programma
-            }
-
-      	    if(anykey=='c') flagM=0;   
 
             //for (int q=0; q<5; ++q) {
                 //for (int h=0; h<cl_padMult[q]; ++h)
@@ -657,48 +633,9 @@ void B_trackGenerator_v2(int run)
          }
       }
    }
-
-   C2->Update();
-
-   C1->cd();
-   h_alpha[0]->Draw();
-   h_alpha[1]->Draw("same");
-   h_alpha[2]->Draw("same");
-   C3->cd();
-   h_angles[0]->Draw();
-   h_angles[1]->Draw("same");
-   h_angles[2]->Draw("same");
-   TLegend *leg1 = new TLegend(0.75,0.8,0.85,0.85);
-   leg1->AddEntry(h_angles[2],"Tracks hitting the SiC","L");
-   leg1->AddEntry(h_angles[1],"Tracks not hitting the SiC","L");
-   leg1->AddEntry(h_angles[0],"Sum","L");
-   leg1->Draw("same");
-   C3->Update();
-   C5->cd();
-   h_angles[3]->Draw();
-   h_angles[4]->Draw("same");
-   h_angles[5]->Draw("same");
-   TLegend *leg2 = new TLegend(0.75,0.8,0.85,0.85);
-   leg2->AddEntry(h_angles[5],"Tracks hitting the SiC","L");
-   leg2->AddEntry(h_angles[4],"Tracks not hitting the SiC","L");
-   leg2->AddEntry(h_angles[3],"Sum","L");
-   leg2->Draw("same");
-   C5->Update();
-   C6->cd();
    
-   if (sicFileOpen) {
-      for(int i=0;i<11;i++)
-         h_driftTime[i]->Draw("same");
-   }
    
-   TLegend *leg3 = new TLegend(0.80,0.65,0.90,0.85);
-   for(int i=0;i<11;i++){
-      sprintf(dummyString,"Row %i",i);
-      leg3->AddEntry(h_driftTime[i],dummyString,"L");
-   }
-   leg3->Draw("same");
-   //cout << "Col sic: " << h_angles[2]->Integral(0,nbinalpha) << endl;
-   
+   //cout << "Col sic: " << h_angles[2]->Integral(0,nbinalpha) << endl;   
    //cout<<"--------------------------------------"<<endl;
    //cout<<" tracksCounter         "<<tracksCounter<<endl;
    //cout<<" trackNoSicsCounter    "<<trackNoSicsCounter<<endl;
