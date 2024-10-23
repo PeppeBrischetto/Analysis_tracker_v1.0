@@ -26,10 +26,16 @@ A_plot_padSpectrum_2.C  plot the charge spectrum of a single pad with a conditio
 
 B_anglesFinder_plot_tracker_and_sic_v2.C   
 
-
+B_resolutionCalc.C	OBSOLETE
 
 
 B_trackFinder_plot.C 	find the tracks and plot them. OBSOLETE
+
+C_plot_tracks.C		plot tracks from files Tracks
+
+C_plot_phi.C		plot phi spectra of a single SiC
+
+C_plot_ChargeSiC.C	plot charge spectra for the SiC
 
 
 Z_check_mean.C		check the value of the mean of the istogram of a cluster

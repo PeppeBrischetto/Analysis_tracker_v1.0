@@ -1,5 +1,5 @@
 //###################################################################################################
-//#   plot charge spectra of a single SiC
+//#   plot theta spectra of a single SiC
 //#      
 //#   required as argument the run number
 //#

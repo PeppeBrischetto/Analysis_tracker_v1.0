@@ -20,6 +20,7 @@
 //#   updated : 10 Jun 2024 extension to no-segmented rows (i.e. pads), transforming 5 -> 10    A. Pitronaci
 //#   updated : 24 Jun 2024 insert option to not consider the SiC file  G. Brischetto
 //#   updated :  8 oct 2024 corrected the zcoordinate D. Torresi
+//#   updated : 22 oct 2024 removed TCanvas and plot D. Torresi, add output variables slopeT slopeP interceptT interceptP
 //###################################################################################################
 
 
@@ -93,7 +94,7 @@ void B_trackGenerator_v2(int run)
    Double_t chiSquareTheta;
    Double_t chiSquarePhi;
    
-   Double_t sic_charge;
+   Int_t sic_charge;
    Double_t energySic; 
   
   
@@ -102,7 +103,8 @@ void B_trackGenerator_v2(int run)
 // other variables
    
    // fitting variables
-   double slope, intercept, chi2;
+   double slopeT, interceptT, chi2T;
+   double slopeP, interceptP, chi2F;
    double charge = 0.0;
    double weigthed_pos[60];
    Double_t alpha=-100, alpha_deg=-100;  // auxiliary angle for the calculation of theta
@@ -259,12 +261,14 @@ void B_trackGenerator_v2(int run)
    treeOut->Branch("theta_deg",&theta_deg,"theta_deg/D");
    treeOut->Branch("chiSquareTheta",&chiSquareTheta,"chiSquareTheta/D");   
    treeOut->Branch("chiSquarePhi",&chiSquarePhi,"chiSquarePhi/D");      
-   treeOut->Branch("slope",&slope,"slope/D");      
-   treeOut->Branch("intercept",&intercept,"intercept/D");      
+   treeOut->Branch("slopeT",&slopeT,"slopeT/D");      
+   treeOut->Branch("interceptT",&interceptT,"interceptT/D");      
+   treeOut->Branch("slopeP",&slopeP,"slopeP/D");      
+   treeOut->Branch("interceptP",&interceptP,"interceptP/D");  
 
    // Sic variables
    treeOut->Branch("sic_fired",&FlagSicStop,"sic_fired/I");
-   treeOut->Branch("sic_charge",&sic_charge,"sic_charge/D");
+   treeOut->Branch("sic_charge",&sic_charge,"sic_charge/I");
    treeOut->Branch("energySic",&energySic,"energySic/D");
 
 //////////////////////////////////////////////////////////////////////////////
@@ -550,27 +554,27 @@ void B_trackGenerator_v2(int run)
             fitResultTheta=grTheta->Fit("lin1","SQ");
    	    if(fitResultTheta==0){
    	       cout<<"### TF ### "<<fitResultTheta<<endl;
-       	       intercept = fitResultTheta->Value(0);
-	       slope = fitResultTheta->Value(1);
-	       //theta_fit_result = new TF1("theta_fit_result",Form("%f+(%f*x)",intercept,slope),0.,107.);
-	       theta_fit_result->SetParameter(0,intercept);
-	       theta_fit_result->SetParameter(1,slope);	       
+       	       interceptT = fitResultTheta->Value(0);
+	       slopeT = fitResultTheta->Value(1);
+	       //theta_fit_result = new TF1("theta_fit_result",Form("%f+(%f*x)",interceptT,slopeT),0.,107.);
+	       theta_fit_result->SetParameter(0,interceptT);
+	       theta_fit_result->SetParameter(1,slopeT);	       
     	       chiSquareTheta = fitResultTheta->Chi2();
-    	       cout<<"intercept "<< intercept <<"\t slope "<< slope << "\t chi2 "<< chiSquareTheta << endl;
-	       theta = TMath::ATan(slope);
+    	       cout<<"intercept "<< interceptT <<"\t slope "<< slopeT << "\t chi2 "<< chiSquareTheta << endl;
+	       theta = TMath::ATan(slopeT);
                theta_deg = theta*180./TMath::Pi();
             }else{
                theta = -1000;
                theta_deg = -1000;
             }
             
-            //cout << "slope " << slope << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
+            //cout << "slope " << slopeT << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
        	    fitResultPhi=grPhi->Fit("lin2","SQ");
             if(fitResultPhi==0){
-    	       intercept = fitResultPhi->Value(0);
-   	       slope = fitResultPhi->Value(1);
+    	       interceptP = fitResultPhi->Value(0);
+   	       slopeP = fitResultPhi->Value(1);
 	       chiSquarePhi = fitResultPhi->Chi2();
-               phi = TMath::ATan(slope);
+               phi = TMath::ATan(slopeP);
 	       phi_deg = phi*180./TMath::Pi();
             }else{
                phi = -1000;

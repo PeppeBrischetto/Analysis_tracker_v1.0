@@ -1,5 +1,5 @@
 //###################################################################################################
-//#   plot charge spectra of a single SiC
+//#   plot phi spectra of a single SiC
 //#      
 //#   required as argument the run number
 //#            as input the DeltaT, time interval that is used to define an event, and the Time window

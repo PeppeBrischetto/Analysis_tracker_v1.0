@@ -1,5 +1,5 @@
 //###################################################################################################
-//#   plot charge theta spectra 
+//#   plot charge spectra for the SiC
 //#      
 //#   required as argument the run number
 //#
@@ -24,7 +24,7 @@ void C_plot_ChargeSiC(int run)
    Double_t theta_deg=-1000;		// theta of the track in deg
    Double_t phi=-1000;
    Double_t phi_deg=-1000;
-   Double_t sic_charge;
+   Int_t sic_charge;
    Double_t energySic;
    int sic_fired;
   
@@ -42,7 +42,7 @@ void C_plot_ChargeSiC(int run)
       
    treeTracks->SetBranchAddress("cl_x", cl_x);
    treeTracks->SetBranchAddress("cl_x_mm", cl_x_mm); 
-   //treeTracks->SetBranchAddress("cl_y", cl_y);
+   treeTracks->SetBranchAddress("cl_y", cl_y);
    treeTracks->SetBranchAddress("cl_y_mm", cl_y_mm);
    treeTracks->SetBranchAddress("cl_x_rms", cl_x_rms);
    treeTracks->SetBranchAddress("cl_padMult",cl_padMult);
@@ -61,17 +61,32 @@ void C_plot_ChargeSiC(int run)
    TCanvas *C1=new TCanvas("c1","alpha",1600, 100,1000.,600.);
    C1->SetFillColor(kWhite);
    
-   TH1F *sicCharge=new TH1F("","",1000,0,64000);
+   TH1F *sicCharge=new TH1F("","",2000,0,20000);
    sicCharge->SetStats(0);
    sicCharge->GetXaxis()->SetTitle("charge");
    sicCharge->GetYaxis()->SetTitle("counts");
    
+   TH1F *sicChargeNT=new TH1F("","",2000,0,20000);
+   TH1F *sicChargeT=new TH1F("","",2000,0,20000);
+   
+   
    for(int i=0; i<entries; i++){
    //for(int i=0; i<50; i++){
       treeTracks->GetEntry(i);
-      sicCharge->Fill(energySic);
+      sicCharge->Fill(sic_charge);
+      if(sic_fired){
+         sicChargeT->Fill(sic_charge);
+      }else{
+         sicChargeNT->Fill(sic_charge);
+      }
+      
    }
+   sicCharge->SetLineColor(kBlack);
+   sicChargeT->SetLineColor(kRed);
+   sicChargeNT->SetLineColor(kBlue);
    sicCharge->Draw();
+   sicChargeT->Draw("SAME");
+   sicChargeNT->Draw("SAME");
    
  }
  

@@ -31,7 +31,8 @@ void C_plot_tracks(int run){
    Double_t sic_charge;
    Double_t energySic; 
    Int_t a_pads_fired[5][100];
-   double slope, intercept;
+   double slopeT, interceptT;
+   double slopeP, interceptP;
    int sic_fired;
 
    int entries;
@@ -60,11 +61,7 @@ void C_plot_tracks(int run){
    tree->SetBranchAddress("cl_y_mm",&cl_y_mm);
    tree->SetBranchAddress("cl_x_rms",&cl_x_rms);
    tree->SetBranchAddress("cl_charge",&cl_charge);
-   tree->SetBranchAddress("cl_padMult0",&cl_padMult[0]);
-   tree->SetBranchAddress("cl_padMult1",&cl_padMult[1]);
-   tree->SetBranchAddress("cl_padMult2",&cl_padMult[2]);
-   tree->SetBranchAddress("cl_padMult3",&cl_padMult[3]);
-   tree->SetBranchAddress("cl_padMult4",&cl_padMult[4]);
+   tree->SetBranchAddress("cl_padMult",cl_padMult);
    tree->SetBranchAddress("pads_fired0",&a_pads_fired[0]);
    tree->SetBranchAddress("pads_fired1",&a_pads_fired[1]);
    tree->SetBranchAddress("pads_fired2",&a_pads_fired[2]);
@@ -77,8 +74,10 @@ void C_plot_tracks(int run){
    tree->SetBranchAddress("phi_deg",&phi_deg);
    tree->SetBranchAddress("chiSquareTheta",&chiSquareTheta);   
    tree->SetBranchAddress("chiSquarePhi",&chiSquarePhi);      
-   tree->SetBranchAddress("intercept",&intercept);
-   tree->SetBranchAddress("slope",&slope);
+   tree->SetBranchAddress("interceptT",&interceptT);
+   tree->SetBranchAddress("slopeT",&slopeT);
+   tree->SetBranchAddress("interceptP",&interceptP);
+   tree->SetBranchAddress("slopeP",&slopeP);
    
    // Sic variables
    tree->SetBranchAddress("sic_fired",&sic_fired);
@@ -115,10 +114,10 @@ void C_plot_tracks(int run){
    edgeUp->SetLineColor(kViolet);
    edgeUp->Draw("SAME"	); 
    
-   TF1 *line = new TF1("line","[0]+([1]*x)",-100,200);
+   TF1 *line = new TF1("line","[0]+([1]*x)",-100,300);
    line->SetLineColor(kRed);
-   TF1 *line2 = new TF1("line2","[0]+([1]*x)",-100,200);
-   line->SetLineColor(kGreen);
+   TF1 *line2 = new TF1("line2","[0]+([1]*x)",-100,300);
+   line2->SetLineColor(kGreen);
    
    TMarker *X1=new TMarker();
    X1->SetMarkerStyle(20);
@@ -135,17 +134,20 @@ void C_plot_tracks(int run){
       for(int j=0; j<5; j++){cout<<cl_x[j]<<"  "; }
       cout<<"|"<<theta<<endl;
       cout<<endl;
-      line->SetParameter(0,intercept);
-      line->SetParameter(1,slope);
+      line->SetParameter(0,interceptT);
+      line->SetParameter(1,slopeT);
       line->Draw("SAME");
-      line2->SetParameter(0,intercept);
-      line2->SetParameter(1,atan((-0.5*3.1415)-theta));
+      line2->SetParameter(0,-interceptT/slopeT);
+      line2->SetParameter(1,1./slopeT);
       line2->Draw("SAME");
       
+      cout<<" A , B : "<<interceptT<<"\t"<<slopeT<<"\t"<<theta_deg<<endl;
+      cout<<" A', B': "<<-interceptT/slopeT<<"\t"<<1./slopeT<<endl;
+      
       X1->SetX(0);
-      X1->SetY(intercept);
+      X1->SetY(interceptT);
       X1->Draw("SAME");      
-      X2->SetX(intercept);
+      X2->SetX(interceptT);
       X2->SetY(0);
       X2->Draw("SAME");      
       
@@ -153,7 +155,7 @@ void C_plot_tracks(int run){
       C1->Update();
       cout<<"press anykey to continue"<<endl;
       cin>>pippo;
-      
+      if(pippo=='q') break;
       
    }
 
