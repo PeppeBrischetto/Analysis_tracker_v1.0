@@ -31,7 +31,9 @@ B_resolutionCalc.C	OBSOLETE
 
 B_trackFinder_plot.C 	find the tracks and plot them. OBSOLETE
 
-C_plot_tracks.C		plot tracks from files Tracks
+C_plot_tracks_theta.C	plot tracks from files Tracks on the horizontal plane
+
+C_plot_tracks_Phi.C	plot tracks from files Tracks on the vertical plane
 
 C_plot_phi.C		plot phi spectra of a single SiC
 
