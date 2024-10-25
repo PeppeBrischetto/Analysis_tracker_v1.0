@@ -64,7 +64,11 @@ void C_plot_tracks_Theta(int run){
    tree->SetBranchAddress("cl_y_mm",&cl_y_mm);
    tree->SetBranchAddress("cl_x_rms",&cl_x_rms);
    tree->SetBranchAddress("cl_charge",&cl_charge);
-   tree->SetBranchAddress("cl_padMult",&cl_padMult);
+   tree->SetBranchAddress("cl_padMult0",&cl_padMult[0]);
+   tree->SetBranchAddress("cl_padMult1",&cl_padMult[1]);
+   tree->SetBranchAddress("cl_padMult2",&cl_padMult[2]);
+   tree->SetBranchAddress("cl_padMult3",&cl_padMult[3]);
+   tree->SetBranchAddress("cl_padMult4",&cl_padMult[4]);
    tree->SetBranchAddress("pads_fired0",&a_pads_fired[0]);
    tree->SetBranchAddress("pads_fired1",&a_pads_fired[1]);
    tree->SetBranchAddress("pads_fired2",&a_pads_fired[2]);
@@ -157,7 +161,7 @@ void C_plot_tracks_Theta(int run){
      
       // selection on total charge on the last row, make the average of the first 4 row ad if the charge of the last 
       // row is smaller or larger of 50% of the average of the first row the track is removed
-      cout<<"Charge: "
+      cout<<"Charge: ";
       for(int k=0; k<4; k++){
          cout<<cl_charge[k]<<"\t";
          totalCharge=totalCharge+cl_charge[k];

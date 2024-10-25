@@ -20,8 +20,8 @@
 //#   updated : 10 Jun 2024 extension to no-segmented rows (i.e. pads), transforming 5 -> 10    A. Pitronaci
 //#   updated : 24 Jun 2024 insert option to not consider the SiC file  G. Brischetto
 //#   updated :  8 oct 2024 corrected the zcoordinate D. Torresi
-//#   updated : 22 oct 2024 removed TCanvas and plot D. Torresi, add output variables slopeT slopeP interceptT interceptP
-//#   updated : 24 oct 2024 cl_y now is written correctly for the tracks with a Sic  Brischetto Torresi
+//#   updated : 22 oct 2024 removed TCanvas and plot D. Torresi, add output variables slopeT slopeP interceptT interceptP D. Torresi
+//#   updated : 24 oct 2024 cl_y now is written correctly for the tracks with a Sic G. Brischetto D. Torresi
 //###################################################################################################
 
 
@@ -162,11 +162,11 @@ void B_trackGenerator_v3(int run)
 // open tracker file
    char fileInTracker[50];
       if(run<10){
-      sprintf(fileInTracker, "../Merged_data/run_00%i/merg_00%i.root", run, run);
+      sprintf(fileInTracker, "erged_data/run_00%i/merg_00%i.root", run, run);
    }else if(run <100){
-      sprintf(fileInTracker, "../Merged_data/run_0%i/merg_0%i.root", run, run);
+      sprintf(fileInTracker, "Merged_data/run_0%i/merg_0%i.root", run, run);
    }else{
-      sprintf(fileInTracker, "../Merged_data/run_%i/merg_%i.root", run, run);
+      sprintf(fileInTracker, "Merged_data/run_%i/merg_%i.root", run, run);
    } 
    cout<<fileInTracker<<endl;
    TFile *finTracker = new TFile(fileInTracker);
@@ -205,11 +205,11 @@ void B_trackGenerator_v3(int run)
    char fileInSic[50];
    if (sicFileOpen) {
       if(run<10){
-         sprintf(fileInSic, "../Merged_data/run_00%i/sic_00%i.root", run, run);
+         sprintf(fileInSic, "Merged_data/run_00%i/sic_00%i.root", run, run);
       }else if(run <100){
-         sprintf(fileInSic, "../Merged_data/run_0%i/sic_0%i.root", run, run);
+         sprintf(fileInSic, "Merged_data/run_0%i/sic_0%i.root", run, run);
       }else{
-         sprintf(fileInSic, "../Merged_data/run_%i/sic_%i.root", run, run);
+         sprintf(fileInSic, "Merged_data/run_%i/sic_%i.root", run, run);
       } 
       cout<<fileInSic<<endl;
       finSic = new TFile(fileInSic);
@@ -231,7 +231,7 @@ void B_trackGenerator_v3(int run)
 
 // OPEN output ROOT file //
    char fileOutName[50];
-   sprintf(fileOutName,"../Tracks/tracks_run%i.root",run);
+   sprintf(fileOutName,"Tracks/tracks_run%i.root",run);
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
 
@@ -242,23 +242,23 @@ void B_trackGenerator_v3(int run)
    treeOut->Branch("cl_y_mm", cl_y_mm, "cl_y_mm[5]/D");
    treeOut->Branch("cl_x_rms", cl_x_rms, "cl_x_rms[5]/D");
    treeOut->Branch("cl_charge", cl_charge, "cl_charge[11]/D");
-   treeOut->Branch("cl_padMult",cl_padMult,"cl_padMult[5]/I");
-   //treeOut->Branch("cl_padMult0",&cl_padMult[0],"cl_padMult0/I");
-   //treeOut->Branch("cl_padMult1",&cl_padMult[1],"cl_padMult1/I");
-   //treeOut->Branch("cl_padMult2",&cl_padMult[2],"cl_padMult2/I");
-   //treeOut->Branch("cl_padMult3",&cl_padMult[3],"cl_padMult3/I");
-   //treeOut->Branch("cl_padMult4",&cl_padMult[4],"cl_padMult4/I");
-   //treeOut->Branch("pads_fired0",&a_pads_fired[0],"a_pads_fired0[cl_padMult0]/I");
-   //treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[cl_padMult1]/I");
-   //treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[cl_padMult2]/I");
-   //treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[cl_padMult3]/I");
-   //treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[cl_padMult4]/I");
+   //treeOut->Branch("cl_padMult",cl_padMult,"cl_padMult[5]/I");
+   treeOut->Branch("cl_padMult0",&cl_padMult[0],"cl_padMult0/I");
+   treeOut->Branch("cl_padMult1",&cl_padMult[1],"cl_padMult1/I");
+   treeOut->Branch("cl_padMult2",&cl_padMult[2],"cl_padMult2/I");
+   treeOut->Branch("cl_padMult3",&cl_padMult[3],"cl_padMult3/I");
+   treeOut->Branch("cl_padMult4",&cl_padMult[4],"cl_padMult4/I");
+   treeOut->Branch("pads_fired0",&a_pads_fired[0],"a_pads_fired0[cl_padMult0]/I");
+   treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[cl_padMult1]/I");
+   treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[cl_padMult2]/I");
+   treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[cl_padMult3]/I");
+   treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[cl_padMult4]/I");
    
-   treeOut->Branch("pads_fired0",&a_pads_fired[0],"a_pads_fired0[100]/I");
-   treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[100]/I");
-   treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[100]/I");
-   treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[100]/I");
-   treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[100]/I");
+   //treeOut->Branch("pads_fired0",&a_pads_fired[0],"a_pads_fired0[100]/I");
+   //treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[100]/I");
+   //treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[100]/I");
+   //treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[100]/I");
+   //treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[100]/I");
    //treeOut->Branch("lastEntryEvent",&last,"a_pads_fired4[cl_padMult4]/I");          
    
    // Fit variables
@@ -316,7 +316,7 @@ void B_trackGenerator_v3(int run)
    }
    h_time[1]->SetLineColor(kRed);
 
-   TH1D *h_driftTime[11];
+   /*TH1D *h_driftTime[11];
    for(int i=0;i<11;i++){
       sprintf(dummyString,"h_driftTime%i",i); 
       h_driftTime[i] = new TH1D(dummyString,dummyString,500,0.5E+00,5.0E+00);
@@ -364,7 +364,7 @@ void B_trackGenerator_v3(int run)
           h_angles[k]->SetLineColor(kBlue);
        else if (k%3==2)
           h_angles[k]->SetLineColor(kRed);
-   }
+   }*/
  
   
    // Fitting TGraphs and functions
@@ -545,7 +545,7 @@ void B_trackGenerator_v3(int run)
                         //timeAverage[m]=driftTime/100000;
                         cl_y[m] = driftTime;
                         cl_y_mm[m] = driftTime*velocity_mm_ps;
-                        h_driftTime[m]->Fill(driftTime/1000000); 	// drift time expressed in us
+                        //h_driftTime[m]->Fill(driftTime/1000000); 	// drift time expressed in us
                         
                         // if there is a SiC fill again the grphi Tgraph with the new cl_y_mm considering the starting time 
                         // for the drift time from the SiC hit
@@ -602,9 +602,9 @@ void B_trackGenerator_v3(int run)
             if(FlagSicStop==1 && flagM==1 ){           
 
                if(np>0){
-                   grTheta->Draw("P");
+                   //grTheta->Draw("P");
                    //grTheta->Fit("lin1","Q");
-                   theta_fit_result->Draw("same");
+                   //theta_fit_result->Draw("same");
                    cout << "\n\n +++++++++++++++++++++++++++++++++++ theta_fit_result formula: " << theta_fit_result->GetExpFormula() << "\n\n" << endl;
                }
           
@@ -655,8 +655,10 @@ void B_trackGenerator_v3(int run)
          }
       }
    }
+//################### END Event loop ######################################
    
-   
+
+
    //cout << "Col sic: " << h_angles[2]->Integral(0,nbinalpha) << endl;   
    //cout<<"--------------------------------------"<<endl;
    //cout<<" tracksCounter         "<<tracksCounter<<endl;

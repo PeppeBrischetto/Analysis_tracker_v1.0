@@ -24,7 +24,7 @@ merdir=~/Analysis_tracker_v1.0/Merged_data/run_$run
 
 
 #################################################
-#  Converting binary to root
+#  Converting binary to root  	2nd level
 ################################################
 
 # If the output directory does not exist create it
@@ -51,8 +51,15 @@ do
 
 done
 
+
 #################################################
-# Merging data
+# Converting SiC file		2th level
+#################################################
+
+
+
+#################################################
+# Merging data			3rd level
 #################################################
 
 merfile=$merdir/merged.root
@@ -80,15 +87,22 @@ for dig in 22643 22644 22645 21247
 done
 
 # remove unecesary files
-rm $file1 $file2
+rm $file1 $file2				# file usde for the merging
+#for dig in 22642 22643 22644 22645 21247
+#rm $caldir/dig_$dig\_cal.root			# calibrated file that are used only for the merging
+
 # put the final output in the correct directory
 mv $outfile  $merdir/merg_$run.root
 
 
 
 
+#################################################
+# Producing tracking data	4th level
+#################################################
 
 
+#  trackGenerator.C($run\)
 
 
 
