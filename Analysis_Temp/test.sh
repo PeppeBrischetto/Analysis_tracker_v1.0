@@ -1,5 +1,5 @@
-for z in {160..230..10}
+for z in {20..60..1}
 do
-run=128
+run=130
 root -q -l "resolution_akis.C($run,$z)"
 done
