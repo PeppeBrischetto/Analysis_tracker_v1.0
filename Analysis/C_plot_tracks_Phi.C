@@ -96,17 +96,17 @@ void C_plot_tracks_Phi(int run){
    int xmin=-80;
    int xmax= 118;
    int DeltaX=xmax-xmin;
-   int ymin=-80;
-   int ymax= 80;
+   int ymin=-10;
+   int ymax= 160;
    int DeltaY=ymax-ymin;
 
    TCanvas *C1=new TCanvas("tracker","tracker",250,160,DeltaX*5,DeltaY*5);
    TH2F *bg=new TH2F("bg","",100,xmin,xmax,100,ymin,ymax); 
    bg->SetStats(0); 
-   TLine *edgeLe=new TLine(0,-75,0,75);
-   TLine *edgeRi=new TLine(108,-75,108,75);
-   TLine *edgeLo=new TLine(0,-75,108,-75);
-   TLine *edgeUp=new TLine(0,75,108,75);
+   TLine *edgeLe=new TLine(0,0,0,150);
+   TLine *edgeRi=new TLine(108,0,108,150);
+   TLine *edgeLo=new TLine(0,0,108,0);
+   TLine *edgeUp=new TLine(0,150,108,150);
 
    bg->Draw();
    edgeLe->SetLineColor(kViolet);

@@ -58,7 +58,6 @@ void C_plot_tracks_Theta(int run){
    TFile *f = new TFile(fileIn);
    TTree *tree = (TTree*)f->Get("Data_R");
    
-
    tree->SetBranchAddress("cl_x",&cl_x);
    tree->SetBranchAddress("cl_x_mm",&cl_x_mm);
    tree->SetBranchAddress("cl_y",&cl_y);
@@ -131,7 +130,8 @@ void C_plot_tracks_Theta(int run){
    for(int i=0; i<1000;i++){
       tree->GetEntry(i);
       //for(int j=0; j<5; j++){cout<<cl_x[j]<<"  "; }
-      cout<<"|"<<theta<<endl;
+      cout<<"theta| "<<theta_deg<<endl;
+      cout<<"phi|   "<<phi_deg<<endl;
       cout<<endl;
       //line->SetParameter(0,interceptT);
       //line->SetParameter(1,slopeT);
@@ -157,16 +157,15 @@ void C_plot_tracks_Theta(int run){
      
       // selection on total charge on the last row, make the average of the first 4 row ad if the charge of the last 
       // row is smaller or larger of 50% of the average of the first row the track is removed
+      cout<<"Charge: "
       for(int k=0; k<4; k++){
          cout<<cl_charge[k]<<"\t";
          totalCharge=totalCharge+cl_charge[k];
       }
       if(abs(totalCharge/4-cl_charge[4])>(totalCharge/8)) qualityFlag=1;
-      cout<<"\n"<<"# "<<totalCharge/4<<"\t"<<cl_charge[4]<<"\t"<<abs(totalCharge/4-cl_charge[4])<<"\t"<<totalCharge/40<<endl;
-      
+      //cout<<"\n"<<"# "<<totalCharge/4<<"\t"<<cl_charge[4]<<"\t"<<abs(totalCharge/4-cl_charge[4])<<"\t"<<totalCharge/40<<endl;
       //   if(cl_padMult[k]<4)qualityFlag=1;         
-      
-     
+    
      
       for(int k=0; k<5; k++){
          cout<<cl_padMult[k]<<"\t";

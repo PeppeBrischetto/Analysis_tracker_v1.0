@@ -21,10 +21,11 @@
 //#   updated : 24 Jun 2024 insert option to not consider the SiC file  G. Brischetto
 //#   updated :  8 oct 2024 corrected the zcoordinate D. Torresi
 //#   updated : 22 oct 2024 removed TCanvas and plot D. Torresi, add output variables slopeT slopeP interceptT interceptP
+//#   updated : 24 oct 2024 cl_y now is written correctly for the tracks with a Sic  Brischetto Torresi
 //###################################################################################################
 
 
-void B_trackGenerator_v2(int run)
+void B_trackGenerator_v3(int run)
 {
 
 ////////////////////////////////////////////////////////////////////
@@ -85,7 +86,7 @@ void B_trackGenerator_v2(int run)
    double cl_x[5];			// x centroid of a cluster in pads unit
    double cl_x_mm[5];			// x centroid of a cluster in mm
    double cl_x_rms[5];  		// rms of the charge distribution of a cluster in pads unit
-   double cl_y[5] = {0};		// y centroid of a cluster in time
+   double cl_y[5] = {0};		// y centroid of a cluster in time [ps]
    double cl_y_mm[5] = {0};		// y centroid of a cluster in mm
    Double_t theta;		// theta of the track in rad
    Double_t theta_deg;		// theta of the track in deg
@@ -237,7 +238,7 @@ void B_trackGenerator_v2(int run)
    // Tracker Variables
    treeOut->Branch("cl_x", cl_x, "cl_x[5]/D");
    treeOut->Branch("cl_x_mm", cl_x_mm, "cl_x_mm[5]/D"); 
-   treeOut->Branch("cl_y", timeAverage, "cl_y[5]/D");
+   treeOut->Branch("cl_y", cl_y, "cl_y[5]/D");
    treeOut->Branch("cl_y_mm", cl_y_mm, "cl_y_mm[5]/D");
    treeOut->Branch("cl_x_rms", cl_x_rms, "cl_x_rms[5]/D");
    treeOut->Branch("cl_charge", cl_charge, "cl_charge[11]/D");
@@ -399,8 +400,10 @@ void B_trackGenerator_v2(int run)
    if (sicFileOpen) {
    treeSic->GetEntry(0);
    cout<<" time init SiC: "<<TimestampSic<<endl;
-   } else{cerr<<" Error, SiC file not found!"<<endl;
+   } else{cerr<<" Error, SiC file not found!"<<endl;}
    
+   
+//################### Event loop ######################################
    for(int i=0; i<entriesTracker; i++){
    //for(int i=0; i<10; i++){
       treeTracker->GetEntry(i);
@@ -478,7 +481,8 @@ void B_trackGenerator_v2(int run)
 	       cl_x_mm[j] = cl_x[j] * padWidth + padWidth/2;
 	       if(max>100){grTheta->SetPoint(np++, zrow[j], cl_x_mm[j]);}
 
-      	       timeAverage[j] = (double)(timeAverage[j]/cl_charge[j]);
+      	       timeAverage[j] = (double)(timeAverage[j]/cl_charge[j]); 
+      	       cl_y[j] = timeAverage[j];    	       
       	       cl_y_mm[j] = timeAverage[j]*velocity_mm_ps;
 	       //printf("timeAverage[%d] = %10.2f (ps) \t cl_y_mm[%d] = %6.2f (mm) \n\n", j, timeAverage[j], j, cl_y_mm[j]);
       	       if(max>100){grPhi->SetPoint(npTime++, zrow[j], cl_y_mm[j]);}
@@ -499,7 +503,7 @@ void B_trackGenerator_v2(int run)
             if (sicFileOpen) {
                finSic->cd();
                SicLoopFlag=1;
-               
+               npTime=0;    // rezeroing the number of point of grPhi becouse can be rewritten after this point.
                TimeDiff=timeinit-TimestampSic;
                
                /*
@@ -537,8 +541,16 @@ void B_trackGenerator_v2(int run)
                      FlagSicStop=1;
                      for(int m=0;m<5;m++){
                         driftTime = timeAverage[m]+timeinit-timeOffset-TimestampSic;
-                        //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
-                        h_driftTime[m]->Fill(driftTime/1000000); // drift time expressed in us
+                        //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;     
+                        //timeAverage[m]=driftTime/100000;
+                        cl_y[m] = driftTime;
+                        cl_y_mm[m] = driftTime*velocity_mm_ps;
+                        h_driftTime[m]->Fill(driftTime/1000000); 	// drift time expressed in us
+                        
+                        // if there is a SiC fill again the grphi Tgraph with the new cl_y_mm considering the starting time 
+                        // for the drift time from the SiC hit
+                        if(max>100){grPhi->SetPoint(npTime++, zrow[m], cl_y_mm[m]);}
+                        
                      }
                   }else if(TimeDiff >= timeWindowhigh) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
                      sicWithoutTracks++;
