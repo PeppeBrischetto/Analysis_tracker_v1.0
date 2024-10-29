@@ -263,8 +263,8 @@ cout<<""<<endl;
    
    resX2=sqrt(abs(pow(fwhmX2,2.)-pow(coll_size,2.)));
 
-   
-
+   double error=fitResX2->Error(2)/sigmaDistCollX2;
+   cout<<"Error: "<< error <<" %"<<endl;
    
 // Calculate the vertical position resolution
   /*
