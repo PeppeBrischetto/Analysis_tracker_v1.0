@@ -241,17 +241,23 @@ void B_trackGenerator_v2(int run)
    treeOut->Branch("cl_y_mm", cl_y_mm, "cl_y_mm[5]/D");
    treeOut->Branch("cl_x_rms", cl_x_rms, "cl_x_rms[5]/D");
    treeOut->Branch("cl_charge", cl_charge, "cl_charge[11]/D");
-   //treeOut->Branch("cl_padMult",cl_padMult,"cl_padMult[5]/I");
-   treeOut->Branch("cl_padMult0",&cl_padMult[0],"cl_padMult0/I");
-   treeOut->Branch("cl_padMult1",&cl_padMult[1],"cl_padMult1/I");
-   treeOut->Branch("cl_padMult2",&cl_padMult[2],"cl_padMult2/I");
-   treeOut->Branch("cl_padMult3",&cl_padMult[3],"cl_padMult3/I");
-   treeOut->Branch("cl_padMult4",&cl_padMult[4],"cl_padMult4/I");
-   treeOut->Branch("pads_fired0",&a_pads_fired[0],"a_pads_fired0[cl_padMult0]/I");
-   treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[cl_padMult1]/I");
-   treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[cl_padMult2]/I");
-   treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[cl_padMult3]/I");
-   treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[cl_padMult4]/I");
+   treeOut->Branch("cl_padMult",cl_padMult,"cl_padMult[5]/I");
+   //treeOut->Branch("cl_padMult0",&cl_padMult[0],"cl_padMult0/I");
+   //treeOut->Branch("cl_padMult1",&cl_padMult[1],"cl_padMult1/I");
+   //treeOut->Branch("cl_padMult2",&cl_padMult[2],"cl_padMult2/I");
+   //treeOut->Branch("cl_padMult3",&cl_padMult[3],"cl_padMult3/I");
+   //treeOut->Branch("cl_padMult4",&cl_padMult[4],"cl_padMult4/I");
+   //treeOut->Branch("pads_fired0",&a_pads_fired[0],"a_pads_fired0[cl_padMult0]/I");
+   //treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[cl_padMult1]/I");
+   //treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[cl_padMult2]/I");
+   //treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[cl_padMult3]/I");
+   //treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[cl_padMult4]/I");
+   
+   treeOut->Branch("pads_fired0",&a_pads_fired[0],"a_pads_fired0[100]/I");
+   treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[100]/I");
+   treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[100]/I");
+   treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[100]/I");
+   treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[100]/I");
    //treeOut->Branch("lastEntryEvent",&last,"a_pads_fired4[cl_padMult4]/I");          
    
    // Fit variables
@@ -393,10 +399,12 @@ void B_trackGenerator_v2(int run)
    if (sicFileOpen) {
    treeSic->GetEntry(0);
    cout<<" time init SiC: "<<TimestampSic<<endl;
-   }
+   } else{cerr<<" Error, SiC file not found!"<<endl;
    
+   
+//## Event loop
    for(int i=0; i<entriesTracker; i++){
-//   for(int i=0; i<10000; i++){
+   //for(int i=0; i<10; i++){
       treeTracker->GetEntry(i);
       
       //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}

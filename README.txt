@@ -28,7 +28,7 @@ Cal_data	calibrated root files, still one file for each digitizer.
 Merged_data	One file for each run, all the data form different digitizers are merged in a 
 		single file where the entries are ordered by time (raw+fine)
 
-#Clusterd_data	File where all the data from Merged data are reorganized in cluster
+#Clustered_data	File where all the data from Merged data are reorganized in cluster
 		Each entry is now a cluster no more an hit.  OBSOLETE
 
 Analysis	Analysis Macros that can be considered working properly and are 
@@ -62,7 +62,7 @@ converter_solaris_tracker.C	converts the raw data produced by solaris DAQ for th
                 
                 use:  converter_solaris.C("Raw_data/~/solaris/RAW_data/tracker_and_sic/tracker_and_sic_116_01_22642_000.sol",22642,"Cal_data/out.root") 
 
-converter_solaris_tracker.cc	same as onverter_solaris_tracker.C but do not use root, uses its libraries.
+converter_solaris_tracker.cc	same as converter_solaris_tracker.C but do not use root, uses its libraries.
 			
 		UNDER DEVELOPMENT
 		use: for the moment the input data name, the digitizer ID, the output
@@ -74,6 +74,15 @@ converter_solaris_Sic.C
 merger.C	merge 2 root files at a time
 		Input from Cal_data 
  		Output to Cal_data 
+		
+trackerGenerator.C		Take as input file from tracker and (optionally) from SiC and produce a file with tracks. Each entry of the
+		generated file is a tracks with a number of info for the track.  It must be introduced in the dataProcessing.sh macro
+		
+		Input from   Merged_data
+
+		Output to    Tracks
+                	
+		
 		
 dataProcessing.sh  Shell script that use converter_xxx_.C and merger.C generating in the final merged 
 		file in a single step. Require in input just run number

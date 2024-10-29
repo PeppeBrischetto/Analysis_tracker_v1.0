@@ -190,6 +190,10 @@ void B_trackFinder_plot(int run)
    C5->cd(0);
   // tracks->GetYaxis()->SetRangeUser(-2.0,5.0);
    tracks->Draw();
+   edgeLe->Draw();
+   edgeRi->Draw();
+   edgeLo->Draw();
+   edgeUp->Draw();
   
    treeTracker->GetEntry(0);
    ULong64_t timeinit=Timestamp;
@@ -320,10 +324,7 @@ void B_trackFinder_plot(int run)
 	          fit_result->Draw("same");
 
 	          C5->cd(0);
-	          edgeLe->Draw();
-                  edgeRi->Draw();
-	          edgeLo->Draw();
-                  edgeUp->Draw();
+
  	          fit_result->SetLineColor(2);
 	          fit_result->SetLineWidth(2);
 	          if(np==5){fit_result->Draw("same");}

@@ -5,14 +5,28 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+<<<<<<< HEAD
+=======
 
 using namespace std;
 
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
+
+using namespace std;
+
+<<<<<<< HEAD
 
 double rotation(double xcol,double z0,double theta_tilt){
 
 	const double PI = 3.14159; //Definition of Pi
 	double result=(xcol*cos(PI*0.50-(theta_tilt*PI/180.0)))-(z0*sin(PI*0.50-(theta_tilt*PI/180.0)));
+=======
+	const double PI = 3.14159; //Definition of Pi
+	double l2;
+	double result;
+	l2=(l1-0.50*source_holder_length)*tan(theta_tilt*PI/180.0);
+	result=-l2/cos((0.50*PI)-(theta_tilt*PI/180.0));
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
 	return result;
 
 }
@@ -28,6 +42,7 @@ cout<<""<<endl;
    const double PI = 3.14159;   //Definition of Pi
 
 // input file variables (tracker)
+<<<<<<< HEAD
    double cl_charge[11] = {0};	// charge sum of the pads belonging to a cluster
    Int_t cl_padMult[5]={0};	// number of pads of a cluster
    double cl_x[5];		// x centroid of a cluster in pads unit
@@ -35,6 +50,15 @@ cout<<""<<endl;
    double cl_x_rms[5];  	// rms of the charge distribution of a cluster in pads unit
    double cl_y[5] = {0};	// y centroid of a cluster in time
    double cl_y_mm[5] = {0};	// y centroid of a cluster in mm
+=======
+   double cl_charge[11] = {0};	   	// charge sum of the pads belonging to a cluster
+   Int_t cl_padMult[5]={0};		// number of pads of a cluster
+   double cl_x[5];			// x centroid of a cluster in pads unit
+   double cl_x_mm[5];			// x centroid of a cluster in mm
+   double cl_x_rms[5];  		// rms of the charge distribution of a cluster in pads unit
+   double cl_y[5] = {0};		// y centroid of a cluster in time
+   double cl_y_mm[5] = {0};		// y centroid of a cluster in mm
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
    Double_t slopeT;		// slope of the linear fit X= f(Z)
    Double_t interceptT;		// intercept of the linear fit X= f(Z) (in mm)
    Double_t slopeP;		// slope of the linear fit Y= f(Z)
@@ -61,6 +85,7 @@ cout<<""<<endl;
 
 
 // Variables for the estimation of the resolution
+<<<<<<< HEAD
    double sigmaDistCollX;	// sigma of the distribution of the reconstructed X coordinate of the collimator (in mm) in a plane paraller to the tracker
    double fwhmX;		// FWHM of the distribution of the reconstructed X coordinate of the collimator (in mm) in a plane paraller to the tracker
    double resX;			// Resolution in the determination of the collimator apperture (in mm) in a plane paraller to the tracker
@@ -72,6 +97,15 @@ cout<<""<<endl;
    double sigmaDistCollY;	// sigma of the distribution of the reconstructed Y coordinate of the collimator (in mm) in a plane paraller to tracker
    double fwhmY;		// FWHM of the distribution of the reconstructed Y coordinate of the collimator (in mm) in a plane paraller to tracker
    double resY;			// Resolution in the determination of the collimator apperture (in mm) in a plane paraller to tracker
+=======
+   double sigmaDistCollX;	// sigma of the distribution of the reconstructed X coordinate of the collimator (in mm)
+   double fwhmX;		// FWHM of the distribution of the reconstructed X coordinate of the collimator (in mm)
+   double resX;			// Resolution in the determination of the collimator apperture (in mm)
+   
+   double sigmaDistCollY;	// sigma of the distribution of the reconstructed Y coordinate of the collimator (in mm)
+   double fwhmY;		// FWHM of the distribution of the reconstructed Y coordinate of the collimator (in mm)
+   double resY;			// Resolution in the determination of the collimator apperture (in mm)
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
 
 
 
@@ -79,7 +113,10 @@ cout<<""<<endl;
    double slopeT_inv; 		//slope of the linear fit Z=f(X) describing the ion track
    double interceptT_inv; 	//intercept of the linear fit Z=f(X) describing the ion track (in mm)
    double xcol; 		// reconstructed X position of the collimator in a plane parallel to the tracker (in mm)
+<<<<<<< HEAD
    double xcol_rot; 		// reconstructed X position of the collimator in a plane parallel to the collimator (in mm)
+=======
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
    
    double slopeP_inv; 		//slope of the linear fit Z=f(Y) describing the ion track
    double interceptP_inv; 	//intercept of the linear fit Z=f(Y) describing the ion track (in mm)
@@ -95,7 +132,10 @@ cout<<""<<endl;
    double temp1[10000], temp2[10000], temp3[10000];  //Matrices to store the values of Z0 and X, Y resolutions from the file resolution.txt, before passing them to resolution2.txt
 
    TFitResultPtr fitResX;
+<<<<<<< HEAD
    TFitResultPtr fitResX2;
+=======
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
    TFitResultPtr fitResY;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -137,8 +177,12 @@ cout<<""<<endl;
 
 
 // Declaring Histos 
+<<<<<<< HEAD
    TH1F *plx = new TH1F("plx","",20000,-300.0,500.0);  //histo with the reconstructed X coordinate of the colimator in a plane parallel to the tracker
    TH1F *plx2 = new TH1F("plx2","",20000,-300.0,500.0);  //histo with the reconstructed X coordinate of the colimator in a plane paraller to the collimator
+=======
+   TH1F *plx = new TH1F("plx","",20000,-300.0,500.0);  //histo with the reconstructed X coordinate of the colimator
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
    TH1F *ply = new TH1F("ply","",20000,-300.0,500.0);  //histo with the reconstructed Y coordinate of the colimator
    
    plx->GetXaxis()->SetTitle("X_{col.} (mm)");
@@ -159,6 +203,7 @@ cout<<""<<endl;
    plx->GetYaxis()->SetNdivisions(505);
    plx->GetYaxis()->CenterTitle();
    
+<<<<<<< HEAD
    plx2->GetXaxis()->SetTitle("X_{col.}-rot. (mm)");
    plx2->GetXaxis()->SetTitleOffset(1.05);
    plx2->GetXaxis()->SetTitleSize(0.040);
@@ -178,6 +223,8 @@ cout<<""<<endl;
    plx2->GetYaxis()->CenterTitle();
 
    
+=======
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
    ply->GetXaxis()->SetTitle("Y_{col.} (mm)");
    ply->GetXaxis()->SetTitleOffset(1.05);
    ply->GetXaxis()->SetTitleSize(0.040);
@@ -199,8 +246,12 @@ cout<<""<<endl;
 
 
    TCanvas *colplaneX=new TCanvas("colplaneX","colplaneX",800,500,1000,800);
+<<<<<<< HEAD
    TCanvas *colplaneX_rot=new TCanvas("colplaneX_rot","colplaneX_rot",800,500,1000,800);
    //TCanvas *colplaneY=new TCanvas("colplaneY","colplaneY",800,500,1000,800);
+=======
+   TCanvas *colplaneY=new TCanvas("colplaneY","colplaneY",800,500,1000,800);
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
 
    f->cd();
    
@@ -210,6 +261,18 @@ cout<<""<<endl;
 	//slopeT_inv=atan((-0.5*PI)-theta);
 	slopeT_inv=(1./slopeT);
 	slopeP_inv=(1./slopeP);
+<<<<<<< HEAD
+=======
+	
+	interceptT_inv=-(interceptT/slopeT);
+	interceptP_inv=-(interceptP/slopeP);
+	
+	//printf("Z0: %1.2f,  slope: %1.4f,  intercept: %1.4f \n",z0,slopeP_inv,interceptP_inv);
+	xcol=(z0-interceptT_inv)/slopeT_inv;
+	ycol=(z0-interceptP_inv)/slopeP_inv;
+	plx->Fill(xcol,1);
+	ply->Fill(ycol,1);
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
 	
 	interceptT_inv=-(interceptT/slopeT);
 	interceptP_inv=-(interceptP/slopeP);
@@ -224,7 +287,11 @@ cout<<""<<endl;
 	plx2->Fill(xcol_rot,1);
 	}
 
+<<<<<<< HEAD
 // Calculate the horizontal position resolution in a plane parallel to the tracker
+=======
+// Calculate the horizontal position resolution
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
 
    colplaneX->cd();
    plx->Draw();
@@ -242,6 +309,7 @@ cout<<""<<endl;
    cout<<""<<endl;
    
    resX=sqrt(abs(pow(fwhmX,2.)-pow(coll_size/cos(0.5*PI-(theta_tilt*PI/180.0)),2.)));
+<<<<<<< HEAD
    
    
    // Calculate the horizontal position resolution in a plane parallel to the collimator
@@ -268,6 +336,13 @@ cout<<""<<endl;
    
 // Calculate the vertical position resolution
   /*
+=======
+   
+
+   
+// Calculate the vertical position resolution
+  
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
    colplaneY->cd();
    ply->Draw();
    
@@ -284,10 +359,16 @@ cout<<""<<endl;
    cout<<""<<endl;
    
    resY=sqrt(abs(pow(fwhmY,2.)-pow(coll_size/cos(0.5*PI-(theta_tilt*PI/180.0)),2.)));
+<<<<<<< HEAD
    */
    cout<<"X position resolution: "<< resX <<" mm"<<endl;
    cout<<"X position resolution2: "<< resX2 <<" mm"<<endl;
    //cout<<"Y position resolution: "<< resY <<" mm"<<endl;
+=======
+   
+   cout<<"X position resolution: "<< resX <<" mm"<<endl;
+   cout<<"Y position resolution: "<< resY <<" mm"<<endl;
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
    cout<<""<<endl;
    cout<<""<<endl;
 
@@ -302,7 +383,11 @@ cout<<""<<endl;
     ofstream file;
     file.open("resolution.txt");
     //file << "Zo (mm)	X resolution (mm) Y resolution (mm) \n";
+<<<<<<< HEAD
     file << z0 << " " << resX << " " << resX2 << endl;
+=======
+    file << z0 << " " << resX << " " << resY << endl;
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
     file.close();
     }
     
@@ -321,7 +406,11 @@ cout<<""<<endl;
     
     temp1[lineCount-1]=z0;
     temp2[lineCount-1]=resX;
+<<<<<<< HEAD
     temp3[lineCount-1]=resX2;
+=======
+    temp3[lineCount-1]=resY;
+>>>>>>> 8ad112e0d13c4b51676d48b82d2275c7bf1b29b5
         
     ofstream file2;  
     file2.open("resolution2.txt");
