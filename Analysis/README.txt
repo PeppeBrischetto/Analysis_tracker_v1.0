@@ -35,9 +35,16 @@ C_plot_tracks_theta.C	plot tracks from files Tracks on the horizontal plane
 
 C_plot_tracks_Phi.C	plot tracks from files Tracks on the vertical plane
 
-C_plot_phi.C		plot phi spectra of a single SiC
+C_plot_phi.C		plot phi spectra of a single SiC. OBSOLETE
+
+C_plot_theta.C		plot theta spectra of a single SiC. OBSOLETE
 
 C_plot_ChargeSiC.C	plot charge spectra for the SiC
+
+C_plot_clusterCharge	plot energy spectrum of the cluster for each raw
+
+
+
 
 
 Z_check_mean.C		check the value of the mean of the istogram of a cluster

@@ -6,9 +6,10 @@
 //#   make a fit of five clusters of a track and return the slope. 
 //#   it can plot the histograms with the angles of the tracks, but it is not necessary
 //#   
-//#   required as argument the run number
+//#   required as argument the run number and a int that is 0 if there is no Sic and 1 if there is a Sic file
 //#           * as input the DeltaT, time interval that is used to define an event, and the Time window
 //#            		where to seek the tracks.
+//#           
 //# 	       			
 //#   theta and phi angles are defined with respect to the z-axis 
 //###################################################################################################
@@ -25,7 +26,7 @@
 //###################################################################################################
 
 
-void B_trackGenerator_v3(int run)
+void trackGenerator(int run, bool sicFileOpen)
 {
 
 ////////////////////////////////////////////////////////////////////
@@ -144,7 +145,7 @@ void B_trackGenerator_v3(int run)
    int npTime=0; // number of point of the Tgraph of the time
    char dummyString[50];
 
-   bool sicFileOpen = true; // if the SiC was not mounted in a run, this variable is to be set to false
+   //bool sicFileOpen = true; // if the SiC was not mounted in a run, this variable is to be set to false
    TString sicOrNot;
 
    // control variables
@@ -162,7 +163,7 @@ void B_trackGenerator_v3(int run)
 // open tracker file
    char fileInTracker[50];
       if(run<10){
-      sprintf(fileInTracker, "erged_data/run_00%i/merg_00%i.root", run, run);
+      sprintf(fileInTracker, "Merged_data/run_00%i/merg_00%i.root", run, run);
    }else if(run <100){
       sprintf(fileInTracker, "Merged_data/run_0%i/merg_0%i.root", run, run);
    }else{
@@ -185,7 +186,7 @@ void B_trackGenerator_v3(int run)
    treeTracker->SetBranchAddress("Section",&Section);
    
    int entriesTracker=treeTracker->GetEntries();
-   cout<<"Entries tracker file "<< entriesTracker <<endl;
+   //cout<<"Entries tracker file "<< entriesTracker <<endl;
 // END: open tracker file	//////////////////////////////////////////////
 
 
@@ -195,14 +196,15 @@ void B_trackGenerator_v3(int run)
    TFile *finSic;
    TTree *treeSic;
 
-   cout << "Does this run have a SiC file? [y]es or [n]o" << endl;
-   cin >> sicOrNot;
-   sicFileOpen = (sicOrNot=="n" || sicOrNot=="N" || sicOrNot=="No")? false : true;
+   //cout << "Does this run have a SiC file? [y]es or [n]o" << endl;
+   //cin >> sicOrNot;
+   //sicFileOpen = (sicOrNot=="n" || sicOrNot=="N" || sicOrNot=="No" )? false : true;
    //cout << sicFileOpen << endl;
 
    int entriesSic = 0;
    
    char fileInSic[50];
+   //if (sicFileOpen) {
    if (sicFileOpen) {
       if(run<10){
          sprintf(fileInSic, "Merged_data/run_00%i/sic_00%i.root", run, run);
@@ -225,7 +227,7 @@ void B_trackGenerator_v3(int run)
       treeSic->SetBranchAddress("Charge_cal",&Charge_calSic);
    
       entriesSic=treeSic->GetEntries();
-      cout<<"Entries sic file "<< entriesSic <<endl;
+      //cout<<"Entries sic file "<< entriesSic <<endl;
    }
 // END: open SiC file	//////////////////////////////////////////////////////
 
@@ -395,11 +397,11 @@ void B_trackGenerator_v3(int run)
    finTracker->cd();
    treeTracker->GetEntry(0);
    ULong64_t timeinit=Timestamp;
-   cout<<" time init tracker: "<<timeinit<<endl;
+   //cout<<" time init tracker: "<<timeinit<<endl;
    
    if (sicFileOpen) {
    treeSic->GetEntry(0);
-   cout<<" time init SiC: "<<TimestampSic<<endl;
+   //cout<<" time init SiC: "<<TimestampSic<<endl;
    } else{cerr<<" Error, SiC file not found!"<<endl;}
    
    
@@ -532,7 +534,7 @@ void B_trackGenerator_v3(int run)
                      SicLoopFlag=0;
                      FlagSicStop=0;
                   }else if(TimeDiff>timeWindowlow && TimeDiff<timeWindowhigh){  // the time of SiC is compatible with the track
-                     cout << "+++++++++++ Event detected by the SiC" << endl;
+                     //cout << "+++++++++++ Event detected by the SiC" << endl;
                      energySic = ChargeSic;
                      sic_charge = ChargeSic;
                      tracksWithSic++;
@@ -557,7 +559,7 @@ void B_trackGenerator_v3(int run)
                      sicHits++;
                      SicLoopFlag=1;
                      FlagSicStop=0;
-                     cout << "----------- SiC without track" << endl;
+                     //cout << "----------- SiC without track" << endl;
                      if (sicHits > entriesSic)
                         break;
 
@@ -571,14 +573,14 @@ void B_trackGenerator_v3(int run)
          
             fitResultTheta=grTheta->Fit("lin1","SQ");
    	    if(fitResultTheta==0){
-   	       cout<<"### TF ### "<<fitResultTheta<<endl;
+   	       //cout<<"### TF ### "<<fitResultTheta<<endl;
        	       interceptT = fitResultTheta->Value(0);
 	       slopeT = fitResultTheta->Value(1);
 	       //theta_fit_result = new TF1("theta_fit_result",Form("%f+(%f*x)",interceptT,slopeT),0.,107.);
 	       theta_fit_result->SetParameter(0,interceptT);
 	       theta_fit_result->SetParameter(1,slopeT);	       
     	       chiSquareTheta = fitResultTheta->Chi2();
-    	       cout<<"intercept "<< interceptT <<"\t slope "<< slopeT << "\t chi2 "<< chiSquareTheta << endl;
+    	       //cout<<"intercept "<< interceptT <<"\t slope "<< slopeT << "\t chi2 "<< chiSquareTheta << endl;
 	       theta = TMath::ATan(slopeT);
                theta_deg = theta*180./TMath::Pi();
             }else{
@@ -605,7 +607,7 @@ void B_trackGenerator_v3(int run)
                    //grTheta->Draw("P");
                    //grTheta->Fit("lin1","Q");
                    //theta_fit_result->Draw("same");
-                   cout << "\n\n +++++++++++++++++++++++++++++++++++ theta_fit_result formula: " << theta_fit_result->GetExpFormula() << "\n\n" << endl;
+                   //cout << "\n\n +++++++++++++++++++++++++++++++++++ theta_fit_result formula: " << theta_fit_result->GetExpFormula() << "\n\n" << endl;
                }
           
             }
@@ -617,10 +619,12 @@ void B_trackGenerator_v3(int run)
             
             treeOut->Fill();
             //cout << "Filling the tree" << endl;
-            if (sicFileOpen) 
-               cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
-            else 
-               cout << "Tracks " << tracksWithoutSic << endl;
+            if (sicFileOpen){ 
+               //cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
+               }
+            else {
+               //cout << "Tracks " << tracksWithoutSic << endl;
+               }
             /*
             cout << "########## Sic entry  "<<sicHits<<endl;
             cout << "########## Time track "<< timeinit<<endl;
@@ -669,7 +673,7 @@ void B_trackGenerator_v3(int run)
    //cout<<"--------------------------------------"<<endl;
       
 
-   cout << "Before writing file output" << endl;
+   //cout << "Before writing file output" << endl;
    fileOut->cd();
    treeOut->Write();
    fileOut->Purge();

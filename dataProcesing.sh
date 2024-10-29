@@ -8,8 +8,17 @@
 #
 #  created 25-11-2022  D. Torresi
 # 
-#  last update:
+#  several updates 
+#  last update:  2022-10 D. Torresi  added the sic part
 #
+#----------------------------------------------------------------------------------
+#
+#  Remember to check that all the dig variables are correct!
+#
+#
+#
+
+
 
 # Definizione variabili
 #run number
@@ -17,10 +26,13 @@ run=$1
 
 #################################################
 # directories
-#bindir=~/Analisi/Analysis_tracker/Raw_data/run_$run
-bindir=/home/numen/solaris/RAW_data/tracker_and_sic/
-caldir=~/Analysis_tracker_v1.0/Cal_data/run_$run
-merdir=~/Analysis_tracker_v1.0/Merged_data/run_$run
+bindir=/home/torresi/Analisi/NUMEN/Analysis_tracker_v1.1/Raw_data/run_$run
+caldir=/home/torresi/Analisi/NUMEN/Analysis_tracker_v1.1/Cal_data/run_$run
+merdir=/home/torresi/Analisi/NUMEN/Analysis_tracker_v1.1/Merged_data/run_$run
+
+#bindir=/home/numen/solaris/RAW_data/tracker_and_sic/
+#caldir=~/Analysis_tracker_v1.1/Cal_data/run_$run
+#merdir=~/Analysis_tracker_v1.1/Merged_data/run_$run
 
 
 #################################################
@@ -36,6 +48,8 @@ echo " merged directory: "$merdir
 
 # lopp on the 5 digitizers
 #for dig in 22642 22643 22644 22645 22646
+
+echo  -e "\033[40;31;1m Converting tracker files \033[0m"  
 
 cont=1
 for dig in 22642 22643 22644 22645 21247
@@ -55,12 +69,23 @@ done
 #################################################
 # Converting SiC file		2th level
 #################################################
+echo  -e "\033[44;37m "  
+echo  -e "Converting SiC file "
+echo  -e "\033[0m"  
+cont=0
+dig=25716
 
+infile=$bindir/tracker_and_sic_$run\_0$cont\_$dig\_000.sol
+outfile=$merdir/sic_$run.root
+
+
+root -q -l "converter_solaris_sic.C(\"$infile\",$dig,\"$outfile\")"
 
 
 #################################################
 # Merging data			3rd level
 #################################################
+echo  -e "\033[40;35;1m Merging files \033[0m"  
 
 merfile=$merdir/merged.root
 
@@ -100,9 +125,9 @@ mv $outfile  $merdir/merg_$run.root
 #################################################
 # Producing tracking data	4th level
 #################################################
+echo  -e "\033[40;35;1m Generating tracks \033[0m"  
 
-
-#  trackGenerator.C($run\)
+root -q -l "trackGenerator.C($run,1)"
 
 
 

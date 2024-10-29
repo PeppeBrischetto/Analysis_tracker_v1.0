@@ -43,7 +43,7 @@ void C_plot_theta_v2(int run)
    }else if(run <100){
       sprintf(fileInName, "../Tracks/tracks_run0%i.root", run);
    }else{
-      sprintf(fileInName, "../Tracks/tracks_run%i_A.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run%i.root", run);
    } 
    TFile *fileIn = new TFile(fileInName);
    TTree *treeTracks = (TTree*)fileIn->Get("Data_R");
@@ -77,21 +77,21 @@ void C_plot_theta_v2(int run)
    int entries=treeTracks->GetEntries();
    cout<<"Entries tracks file "<< entries <<endl;
      
-   TH1F *histoTheta=new TH1F("","",1000,-70,20);
+   TH1F *histoTheta=new TH1F("","",1000,-70,120);
    histoTheta->SetStats(0);
    histoTheta->GetXaxis()->SetTitle("#theta (deg)");
    histoTheta->GetYaxis()->SetTitle("Counts");
    histoTheta->SetLineWidth(2);  
    //histoTheta->GetYaxis()->SetRangeUser(0.9,1000.);    
 
-   TH1F *histoThetaWithoutLastPad=new TH1F("","",1000,-70.,20.);
+   TH1F *histoThetaWithoutLastPad=new TH1F("","",1000,-70,120);
    histoThetaWithoutLastPad->SetStats(0);
    histoThetaWithoutLastPad->GetXaxis()->SetTitle("#theta (deg)");
    histoThetaWithoutLastPad->GetYaxis()->SetTitle("Counts");
    histoThetaWithoutLastPad->SetLineColor(kRed);
    histoThetaWithoutLastPad->SetLineWidth(2);   
 
-   TH1F *histoThetaLastPad=new TH1F("","",1000,-70,20);
+   TH1F *histoThetaLastPad=new TH1F("","",1000,-70,120);
    histoThetaLastPad->SetStats(0);
    histoThetaLastPad->GetXaxis()->SetTitle("#theta (deg)");
    histoThetaLastPad->GetYaxis()->SetTitle("Counts");   
@@ -99,14 +99,14 @@ void C_plot_theta_v2(int run)
    histoThetaLastPad->SetLineWidth(2);      
    
    /* Theta histogram with 1st threshold on charge: 2000*/
-   TH1F* h_theta_geq2000 = new TH1F("","",1000,-70,20);
+   TH1F* h_theta_geq2000 = new TH1F("","",1000,-70,120);
    h_theta_geq2000->SetStats(0);
    h_theta_geq2000->GetXaxis()->SetTitle("#theta (deg)");
    h_theta_geq2000->GetYaxis()->SetTitle("Counts");
    h_theta_geq2000->SetLineColor(kRed);
    
    /* Theta histogram with treshold on rms: all <2.5 */
-   TH1F* h_theta_rms = new TH1F("","",1000,-70,20);
+   TH1F* h_theta_rms = new TH1F("","",1000,-70,120);
    h_theta_rms->SetStats(0);
    h_theta_rms->GetXaxis()->SetTitle("#theta (deg)");
    h_theta_rms->GetYaxis()->SetTitle("Counts");
