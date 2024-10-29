@@ -10,13 +10,39 @@
 using namespace std;
 
 
-double rotation(double xcol,double z0,double theta_tilt){
+double rotation(double theta_tilt,double slopeT_inv,double interceptT_inv,double z0) {
+
 
 	const double PI = 3.14159; //Definition of Pi
-	double result=(xcol*cos(PI*0.50-(theta_tilt*PI/180.0)))-(z0*sin(PI*0.50-(theta_tilt*PI/180.0)));
+	double factor=theta_tilt*PI/180;
+	double result= (z0 - (interceptT_inv/(cos(factor)-(slopeT_inv*sin(factor))))) * (cos(factor)-(slopeT_inv*sin(factor))) / ((slopeT_inv*cos(factor))+sin(factor));
+	//double result= ((slopeT_inv*cos(factor))+sin(factor))/(cos(factor)-(slopeT_inv*sin(factor)));
+        //double result= interceptT_inv/(cos(factor)-(slopeT_inv*sin(factor)));
 	return result;
 
 }
+
+double test(double theta_tilt,double slopeT_inv,double interceptT_inv,double z0) {
+
+
+	const double PI = 3.14159; //Definition of Pi
+	double factor= theta_tilt*PI/180;
+	double result2= ((slopeT_inv*cos(factor))+sin(factor))/(cos(factor)-(slopeT_inv*sin(factor)));
+	return result2;
+
+}
+
+
+double test2(double theta_tilt,double slopeT_inv,double interceptT_inv,double z0) {
+
+
+	const double PI = 3.14159; //Definition of Pi
+	double factor= theta_tilt*PI/180;
+        double result3= interceptT_inv/(cos(factor)-(slopeT_inv*sin(factor)));
+	return result3;
+
+}
+
 
 
 void resolution(int run, double z)
@@ -147,7 +173,6 @@ cout<<""<<endl;
 
    TH1F *plx = new TH1F("plx","",20000,-300.0,500.0);  //histo with the reconstructed X coordinate of the colimator in a plane parallel to the tracker
    TH1F *plx2 = new TH1F("plx2","",20000,-300.0,500.0);  //histo with the reconstructed X coordinate of the colimator in a plane paraller to the collimator
-
    TH1F *ply = new TH1F("ply","",20000,-300.0,500.0);  //histo with the reconstructed Y coordinate of the colimator
    
    plx->GetXaxis()->SetTitle("X_{col.} (mm)");
@@ -210,11 +235,12 @@ cout<<""<<endl;
    TCanvas *colplaneX=new TCanvas("colplaneX","colplaneX",800,500,1000,800);
    TCanvas *colplaneX_rot=new TCanvas("colplaneX_rot","colplaneX_rot",800,500,1000,800);
    //TCanvas *colplaneY=new TCanvas("colplaneY","colplaneY",800,500,1000,800);
-   TCanvas *colplaneY=new TCanvas("colplaneY","colplaneY",800,500,1000,800);
 
    f->cd();
+   double slope_rot;
+   double inter_rot;
    
-	z0=-z*1.0;
+	z0=z*1.0;
    for(int i=0; i<entries; i++){
 	tree->GetEntry(i);
 	//slopeT_inv=atan((-0.5*PI)-theta);
@@ -224,17 +250,29 @@ cout<<""<<endl;
 	interceptT_inv=-(interceptT/slopeT);
 	interceptP_inv=-(interceptP/slopeP);
 	
-	//printf("Z0: %1.2f,  slope: %1.4f,  intercept: %1.4f \n",z0,slopeP_inv,interceptP_inv);
+	printf("Z0: %1.2f,  slope: %1.4f,  intercept: %1.4f \n",z0,slopeT_inv,interceptT_inv);
 	xcol=(z0-interceptT_inv)/slopeT_inv;
 	ycol=(z0-interceptP_inv)/slopeP_inv;
 	plx->Fill(xcol,1);
 	ply->Fill(ycol,1);
 	
-	interceptT_inv=-(interceptT/slopeT);
-	interceptP_inv=-(interceptP/slopeP);
-
-	xcol_rot=rotation(xcol,z0,theta_tilt);
+	xcol_rot=rotation(theta_tilt,slopeT_inv,interceptT_inv,z0);
+	//printf("Z0: %1.2f,  slope: %1.4f\n",z0,xcol_rot);
 	plx2->Fill(xcol_rot,1);
+	
+	slope_rot=test(theta_tilt,slopeT_inv,interceptT_inv,z0);
+        inter_rot=test2(theta_tilt,slopeT_inv,interceptT_inv,z0);
+        
+/*    colplaneY->cd();
+    colplaneY->Update();
+    TF1 *f1 = new TF1("fit",Form("%1.4f*x+%1.4f",slopeT_inv,interceptT_inv),0,300);
+    TF1 *f2 = new TF1("fit2",Form("%1.4f*x+%1.4f",slope_rot,inter_rot),0,300);
+    f1->Draw();
+    f2->SetLineColor(3);
+    f2->Draw("SAME");
+   // gPad->WaitPrimitive();
+   colplaneY->Update();
+    */    
 	}
 
 // Calculate the horizontal position resolution in a plane parallel to the tracker
@@ -276,8 +314,10 @@ cout<<""<<endl;
    
    resX2=sqrt(abs(pow(fwhmX2,2.)-pow(coll_size,2.)));
 
-   double error=fitResX2->Error(2)/sigmaDistCollX2;
-   cout<<"Error: "<< error <<" %"<<endl;
+   //double error=fitResX2->Error(2)/sigmaDistCollX2;
+   //cout<<"Error: "<< error <<" %"<<endl;
+   
+
    
 // Calculate the vertical position resolution
   /*
