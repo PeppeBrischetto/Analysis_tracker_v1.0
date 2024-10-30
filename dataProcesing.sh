@@ -22,17 +22,17 @@
 
 # Definizione variabili
 #run number
-run=$1
+run=133
 
 #################################################
 # directories
-bindir=/home/torresi/Analisi/NUMEN/Analysis_tracker_v1.1/Raw_data/run_$run
-caldir=/home/torresi/Analisi/NUMEN/Analysis_tracker_v1.1/Cal_data/run_$run
-merdir=/home/torresi/Analisi/NUMEN/Analysis_tracker_v1.1/Merged_data/run_$run
+#bindir=/home/torresi/Analisi/NUMEN/Analysis_tracker_v1.1/Raw_data/run_$run
+#caldir=/home/torresi/Analisi/NUMEN/Analysis_tracker_v1.1/Cal_data/run_$run
+#merdir=/home/torresi/Analisi/NUMEN/Analysis_tracker_v1.1/Merged_data/run_$run
 
-#bindir=/home/numen/solaris/RAW_data/tracker_and_sic/
-#caldir=~/Analysis_tracker_v1.1/Cal_data/run_$run
-#merdir=~/Analysis_tracker_v1.1/Merged_data/run_$run
+bindir=/home/numen/solaris/RAW_data/tracker_and_sic/
+caldir=~/Analysis_tracker_v1.0/Cal_data/run_$run
+merdir=~/Analysis_tracker_v1.0/Merged_data/run_$run
 
 
 #################################################

@@ -22,26 +22,6 @@ double rotation(double theta_tilt,double slopeT_inv,double interceptT_inv,double
 
 }
 
-double test(double theta_tilt,double slopeT_inv,double interceptT_inv,double z0) {
-
-
-	const double PI = 3.14159; //Definition of Pi
-	double factor= theta_tilt*PI/180;
-	double result2= ((slopeT_inv*cos(factor))+sin(factor))/(cos(factor)-(slopeT_inv*sin(factor)));
-	return result2;
-
-}
-
-
-double test2(double theta_tilt,double slopeT_inv,double interceptT_inv,double z0) {
-
-
-	const double PI = 3.14159; //Definition of Pi
-	double factor= theta_tilt*PI/180;
-        double result3= interceptT_inv/(cos(factor)-(slopeT_inv*sin(factor)));
-	return result3;
-
-}
 
 
 
@@ -63,22 +43,24 @@ cout<<""<<endl;
    double cl_x_rms[5];  		// rms of the charge distribution of a cluster in pads unit
    double cl_y[5] = {0};		// y centroid of a cluster in time
    double cl_y_mm[5] = {0};		// y centroid of a cluster in mm
+   int a_pads_fired[5][100];
+   
 
-   Double_t slopeT;		// slope of the linear fit X= f(Z)
-   Double_t interceptT;		// intercept of the linear fit X= f(Z) (in mm)
-   Double_t slopeP;		// slope of the linear fit Y= f(Z)
-   Double_t interceptP;		// intercept of the linear fit Y= f(Z) (in mm)
-   Double_t theta;		// theta of the track in rad
-   Double_t theta_deg;		// theta of the track in deg
-   Double_t phi;		// phi of the track in rad
-   Double_t phi_deg;		// phi of the track in deg
-   Double_t chiSquareTheta;
-   Double_t chiSquarePhi;
+   double slopeT;		// slope of the linear fit X= f(Z)
+   double interceptT;		// intercept of the linear fit X= f(Z) (in mm)
+   double slopeP;		// slope of the linear fit Y= f(Z)
+   double interceptP;		// intercept of the linear fit Y= f(Z) (in mm)
+   double theta;		// theta of the track in rad
+   double theta_deg;		// theta of the track in deg
+   double phi;			// phi of the track in rad
+   double phi_deg;		// phi of the track in deg
+   double chiSquareTheta;
+   double chiSquarePhi;
 
 
 
 // Geometric variables required for positioning the collimator respect to the detector
-   double coll_size= 1.0;	       // Dimension of the collimator front face (in mm)
+   double coll_size= 0.2;	       // Dimension of the collimator front face (in mm)
    double source_holder_length= 30.0;  // Length of the source holder (in mm)
    double theta_tilt= 40.0;	       // Rotation angle of the collimator with respect to the beam axis (in mm)
    
@@ -150,6 +132,17 @@ cout<<""<<endl;
 
    TFile *f = new TFile(fileIn);
    TTree *tree = (TTree*)f->Get("Data_R");
+   
+   tree->SetBranchAddress("cl_padMult0",&cl_padMult[0]);
+   tree->SetBranchAddress("cl_padMult1",&cl_padMult[1]);
+   tree->SetBranchAddress("cl_padMult2",&cl_padMult[2]);
+   tree->SetBranchAddress("cl_padMult3",&cl_padMult[3]);
+   tree->SetBranchAddress("cl_padMult4",&cl_padMult[4]);
+   tree->SetBranchAddress("pads_fired0",&a_pads_fired[0]);
+   tree->SetBranchAddress("pads_fired1",&a_pads_fired[1]);
+   tree->SetBranchAddress("pads_fired2",&a_pads_fired[2]);
+   tree->SetBranchAddress("pads_fired3",&a_pads_fired[3]);
+   tree->SetBranchAddress("pads_fired4",&a_pads_fired[4]);
    
    tree->SetBranchAddress("theta",&theta);
    tree->SetBranchAddress("phi",&phi);
@@ -234,15 +227,32 @@ cout<<""<<endl;
 
    TCanvas *colplaneX=new TCanvas("colplaneX","colplaneX",800,500,1000,800);
    TCanvas *colplaneX_rot=new TCanvas("colplaneX_rot","colplaneX_rot",800,500,1000,800);
-   //TCanvas *colplaneY=new TCanvas("colplaneY","colplaneY",800,500,1000,800);
+   TCanvas *colplaneY=new TCanvas("colplaneY","colplaneY",800,500,1000,800);
+   
+   TH2F *bg=new TH2F("bg","",100,0,300,100,-100,400);
+   colplaneY->cd();
+   bg->Draw();
+   
+   TF1 *f1 = new TF1("fit","[0]+([1]*x)",0,300);
+   TF1 *f2 = new TF1("fit2","[0]+([1]*x)",0,300);
+   TF1 *plot;		// in order to keep all the tracks in the same plot
 
    f->cd();
    double slope_rot;
    double inter_rot;
    
+   
 	z0=z*1.0;
    for(int i=0; i<entries; i++){
 	tree->GetEntry(i);
+	
+      // reject tracks with first or last pad of the last row hit
+      for (int j=0; j<cl_padMult[4]; j++) {         
+         //if ((a_pads_fired[4][j] != 0) || (a_pads_fired[4][j] != 1) || (a_pads_fired[4][j] != 58) || (a_pads_fired[4][j] != 59)){
+         if ((a_pads_fired[4][j] > 1) && (a_pads_fired[4][j] < 58) && (cl_padMult[0]<5) && (cl_padMult[1]<5) && (cl_padMult[2]<5) && (cl_padMult[3]<5) && (cl_padMult[4]<5)){   
+
+	
+	
 	//slopeT_inv=atan((-0.5*PI)-theta);
 	slopeT_inv=(1./slopeT);
 	slopeP_inv=(1./slopeP);
@@ -250,7 +260,7 @@ cout<<""<<endl;
 	interceptT_inv=-(interceptT/slopeT);
 	interceptP_inv=-(interceptP/slopeP);
 	
-	printf("Z0: %1.2f,  slope: %1.4f,  intercept: %1.4f \n",z0,slopeT_inv,interceptT_inv);
+	//printf("Z0: %1.2f,  slope: %1.4f,  intercept: %1.4f \n",z0,slopeT_inv,interceptT_inv);
 	xcol=(z0-interceptT_inv)/slopeT_inv;
 	ycol=(z0-interceptP_inv)/slopeP_inv;
 	plx->Fill(xcol,1);
@@ -260,21 +270,22 @@ cout<<""<<endl;
 	//printf("Z0: %1.2f,  slope: %1.4f\n",z0,xcol_rot);
 	plx2->Fill(xcol_rot,1);
 	
-	slope_rot=test(theta_tilt,slopeT_inv,interceptT_inv,z0);
-        inter_rot=test2(theta_tilt,slopeT_inv,interceptT_inv,z0);
-        
-/*    colplaneY->cd();
-    colplaneY->Update();
-    TF1 *f1 = new TF1("fit",Form("%1.4f*x+%1.4f",slopeT_inv,interceptT_inv),0,300);
-    TF1 *f2 = new TF1("fit2",Form("%1.4f*x+%1.4f",slope_rot,inter_rot),0,300);
-    f1->Draw();
-    f2->SetLineColor(3);
-    f2->Draw("SAME");
-   // gPad->WaitPrimitive();
-   colplaneY->Update();
-    */    
-	}
 
+        //printf("Z0: %1.2f,  slope_rot: %1.4f,  Intercept_rot: %1.4f \n",z0,slope_rot,inter_rot);
+     /*   
+  	colplaneY->Update();
+        colplaneY->cd();
+        plot=new TF1("fit","[0]+([1]*x)",0,300);
+        plot->SetParameter(0,inter_rot);
+        plot->SetParameter(1,slope_rot);
+        plot->SetLineColor(kGreen+1);
+        plot->Draw("same");
+        colplaneY->Update();
+        //gPad->WaitPrimitive();
+       */
+	}
+	}
+	}
 // Calculate the horizontal position resolution in a plane parallel to the tracker
 
    colplaneX->cd();
