@@ -1,5 +1,5 @@
-for z in {-20..0..1}
+for z in {-160..100..1}
 do
-run=133
+run=130
 root -q -l "resolution.C($run,$z)"
 done

@@ -10,18 +10,17 @@
 using namespace std;
 
 
-double rotation(double theta_tilt,double slopeT_inv,double interceptT_inv,double z0) {
+double rot_tracks(double theta_tilt,double slopeT_inv,double interceptT_inv,double z0) {
 
 
-	const double PI = 3.14159; //Definition of Pi
-	double factor=theta_tilt*PI/180;
-	double result= (z0 - (interceptT_inv/(cos(factor)-(slopeT_inv*sin(factor))))) * (cos(factor)-(slopeT_inv*sin(factor))) / ((slopeT_inv*cos(factor))+sin(factor));
-	//double result= ((slopeT_inv*cos(factor))+sin(factor))/(cos(factor)-(slopeT_inv*sin(factor)));
-        //double result= interceptT_inv/(cos(factor)-(slopeT_inv*sin(factor)));
-	return result;
+   const double PI = 3.14159; //Definition of Pi
+   double factor=theta_tilt*PI/180;
+   double result= (z0 - (interceptT_inv/(cos(factor)-(slopeT_inv*sin(factor))))) * (cos(factor)-(slopeT_inv*sin(factor))) / ((slopeT_inv*cos(factor))+sin(factor));
+   //double result= ((slopeT_inv*cos(factor))+sin(factor))/(cos(factor)-(slopeT_inv*sin(factor)));
+   //double result= interceptT_inv/(cos(factor)-(slopeT_inv*sin(factor)));
+   return result;
 
 }
-
 
 
 
@@ -31,74 +30,89 @@ void resolution(int run, double z)
 cout<<""<<endl;
 cout<<""<<endl;
 
-
    const double PI = 3.14159;   //Definition of Pi
 
-// input file variables (tracker)
+// Input file variables (tracker)
 
-   double cl_charge[11] = {0};	   	// charge sum of the pads belonging to a cluster
-   Int_t cl_padMult[5]={0};		// number of pads of a cluster
-   double cl_x[5];			// x centroid of a cluster in pads unit
-   double cl_x_mm[5];			// x centroid of a cluster in mm
-   double cl_x_rms[5];  		// rms of the charge distribution of a cluster in pads unit
-   double cl_y[5] = {0};		// y centroid of a cluster in time
-   double cl_y_mm[5] = {0};		// y centroid of a cluster in mm
+   double cl_charge[11] = {0};	   	// Charge sum of the pads belonging to a cluster
+   Int_t cl_padMult[5]={0};		// Number of pads of a cluster
+   double cl_x[5];			// X centroid of a cluster in pads unit
+   double cl_x_mm[5];			// Y centroid of a cluster in mm
+   double cl_x_rms[5];  		// RMS of the charge distribution of a cluster in pads unit
+   double cl_y[5] = {0};		// Y centroid of a cluster in time
+   double cl_y_mm[5] = {0};		// Y centroid of a cluster in mm
    int a_pads_fired[5][100];
    
-
-   double slopeT;		// slope of the linear fit X= f(Z)
-   double interceptT;		// intercept of the linear fit X= f(Z) (in mm)
-   double slopeP;		// slope of the linear fit Y= f(Z)
-   double interceptP;		// intercept of the linear fit Y= f(Z) (in mm)
-   double theta;		// theta of the track in rad
-   double theta_deg;		// theta of the track in deg
-   double phi;			// phi of the track in rad
-   double phi_deg;		// phi of the track in deg
+   double slopeT;		// Slope of the linear fit X= f(Z)
+   double interceptT;		// Intercept of the linear fit X= f(Z) (in mm)
+   double slopeP;		// Slope of the linear fit Y= f(Z)
+   double interceptP;		// Intercept of the linear fit Y= f(Z) (in mm)
+   double theta;		// Theta of the track in rad
+   double theta_deg;		// Theta of the track in deg
+   double phi;			// Phi of the track in rad
+   double phi_deg;		// Phi of the track in deg
    double chiSquareTheta;
    double chiSquarePhi;
 
 
 
 // Geometric variables required for positioning the collimator respect to the detector
-   double coll_size= 0.2;	       // Dimension of the collimator front face (in mm)
-   double source_holder_length= 30.0;  // Length of the source holder (in mm)
+
+   double coll_size= 1.0;	       // Dimension of the collimator front face (in mm)
    double theta_tilt= 40.0;	       // Rotation angle of the collimator with respect to the beam axis (in mm)
    
    
+// Geometric variables required for the definition of a line parallel to the collimator front face
+
+   double ax=150.0;			  // x coordinate of the point A(ax,az) (in mm) belonging to a line parallel to the collimator's front face
+   double az;				  // z coordinate of the point A(ax,az) (in mm) belonging to a line parallel to the collimator's front face - To be scanned
+   
+   double bx;				  // x coordinate (in mm) of the intersection point B(bx,bz) between each track and a line parallel to the collimator's front face
+   double bz;				  // z coordinate (in mm) of the intersection point B(bx,bz) between each track and a line parallel to the collimator's front face
+
+   double ang_coeff_line=tan(-theta_tilt*PI/180); // Angular coefficient of a line forming an angle "-theta_tilt" with respect to the X axis of the tracker
+   double intercept_line; 			// Intercept of a line forming an angle "-theta_tilt" with respect to the X axis of the tracker
+
+
 // Geometric variables required for the definition of a plane z'= const. parallel to the tracker
 
    double z0; 			// z coordinate of the plane (in mm) - (i.e. its distance from the tracker)
 
 
 
-// Variables for the estimation of the resolution
 
-   double sigmaDistCollX;	// sigma of the distribution of the reconstructed X coordinate of the collimator (in mm) in a plane paraller to the tracker
+// Variables for the estimation of the position resolution
+
+   double sigmaDistCollX;	// Sigma of the distribution of the reconstructed X coordinate of the collimator (in mm) in a plane paraller to the tracker
    double fwhmX;		// FWHM of the distribution of the reconstructed X coordinate of the collimator (in mm) in a plane paraller to the tracker
    double resX;			// Resolution in the determination of the collimator apperture (in mm) in a plane paraller to the tracker
    
-   double sigmaDistCollX2;	// sigma of the distribution of the reconstructed X coordinate of the collimator (in mm) in a plane paraller to the collimator
-   double fwhmX2;		// FWHM of the distribution of the reconstructed X coordinate of the collimator (in mm) in a plane paraller to the collimator
-   double resX2;		// Resolution in the determination of the collimator apperture (in mm) in a plane paraller to the collimator
+   double sigmaDistCollX2;	// Sigma of the distribution of the reconstructed X coordinate of the collimator (in mm) in a plane paraller to the collimator - Method with tracks' rotation
+   double fwhmX2;		// FWHM of the distribution of the reconstructed X coordinate of the collimator (in mm) in a plane paraller to the collimator - Method with tracks' rotation
+   double resX2;		// Resolution in the determination of the collimator apperture (in mm) in a plane paraller to the collimator - Method with tracks' rotation
    
-   double sigmaDistCollY;	// sigma of the distribution of the reconstructed Y coordinate of the collimator (in mm) in a plane paraller to tracker
+   double sigmaDistCollX3;	// Sigma of the distribution of the reconstructed X coordinate of the collimator (in mm) in a plane paraller to the collimator - Method with intersection of lines
+   double fwhmX3;		// FWHM of the distribution of the reconstructed X coordinate of the collimator (in mm) in a plane paraller to the collimator - Method with intersection of lines
+   double resX3;		// Resolution in the determination of the collimator apperture (in mm) in a plane paraller to the collimator - Method with intersection of lines
+
+   
+   double sigmaDistCollY;	// Sigma of the distribution of the reconstructed Y coordinate of the collimator (in mm) in a plane paraller to tracker
    double fwhmY;		// FWHM of the distribution of the reconstructed Y coordinate of the collimator (in mm) in a plane paraller to tracker
    double resY;			// Resolution in the determination of the collimator apperture (in mm) in a plane paraller to tracker
 
 
 
-
 // other variables
-   double slopeT_inv; 		//slope of the linear fit Z=f(X) describing the ion track
-   double interceptT_inv; 	//intercept of the linear fit Z=f(X) describing the ion track (in mm)
-   double xcol; 		// reconstructed X position of the collimator in a plane parallel to the tracker (in mm)
-
-   double xcol_rot; 		// reconstructed X position of the collimator in a plane parallel to the collimator (in mm)
+   double slopeT_inv; 		//Slope of the linear fit Z=f(X) describing the ion track
+   double interceptT_inv; 	//Intercept of the linear fit Z=f(X) describing the ion track (in mm)
+   double xcol; 		//Reconstructed X position of the collimator in a plane parallel to the tracker (in mm)
+   double xcol_rot; 		//Reconstructed X position of the collimator in a plane parallel to the collimator (in mm) - Method with tracks' rotation
+   double xcol3; 		//Reconstructed X position of the collimator in a plane parallel to the collimator (in mm) - Method with intersection of lines
 
    
-   double slopeP_inv; 		//slope of the linear fit Z=f(Y) describing the ion track
-   double interceptP_inv; 	//intercept of the linear fit Z=f(Y) describing the ion track (in mm)
-   double ycol; 		// reconstructed Y position of the collimator in a plane parallel to the tracker (in mm)
+   double slopeP_inv; 		//Slope of the linear fit Z=f(Y) describing the ion track
+   double interceptP_inv; 	//Intercept of the linear fit Z=f(Y) describing the ion track (in mm)
+   double ycol; 		//Reconstructed Y position of the collimator in a plane parallel to the tracker (in mm)
    
    int binmax; 			// Find the bin with the most statistics
    double xmax; 		// X position of the bin with the most statistics
@@ -107,15 +121,16 @@ cout<<""<<endl;
    
    string filename = "resolution.txt";  //File to store the values of Z0 and horizontal position resolution
    int lineCount = 0;			//Variable to store the lines' number of the file "resolution.txt"
-   double temp1[10000], temp2[10000], temp3[10000];  //Matrices to store the values of Z0 and X, Y resolutions from the file resolution.txt, before passing them to resolution2.txt
+   double temp1[10000], temp2[10000], temp3[10000], temp4[10000];  //Matrices to store the values of Z0 and X, Y resolutions from the file resolution.txt, before passing them to resolution2.txt
 
    TFitResultPtr fitResX;
    TFitResultPtr fitResX2;
+   TFitResultPtr fitResX3;
    TFitResultPtr fitResY;
 
 //////////////////////////////////////////////////////////////////////////////
 
-// open file
+// Open file
    char fileIn[50];
 
       if(run<10){
@@ -156,7 +171,7 @@ cout<<""<<endl;
    cout<<""<<endl;
    cout<<""<<endl;
 
-// END: open file 
+// END: Open file 
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -164,9 +179,10 @@ cout<<""<<endl;
 
 // Declaring Histos 
 
-   TH1F *plx = new TH1F("plx","",20000,-300.0,500.0);  //histo with the reconstructed X coordinate of the colimator in a plane parallel to the tracker
-   TH1F *plx2 = new TH1F("plx2","",20000,-300.0,500.0);  //histo with the reconstructed X coordinate of the colimator in a plane paraller to the collimator
-   TH1F *ply = new TH1F("ply","",20000,-300.0,500.0);  //histo with the reconstructed Y coordinate of the colimator
+   TH1F *plx = new TH1F("plx","",20000,-300.0,500.0);  //Histogram with the reconstructed X coordinate of the colimator in a plane parallel to the tracker
+   TH1F *plx2 = new TH1F("plx2","",20000,-300.0,500.0);//Histogram with the reconstructed X coordinate of the colimator in a plane paraller to the collimator - Method with tracks' rotation
+   TH1F *plx3 = new TH1F("plx3","",20000,-300.0,500.0);//Histogram with the reconstructed X coordinate of the colimator in a plane paraller to the collimator - Method with intersectionof lines
+   TH1F *ply = new TH1F("ply","",20000,-300.0,500.0);  //Histogram with the reconstructed Y coordinate of the colimator
    
    plx->GetXaxis()->SetTitle("X_{col.} (mm)");
    plx->GetXaxis()->SetTitleOffset(1.05);
@@ -186,7 +202,7 @@ cout<<""<<endl;
    plx->GetYaxis()->SetNdivisions(505);
    plx->GetYaxis()->CenterTitle();
    
-   plx2->GetXaxis()->SetTitle("X_{col.}-rot. (mm)");
+   plx2->GetXaxis()->SetTitle("X_{col.2} (mm)");
    plx2->GetXaxis()->SetTitleOffset(1.05);
    plx2->GetXaxis()->SetTitleSize(0.040);
    plx2->GetXaxis()->SetTitleFont(62);
@@ -203,6 +219,25 @@ cout<<""<<endl;
    plx2->GetYaxis()->SetLabelSize(0.030);
    plx2->GetYaxis()->SetNdivisions(505);
    plx2->GetYaxis()->CenterTitle();
+   
+   
+   plx3->GetXaxis()->SetTitle("X_{col.3} (mm)");
+   plx3->GetXaxis()->SetTitleOffset(1.05);
+   plx3->GetXaxis()->SetTitleSize(0.040);
+   plx3->GetXaxis()->SetTitleFont(62);
+   plx3->GetXaxis()->SetLabelOffset(0.008);
+   plx3->GetXaxis()->SetLabelSize(0.030);
+   plx3->GetYaxis()->SetNdivisions(505);
+   plx3->GetXaxis()->CenterTitle();
+
+   plx3->GetYaxis()->SetTitle("N (Counts)");
+   plx3->GetYaxis()->SetTitleOffset(1.30);
+   plx3->GetYaxis()->SetTitleSize(0.040);
+   plx3->GetYaxis()->SetTitleFont(62);
+   plx3->GetYaxis()->SetLabelOffset(0.008);
+   plx3->GetYaxis()->SetLabelSize(0.030);
+   plx3->GetYaxis()->SetNdivisions(505);
+   plx3->GetYaxis()->CenterTitle();
 
 
    ply->GetXaxis()->SetTitle("Y_{col.} (mm)");
@@ -226,66 +261,69 @@ cout<<""<<endl;
 
 
    TCanvas *colplaneX=new TCanvas("colplaneX","colplaneX",800,500,1000,800);
-   TCanvas *colplaneX_rot=new TCanvas("colplaneX_rot","colplaneX_rot",800,500,1000,800);
-   TCanvas *colplaneY=new TCanvas("colplaneY","colplaneY",800,500,1000,800);
+   TCanvas *colplaneX2=new TCanvas("colplaneX2","colplaneX2",800,500,1000,800);
+   TCanvas *colplaneX3=new TCanvas("colplaneX3","colplaneX3",800,500,1000,800);
+   //TCanvas *colplaneY=new TCanvas("colplaneY","colplaneY",800,500,1000,800);
    
-   TH2F *bg=new TH2F("bg","",100,0,300,100,-100,400);
+   
+/*   TH2F *bg=new TH2F("bg","",100,0,300,100,-100,400);
    colplaneY->cd();
-   bg->Draw();
+   bg->Draw();*/
    
-   TF1 *f1 = new TF1("fit","[0]+([1]*x)",0,300);
-   TF1 *f2 = new TF1("fit2","[0]+([1]*x)",0,300);
-   TF1 *plot;		// in order to keep all the tracks in the same plot
+   TF1 *f1 = new TF1("fit","[0]+([1]*x)",0,300);  //Function for ploting the reconstructed ion tracks
+   TF1 *f2 = new TF1("fit2","[0]+([1]*x)",0,300); //Function for ploting the reconstructed ion tracks after rotation
+   TF1 *plot;		// Function in order to plot all the tracks in the same graph
 
    f->cd();
-   double slope_rot;
-   double inter_rot;
    
+   z0=z*1.0;
+   az=z0; 
    
-	z0=z*1.0;
    for(int i=0; i<entries; i++){
-	tree->GetEntry(i);
+   tree->GetEntry(i);
 	
-      // reject tracks with first or last pad of the last row hit
-      for (int j=0; j<cl_padMult[4]; j++) {         
-         //if ((a_pads_fired[4][j] != 0) || (a_pads_fired[4][j] != 1) || (a_pads_fired[4][j] != 58) || (a_pads_fired[4][j] != 59)){
-         if ((a_pads_fired[4][j] > 1) && (a_pads_fired[4][j] < 58) && (cl_padMult[0]<5) && (cl_padMult[1]<5) && (cl_padMult[2]<5) && (cl_padMult[3]<5) && (cl_padMult[4]<5)){   
+   // Reject tracks with first or last pad of the last row hit
+   // for (int j=0; j<cl_padMult[4]; j++) {         
+   // if ((a_pads_fired[4][j] != 0) || (a_pads_fired[4][j] != 1) || (a_pads_fired[4][j] != 58) || (a_pads_fired[4][j] != 59)){
+   // if ((a_pads_fired[4][j] > 1) && (a_pads_fired[4][j] < 58) && (cl_padMult[0]<5) && (cl_padMult[1]<5) && (cl_padMult[2]<5) && (cl_padMult[3]<5) && (cl_padMult[4]<5)){   
+
+
+   //slopeT_inv=atan((-0.5*PI)-theta);
+   slopeT_inv=(1./slopeT); //Retrieve the slope of the lines describing ion tracks from the inverse function
+   interceptT_inv=-(interceptT/slopeT); //Retrieve the intercept of the lines describing ion tracks from the inverse function
+	
+   //printf("Z0: %1.2f,  slope: %1.4f,  intercept: %1.4f \n",z0,slopeT_inv,interceptT_inv);
+   xcol=(z0-interceptT_inv)/slopeT_inv; //Reconstructed position of the collimator in a plane paraller to the tracker
+   plx->Fill(xcol,1);
 
 	
-	
-	//slopeT_inv=atan((-0.5*PI)-theta);
-	slopeT_inv=(1./slopeT);
-	slopeP_inv=(1./slopeP);
-
-	interceptT_inv=-(interceptT/slopeT);
-	interceptP_inv=-(interceptP/slopeP);
-	
-	//printf("Z0: %1.2f,  slope: %1.4f,  intercept: %1.4f \n",z0,slopeT_inv,interceptT_inv);
-	xcol=(z0-interceptT_inv)/slopeT_inv;
-	ycol=(z0-interceptP_inv)/slopeP_inv;
-	plx->Fill(xcol,1);
-	ply->Fill(ycol,1);
-	
-	xcol_rot=rotation(theta_tilt,slopeT_inv,interceptT_inv,z0);
-	//printf("Z0: %1.2f,  slope: %1.4f\n",z0,xcol_rot);
-	plx2->Fill(xcol_rot,1);
-	
-
-        //printf("Z0: %1.2f,  slope_rot: %1.4f,  Intercept_rot: %1.4f \n",z0,slope_rot,inter_rot);
-     /*   
-  	colplaneY->Update();
-        colplaneY->cd();
-        plot=new TF1("fit","[0]+([1]*x)",0,300);
-        plot->SetParameter(0,inter_rot);
-        plot->SetParameter(1,slope_rot);
-        plot->SetLineColor(kGreen+1);
-        plot->Draw("same");
-        colplaneY->Update();
-        //gPad->WaitPrimitive();
-       */
-	}
-	}
-	}
+   xcol_rot=rot_tracks(theta_tilt,slopeT_inv,interceptT_inv,z0); //Reconstructed position of the collimator in a plane parallel to the collimator - Method with tracks' rotation 
+   //printf("Z0: %1.2f,  slope: %1.4f\n",z0,xcol_rot);
+   plx2->Fill(xcol_rot,1);
+   
+   intercept_line= az-(ang_coeff_line*ax);
+   bx= (intercept_line-interceptT_inv)/(slopeT_inv-ang_coeff_line); //x coordinate of the interesction point B(bx,bz) between each track and a line parallel to the collimator
+   bz= (ang_coeff_line*bx) + intercept_line;    //z coordinate of the interesction point B(bx,bz) between each track and a line parallel to the collimator
+ 
+   xcol3= sqrt((pow(ax-bx,2.)) + (pow(az-bz,2.))); //Reconstructed position of the collimator in a plane parallel to the collimator - Method with intersection of lines  
+   plx3->Fill(xcol3,1);
+   
+   //printf("Z0: %1.2f,  slope_rot: %1.4f,  Intercept_rot: %1.4f \n",z0,slope_rot,inter_rot);
+     
+/*   colplaneY->Update();
+   colplaneY->cd();
+   plot=new TF1("fit","[0]+([1]*x)",0,300);
+   plot->SetParameter(0,intercept_line);
+   plot->SetParameter(1,ang_coeff_line);
+   plot->SetLineColor(kGreen+1);
+   plot->Draw("same");
+   colplaneY->Update();
+   //gPad->WaitPrimitive();*/
+   
+   }
+   	//}
+   		//}
+   		
 // Calculate the horizontal position resolution in a plane parallel to the tracker
 
    colplaneX->cd();
@@ -306,9 +344,9 @@ cout<<""<<endl;
    resX=sqrt(abs(pow(fwhmX,2.)-pow(coll_size/cos(0.5*PI-(theta_tilt*PI/180.0)),2.)));
    
    
-   // Calculate the horizontal position resolution in a plane parallel to the collimator
+   // Calculate the horizontal position resolution in a plane parallel to the collimator - Method with tracks' rotation 
 
-   colplaneX_rot->cd();
+   colplaneX2->cd();
    plx2->Draw();
    
    binmax = plx2->GetMaximumBin(); 
@@ -328,33 +366,30 @@ cout<<""<<endl;
    //double error=fitResX2->Error(2)/sigmaDistCollX2;
    //cout<<"Error: "<< error <<" %"<<endl;
    
-
    
-// Calculate the vertical position resolution
-  /*
+   // Calculate the horizontal position resolution in a plane parallel to the collimator - Method with intersection of lines
    
-
-   colplaneY->cd();
-   ply->Draw();
+   colplaneX3->cd();
+   plx3->Draw();
    
-   binmax = ply->GetMaximumBin(); 
-   ymax = ply->GetXaxis()->GetBinCenter(binmax);
-   ply->GetXaxis()->SetRangeUser(ymax-15,ymax+15);
+   binmax = plx3->GetMaximumBin(); 
+   xmax = plx3->GetXaxis()->GetBinCenter(binmax);
+   plx3->GetXaxis()->SetRangeUser(xmax-15,xmax+15);
 
 
-   fitResY=ply->Fit("gaus","S");
-   sigmaDistCollY=fitResY->Value(2);
-   fwhmY=(2.35*sigmaDistCollY);
+   fitResX3=plx3->Fit("gaus","S");
+   sigmaDistCollX3=fitResX3->Value(2);
+   fwhmX3=(2.35*sigmaDistCollX3);
    
    cout<<""<<endl;
    cout<<""<<endl;
    
-   resY=sqrt(abs(pow(fwhmY,2.)-pow(coll_size/cos(0.5*PI-(theta_tilt*PI/180.0)),2.)));
-   */
-   
+   resX3=sqrt(abs(pow(fwhmX3,2.)-pow(coll_size,2.)));
+
+
    cout<<"X position resolution: "<< resX <<" mm"<<endl;
    cout<<"X position resolution2: "<< resX2 <<" mm"<<endl;
-   //cout<<"Y position resolution: "<< resY <<" mm"<<endl;
+   cout<<"X position resolution3: "<< resX3 <<" mm"<<endl;
    
    cout<<""<<endl;
    cout<<""<<endl;
@@ -362,51 +397,48 @@ cout<<""<<endl;
  
  
  
-  ifstream file(filename.c_str());
+   ifstream file(filename.c_str());
   
-  if (!file)
-    {
-    cout << "The file " << filename << " has been created." << endl;
-    ofstream file;
-    file.open("resolution.txt");
+   if (!file) {
+   cout << "The file " << filename << " has been created." << endl;
+   ofstream file;
+   file.open("resolution.txt");
     
-    //file << "Zo (mm)	X resolution (mm) Y resolution (mm) \n";
-    file << z0 << " " << resX << " " << resX2 << endl;
+   //file << "Zo (mm)	X resolution (mm) Y resolution (mm) \n";
+   file << z0 << " " << resX << " " << resX2 << " " << resX3 << endl;
 
-    file.close();
-    }
+   file.close();
+   }
     
+   else{
+    
+   cout << "The file " << filename << " is being updated ..." << endl;
+    
+   ifstream file(filename.c_str());
+   while(!file.eof()) {
+   file >> temp1[lineCount] >> temp2[lineCount] >> temp3[lineCount] >> temp4[lineCount];
+   lineCount++ ;
+   }
+    
+ 
+   temp1[lineCount-1]=z0;
+   temp2[lineCount-1]=resX;
+   temp3[lineCount-1]=resX2;
+   temp4[lineCount-1]=resX3;
 
-    else{
+   ofstream file2;  
+   file2.open("resolution2.txt");
     
-    cout << "The file " << filename << " is being updated ..." << endl;
+   for(int lines=0; lines<lineCount; lines++){
+   file2 << temp1[lines] << "\t" << temp2[lines] << "\t" << temp3[lines] << "\t" << temp4[lines] << endl;
+   }
     
-    ifstream file(filename.c_str());
-    while(!file.eof()) {
-    file >> temp1[lineCount] >> temp2[lineCount] >> temp3[lineCount];
-    lineCount++ ;
-    }
-    
-    //cout << lineCount << "\n" << endl;
-    
-    temp1[lineCount-1]=z0;
-    temp2[lineCount-1]=resX;
-    temp3[lineCount-1]=resX2;
+   file.close();
+   file2.close();
+   remove("resolution.txt");
+   rename("resolution2.txt","resolution.txt");
+   }
 
-    ofstream file2;  
-    file2.open("resolution2.txt");
-    
-    for(int lines=0; lines<lineCount; lines++){
-    file2 << temp1[lines] << "\t" << temp2[lines] << "\t" << temp3[lines] << endl;
-    }
-    
-    file.close();
-    file2.close();
-    remove("resolution.txt");
-    rename("resolution2.txt","resolution.txt");
-    }
-
-    cout << "\n" << endl;
    
 }
 
