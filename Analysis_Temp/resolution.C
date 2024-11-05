@@ -9,15 +9,14 @@
 
 using namespace std;
 
-
+//Function "rot_tracks" uses the equation of the ion track in a reference system rotated by "theta_tilt" with respect to the tracker reference frame and provides as an output//
+//the horizontal position at the interection point between each track and a plane paraller to the collimator which is found at distance z0 from the tracker front face.
 double rot_tracks(double theta_tilt,double slopeT_inv,double interceptT_inv,double z0) {
 
 
    const double PI = 3.14159; //Definition of Pi
    double factor=theta_tilt*PI/180;
    double result= (z0 - (interceptT_inv/(cos(factor)-(slopeT_inv*sin(factor))))) * (cos(factor)-(slopeT_inv*sin(factor))) / ((slopeT_inv*cos(factor))+sin(factor));
-   //double result= ((slopeT_inv*cos(factor))+sin(factor))/(cos(factor)-(slopeT_inv*sin(factor)));
-   //double result= interceptT_inv/(cos(factor)-(slopeT_inv*sin(factor)));
    return result;
 
 }
@@ -34,8 +33,8 @@ cout<<""<<endl;
 
 // Input file variables (tracker)
 
-   double cl_charge[11] = {0};	   	// Charge sum of the pads belonging to a cluster
-   Int_t cl_padMult[5]={0};		// Number of pads of a cluster
+   double cl_charge[11];	 // Charge sum of the pads belonging to a cluster
+   Int_t cl_padMult[5];		// Number of pads of a cluster
    double cl_x[5];			// X centroid of a cluster in pads unit
    double cl_x_mm[5];			// Y centroid of a cluster in mm
    double cl_x_rms[5];  		// RMS of the charge distribution of a cluster in pads unit
@@ -53,13 +52,16 @@ cout<<""<<endl;
    double phi_deg;		// Phi of the track in deg
    double chiSquareTheta;
    double chiSquarePhi;
+   int sic_fired;
+   double energySic;
+   
 
 
 
 // Geometric variables required for positioning the collimator respect to the detector
 
-   double coll_size= 1.0;	       // Dimension of the collimator front face (in mm)
-   double theta_tilt= 40.0;	       // Rotation angle of the collimator with respect to the beam axis (in mm)
+   double coll_size=0.20;	       // Dimension of the collimator front face (in mm)
+   double theta_tilt=40.0;	       // Rotation angle of the collimator with respect to the beam axis (in mm)
    
    
 // Geometric variables required for the definition of a line parallel to the collimator front face
@@ -117,6 +119,8 @@ cout<<""<<endl;
    int binmax; 			// Find the bin with the most statistics
    double xmax; 		// X position of the bin with the most statistics
    double ymax; 		// Y position of the bin with the most statistics
+   
+   double totalCharge=0;
 
    
    string filename = "resolution.txt";  //File to store the values of Z0 and horizontal position resolution
@@ -153,6 +157,7 @@ cout<<""<<endl;
    tree->SetBranchAddress("cl_padMult2",&cl_padMult[2]);
    tree->SetBranchAddress("cl_padMult3",&cl_padMult[3]);
    tree->SetBranchAddress("cl_padMult4",&cl_padMult[4]);
+   tree->SetBranchAddress("cl_charge",&cl_charge);
    tree->SetBranchAddress("pads_fired0",&a_pads_fired[0]);
    tree->SetBranchAddress("pads_fired1",&a_pads_fired[1]);
    tree->SetBranchAddress("pads_fired2",&a_pads_fired[2]);
@@ -165,6 +170,8 @@ cout<<""<<endl;
    tree->SetBranchAddress("interceptT",&interceptT);
    tree->SetBranchAddress("slopeP",&slopeP);
    tree->SetBranchAddress("interceptP",&interceptP);
+   tree->SetBranchAddress("sic_fired",&sic_fired);
+   tree->SetBranchAddress("energySic",&energySic);
 
    int entries=tree->GetEntries();
    cout<<"Entries in file "<< entries <<endl;
@@ -266,7 +273,7 @@ cout<<""<<endl;
    //TCanvas *colplaneY=new TCanvas("colplaneY","colplaneY",800,500,1000,800);
    
    
-/*   TH2F *bg=new TH2F("bg","",100,0,300,100,-100,400);
+  /* TH2F *bg=new TH2F("bg","",100,0,300,100,-100,400);
    colplaneY->cd();
    bg->Draw();*/
    
@@ -277,22 +284,26 @@ cout<<""<<endl;
    f->cd();
    
    z0=z*1.0;
-   az=z0; 
+   az=z0;
+   totalCharge=0;
+   char ch; 
    
    for(int i=0; i<entries; i++){
    tree->GetEntry(i);
+   
+   if(energySic>0.0) {
 	
-   // Reject tracks with first or last pad of the last row hit
-   // for (int j=0; j<cl_padMult[4]; j++) {         
-   // if ((a_pads_fired[4][j] != 0) || (a_pads_fired[4][j] != 1) || (a_pads_fired[4][j] != 58) || (a_pads_fired[4][j] != 59)){
-   // if ((a_pads_fired[4][j] > 1) && (a_pads_fired[4][j] < 58) && (cl_padMult[0]<5) && (cl_padMult[1]<5) && (cl_padMult[2]<5) && (cl_padMult[3]<5) && (cl_padMult[4]<5)){   
-
+    //Reject tracks with first or last pad of the last row hit
+   for(int j=0; j<cl_padMult[4]; j++){         
+   //if(sic_fired==1){
+   if((a_pads_fired[4][j] > 2) && (a_pads_fired[4][j] < 57) && (sic_fired==1)){
+   
 
    //slopeT_inv=atan((-0.5*PI)-theta);
    slopeT_inv=(1./slopeT); //Retrieve the slope of the lines describing ion tracks from the inverse function
    interceptT_inv=-(interceptT/slopeT); //Retrieve the intercept of the lines describing ion tracks from the inverse function
 	
-   //printf("Z0: %1.2f,  slope: %1.4f,  intercept: %1.4f \n",z0,slopeT_inv,interceptT_inv);
+  //printf("Z0: %1.2f,  slope: %1.4f,  intercept: %1.4f \n",z0,slopeT_inv,interceptT_inv);
    xcol=(z0-interceptT_inv)/slopeT_inv; //Reconstructed position of the collimator in a plane paraller to the tracker
    plx->Fill(xcol,1);
 
@@ -310,19 +321,20 @@ cout<<""<<endl;
    
    //printf("Z0: %1.2f,  slope_rot: %1.4f,  Intercept_rot: %1.4f \n",z0,slope_rot,inter_rot);
      
-/*   colplaneY->Update();
+   /*colplaneY->Update();
    colplaneY->cd();
    plot=new TF1("fit","[0]+([1]*x)",0,300);
-   plot->SetParameter(0,intercept_line);
-   plot->SetParameter(1,ang_coeff_line);
+   plot->SetParameter(0,interceptT_inv);
+   plot->SetParameter(1,slopeT_inv);
    plot->SetLineColor(kGreen+1);
    plot->Draw("same");
    colplaneY->Update();
    //gPad->WaitPrimitive();*/
    
    }
-   	//}
-   		//}
+   	}
+   	     }
+   	     	}
    		
 // Calculate the horizontal position resolution in a plane parallel to the tracker
 
