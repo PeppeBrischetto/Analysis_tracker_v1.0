@@ -128,7 +128,7 @@ void C_plot_tracks_Phi(int run){
    line2->SetLineColor(kViolet);
    
    
-   for(int i=0; i<1000;i++){
+   for(int i=0; i<entries;i++){
       tree->GetEntry(i);
       //for(int j=0; j<5; j++){cout<<cl_x[j]<<"  "; }
       cout<<"|"<<phi<<endl;

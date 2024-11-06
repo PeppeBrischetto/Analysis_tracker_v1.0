@@ -294,9 +294,9 @@ cout<<""<<endl;
    if(energySic>0.0) {
 	
     //Reject tracks with first or last pad of the last row hit
-   for(int j=0; j<cl_padMult[4]; j++){         
+   //for(int j=0; j<cl_padMult[4]; j++){         
    //if(sic_fired==1){
-   if((a_pads_fired[4][j] > 2) && (a_pads_fired[4][j] < 57) && (sic_fired==1)){
+   //if((a_pads_fired[4][j] > 2) && (a_pads_fired[4][j] < 57) && (sic_fired==1)){
    
 
    //slopeT_inv=atan((-0.5*PI)-theta);
@@ -333,8 +333,8 @@ cout<<""<<endl;
    
    }
    	}
-   	     }
-   	     	}
+   	    // }
+   	     //	}
    		
 // Calculate the horizontal position resolution in a plane parallel to the tracker
 
