@@ -27,7 +27,7 @@ void C_plot_ChargeSiC(int run)
    Int_t sic_charge;
    Double_t energySic;
    int sic_fired;
-  
+   Int_t a_pads_fired[5][100];
    
    char fileInName[50];
    if(run<10){
@@ -45,8 +45,16 @@ void C_plot_ChargeSiC(int run)
    treeTracks->SetBranchAddress("cl_y", cl_y);
    treeTracks->SetBranchAddress("cl_y_mm", cl_y_mm);
    treeTracks->SetBranchAddress("cl_x_rms", cl_x_rms);
-   treeTracks->SetBranchAddress("cl_padMult",cl_padMult);
-   treeTracks->SetBranchAddress("cl_charge", cl_charge);
+   treeTracks->SetBranchAddress("cl_padMult0",&cl_padMult[0]);
+   treeTracks->SetBranchAddress("cl_padMult1",&cl_padMult[1]);
+   treeTracks->SetBranchAddress("cl_padMult2",&cl_padMult[2]);
+   treeTracks->SetBranchAddress("cl_padMult3",&cl_padMult[3]);
+   treeTracks->SetBranchAddress("cl_padMult4",&cl_padMult[4]);
+   treeTracks->SetBranchAddress("pads_fired0",&a_pads_fired[0]);
+   treeTracks->SetBranchAddress("pads_fired1",&a_pads_fired[1]);
+   treeTracks->SetBranchAddress("pads_fired2",&a_pads_fired[2]);
+   treeTracks->SetBranchAddress("pads_fired3",&a_pads_fired[3]);
+   treeTracks->SetBranchAddress("pads_fired4",&a_pads_fired[4]);
    treeTracks->SetBranchAddress("phi",&phi);
    treeTracks->SetBranchAddress("theta",&theta);
    treeTracks->SetBranchAddress("phi_deg",&phi_deg);      

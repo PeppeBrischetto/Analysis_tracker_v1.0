@@ -1,5 +1,14 @@
-// Shows an anode map of a fixed number of entries "nentries"
-void A_plotMap_entries(int run)
+//###################################################################################################
+//#   macro that  Shows an anode map of a fixed number of entries "nentries"
+//#   
+//#   required as argument the run number
+//###################################################################################################
+//#   created March 2024   D. Torresi
+//#######################################
+//    updated for the new tracker 2024 Nov 6  D. Torresi
+// 
+//
+int A_plotMap_entries(int run)
 {
 
    // Dichiarazione variabili	
@@ -51,11 +60,11 @@ void A_plotMap_entries(int run)
 
    // Dichiarazione Histo 
    TH1F *hrow[5];
-   hrow[0]=new TH1F("r1","r1",62,-0.5,61.5);
-   hrow[1]=new TH1F("r2","r2",62,-0.5,61.5);
-   hrow[2]=new TH1F("r3","r3",62,-0.5,61.5);
-   hrow[3]=new TH1F("r4","r4",62,-0.5,61.5);
-   hrow[4]=new TH1F("r4","r4",62,-0.5,61.5);
+   hrow[0]=new TH1F("r1","r1",60,-0.5,59.5);
+   hrow[1]=new TH1F("r2","r2",60,-0.5,59.5);
+   hrow[2]=new TH1F("r3","r3",60,-0.5,59.5);
+   hrow[3]=new TH1F("r4","r4",60,-0.5,59.5);
+   hrow[4]=new TH1F("r4","r4",60,-0.5,59.5);
 
    for(int i=0;i<5; i++){
      hrow[i]->GetXaxis()->SetTitle("pad");
@@ -67,14 +76,14 @@ void A_plotMap_entries(int run)
    hrow[4]->SetLineColor(kViolet);
    
    
-   TH2D *anode=new TH2D("anode","anode",62,-0.5,61.5,11,0.25,5.75);
+   TH2D *anode=new TH2D("anode","anode",60,-0.5,59.5,11,0.25,5.75);
    anode->SetStats(kFALSE);
    anode->GetXaxis()->SetTitle("pad");
    anode->GetYaxis()->SetTitle("raw");
    anode->GetYaxis()->SetNdivisions(-11); 		// setta il numero di divisioni per la grid
    anode->GetYaxis()->SetLabelSize(0);		// rimuovi il label di questo asse
    
-   TH2D *anodeTime=new TH2D("anodeTime","anodeTime",62,-0.5,61.5,11,0.25,5.75);
+   TH2D *anodeTime=new TH2D("anodeTime","anodeTime",60,-0.5,59.5,11,0.25,5.75);
    anodeTime->SetStats(kFALSE);
    anodeTime->GetXaxis()->SetTitle("pad");
    anodeTime->GetYaxis()->SetTitle("raw");
@@ -183,7 +192,7 @@ void A_plotMap_entries(int run)
            cout<<"entry "<<i<<endl;
            cout<<"press any key to continue, q to quit, s to save a plot"<<endl;
            cin>>anykey;
-           if(anykey=='q') exit; // Per uscire dal programma
+           if(anykey=='q') return 0; // Per uscire dal programma
            if(anykey=='s'){ 		 // Salvi il plot
               C1->Print("c1.pdf");
    	          
