@@ -60,7 +60,7 @@ cout<<""<<endl;
 
 // Geometric variables required for positioning the collimator respect to the detector
 
-   double coll_size=1.00;	       // Dimension of the collimator front face (in mm)
+   double coll_size=0.20;	       // Dimension of the collimator front face (in mm)
    double theta_tilt=40.0;	       // Rotation angle of the collimator with respect to the beam axis (in mm)
    
    
@@ -273,7 +273,7 @@ cout<<""<<endl;
    //TCanvas *colplaneY=new TCanvas("colplaneY","colplaneY",800,500,1000,800);
    
    
-  /* TH2F *bg=new TH2F("bg","",100,0,300,100,-100,400);
+ /*  TH2F *bg=new TH2F("bg","",100,0,300,100,-100,400);
    colplaneY->cd();
    bg->Draw();*/
    
@@ -343,15 +343,15 @@ cout<<""<<endl;
    
    //printf("Z0: %1.2f,  slope_rot: %1.4f,  Intercept_rot: %1.4f \n",z0,slope_rot,inter_rot);
      
-   /*colplaneY->Update();
+  /* colplaneY->Update();
    colplaneY->cd();
    plot=new TF1("fit","[0]+([1]*x)",0,300);
    plot->SetParameter(0,interceptT_inv);
    plot->SetParameter(1,slopeT_inv);
    plot->SetLineColor(kGreen+1);
    plot->Draw("same");
-   colplaneY->Update();
-   //gPad->WaitPrimitive();*/
+   colplaneY->Update();*/
+   //gPad->WaitPrimitive();
    
    }
    	}

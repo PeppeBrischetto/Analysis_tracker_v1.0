@@ -188,6 +188,16 @@ void B_trackFinder_plot(int run)
    TCanvas *C5=new TCanvas("c5","c5",900,900,900,400);
    C5->SetFillColor(kWhite);
    C5->cd(0);
+   // detector edges
+   TLine *edgeLe=new TLine(60.5,-0.75,60.5,4.75);
+   TLine *edgeRi=new TLine(-0.5,-0.75,-0.5,4.75);
+   TLine *edgeLo=new TLine(-0.5,-0.75,60.5,-0.75);
+   TLine *edgeUp=new TLine(60.5,4.75,-0.5,4.75);
+   edgeLe->SetLineColor(kViolet);
+   edgeRi->SetLineColor(kViolet);
+   edgeLo->SetLineColor(kViolet);
+   edgeUp->SetLineColor(kViolet);
+
   // tracks->GetYaxis()->SetRangeUser(-2.0,5.0);
    tracks->Draw();
    edgeLe->Draw();
@@ -213,15 +223,7 @@ void B_trackFinder_plot(int run)
    anode_fit->GetXaxis()->SetTitle("pad");
    anode_fit->GetYaxis()->SetTitle("row");
   
-   // detector edges
-   TLine *edgeLe=new TLine(60.5,-0.75,60.5,4.75);
-   TLine *edgeRi=new TLine(-0.5,-0.75,-0.5,4.75);
-   TLine *edgeLo=new TLine(-0.5,-0.75,60.5,-0.75);
-   TLine *edgeUp=new TLine(60.5,4.75,-0.5,4.75);
-   edgeLe->SetLineColor(kViolet);
-   edgeRi->SetLineColor(kViolet);
-   edgeLo->SetLineColor(kViolet);
-   edgeUp->SetLineColor(kViolet);
+
    
 // END Histo and Canvas 	////////////////////////////////////
 
