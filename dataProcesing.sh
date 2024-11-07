@@ -8,13 +8,11 @@
 #
 #  created 25-11-2022  D. Torresi
 # 
-#  several updates 
-#  last update:  2022-10 D. Torresi  added the sic part
-#
+#  update:  added the sic onverter        2024-10 D. Torresi  
+#  last update:  added the tack generator 2024-11  D. Torresi
 #----------------------------------------------------------------------------------
 #
 #  Remember to check that all the dig variables are correct!
-#
 #
 #
 
@@ -22,7 +20,15 @@
 
 # Definizione variabili
 #run number
+<<<<<<< HEAD
 run=$1
+=======
+<<<<<<< HEAD
+run=$1
+=======
+run=151
+>>>>>>> ac114bb308b3a74481c5f2d2883e9a35214595c6
+>>>>>>> 06db12e5ad4add49cfe014aa055f1c9897ba379c
 
 #################################################
 # directories

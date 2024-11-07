@@ -2,75 +2,123 @@
 //#   plot phi spectra of a single SiC
 //#      
 //#   required as argument the run number
-//#            as input the DeltaT, time interval that is used to define an event, and the Time window
-//#            where to seek the tracks.
-//# 	       The array with the number of digitizers used			   array with the number of digitizers used
-//#  alpha is the angle taken as atan of the slope of the linear fit 
-//#  theta instead is the angle respect to the z-axis 
-//#  theta is defined as  theta=-90-alpha  (it is negative since the x goes from rigth to left).
+//#            
 //###################################################################################################
 //#   created may 2024 by D. Torresi
 //#######################################
-//#   updated:
+//#   updated: new file format 2024 November  D. Torresi
 //# 
 //###################################################################################################
 
 void C_plot_phi(int run)
 {
 
-   Int_t n_pads_fired[5]={0};
-   double centroid[5], centroid_mm[5];
-   double rms[5];
-   double total_charge[5] = {0};
-   double yrow[5] = {0.}; 
-   Double_t theta_deg;  
-   Double_t phi_deg;
-   Int_t sic_fired=0;  
-   Double_t energySic;
-  
-   
-   char fileInName[50];
-   if(run<10){
-      sprintf(fileInName, "../Tracks/tracks_run00%i.root", run);
-   }else if(run <100){
-      sprintf(fileInName, "../Tracks/tracks_run0%i.root", run);
-   }else{
-      sprintf(fileInName, "../Tracks/tracks_run%i.root", run);
-   } 
-   TFile *fileIn = new TFile(fileInName);
-   TTree *treeTracks = (TTree*)fileIn->Get("Data_R");
-   
+ //###################################################################
+//    VARIABLES
 
-   treeTracks->SetBranchAddress("centroid", centroid);
-   treeTracks->SetBranchAddress("rms", rms);
-   treeTracks->SetBranchAddress("n_pads_fired",n_pads_fired);
-   treeTracks->SetBranchAddress("centroid_mm", centroid_mm);
-   treeTracks->SetBranchAddress("total_charge", total_charge);
-   treeTracks->SetBranchAddress("yrow", yrow);
-   treeTracks->SetBranchAddress("theta_deg",&theta_deg);
-   treeTracks->SetBranchAddress("phi_deg",&phi_deg);
-   treeTracks->SetBranchAddress("sic_fired",&sic_fired);
-   treeTracks->SetBranchAddress("energySic",&energySic);
+   // input file variables
+   double cl_charge[11];	   	// charge sum of the pads belonging to a cluster
+   Int_t cl_padMult[5];		// number of pads of a cluster
+   double cl_x[5];			// x centroid of a cluster in pads unit
+   double cl_x_mm[5];			// x centroid of a cluster in mm
+   double cl_x_rms[5];  		// rms of the charge distribution of a cluster in pads unit
+   double cl_y[5];		// y centroid of a cluster in time
+   double cl_y_mm[5];		// y centroid of a cluster in mm
+   Double_t theta;		// theta of the track in rad
+   Double_t theta_deg;		// theta of the track in deg
+   Double_t phi;
+   Double_t phi_deg;
+   Double_t chiSquareTheta;
+   Double_t chiSquarePhi;   
+   Int_t sic_charge;
+   Double_t energySic; 
+   Int_t a_pads_fired[5][100];
+   double slopeT, interceptT;
+   double slopeP, interceptP;
+   int sic_fired;
+
+   int entries;
+   int flagA=0;
+
+
+
+// open file
+   char fileIn[50];
+   if(run<10){
+      sprintf(fileIn, "../Tracks/tracks_run00%i.root", run);
+   }else if(run <100){
+      sprintf(fileIn, "../Tracks/tracks_run0%i.root", run);
+   }else{
+      sprintf(fileIn, "../Tracks/tracks_run%i.root", run);
+   } 
+//      sprintf(fileIn, "../Tracks/tracks_run%i_B.root", run);
+   cout<<fileIn<<endl;
+
+   TFile *f = new TFile(fileIn);
+   TTree *tree = (TTree*)f->Get("Data_R");
    
+   tree->SetBranchAddress("cl_x",&cl_x);
+   tree->SetBranchAddress("cl_x_mm",&cl_x_mm);
+   tree->SetBranchAddress("cl_y",&cl_y);
+   tree->SetBranchAddress("cl_y_mm",&cl_y_mm);
+   tree->SetBranchAddress("cl_x_rms",&cl_x_rms);
+   tree->SetBranchAddress("cl_charge",&cl_charge);
+   tree->SetBranchAddress("cl_padMult0",&cl_padMult[0]);
+   tree->SetBranchAddress("cl_padMult1",&cl_padMult[1]);
+   tree->SetBranchAddress("cl_padMult2",&cl_padMult[2]);
+   tree->SetBranchAddress("cl_padMult3",&cl_padMult[3]);
+   tree->SetBranchAddress("cl_padMult4",&cl_padMult[4]);
+   tree->SetBranchAddress("pads_fired0",&a_pads_fired[0]);
+   tree->SetBranchAddress("pads_fired1",&a_pads_fired[1]);
+   tree->SetBranchAddress("pads_fired2",&a_pads_fired[2]);
+   tree->SetBranchAddress("pads_fired3",&a_pads_fired[3]);
+   tree->SetBranchAddress("pads_fired4",&a_pads_fired[4]);
    
-   int entries=treeTracks->GetEntries();
-   cout<<"Entries tracks file "<< entries <<endl;
+   tree->SetBranchAddress("theta",&theta);
+   tree->SetBranchAddress("phi",&phi);
+   tree->SetBranchAddress("theta_deg",&theta_deg);
+   tree->SetBranchAddress("phi_deg",&phi_deg);
+   tree->SetBranchAddress("chiSquareTheta",&chiSquareTheta);   
+   tree->SetBranchAddress("chiSquarePhi",&chiSquarePhi);      
+   tree->SetBranchAddress("interceptT",&interceptT);
+   tree->SetBranchAddress("slopeT",&slopeT);
+   tree->SetBranchAddress("interceptP",&interceptP);
+   tree->SetBranchAddress("slopeP",&slopeP);
    
-   TCanvas *C1=new TCanvas("c1","alpha",1600, 100,1000.,600.);
-   C1->SetFillColor(kWhite);
+   // Sic variables
+   tree->SetBranchAddress("sic_fired",&sic_fired);
+   tree->SetBranchAddress("sic_charge",&sic_charge);
+   tree->SetBranchAddress("energySic",&energySic);
+
+   entries=tree->GetEntries();
+
+//#################################################################################################
+// GRAPHICS
+
+   TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
    
-   TH1F *histoPhi=new TH1F("","",1000,-50,50);
+   // all tracks
+   TH1F *histoPhi=new TH1F("","",800,-40,40);
    histoPhi->SetStats(0);
    histoPhi->GetXaxis()->SetTitle("charge");
    histoPhi->GetYaxis()->SetTitle("counts");
+
+
    
-   for(int i=0; i<entries; i++){
-   //for(int i=0; i<50; i++){
-      treeTracks->GetEntry(i);
+//#################################################################################################
+// Data LOOP
+   for(int i=0; i<entries;i++){
+      tree->GetEntry(i);
+  
+    
+      // Fill the histo
       histoPhi->Fill(phi_deg);
-   
+     
+     
    }
    
+   histoPhi->SetLineColor(kBlack);
    histoPhi->Draw();
+
    
- }
+}

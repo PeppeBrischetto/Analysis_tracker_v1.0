@@ -303,7 +303,7 @@ cout<<""<<endl;
 
    //Reject tracks that do not have a hit on SiC 
    if(energySic<0.0){
-   qualityFlag=1;//This event is marked as bad and will not be processed//
+   qualityFlag=0;//This event is marked as bad and will not be processed//
   }
 	
    //Reject tracks with first 2 or last 3 pads of the last row hit
@@ -314,8 +314,8 @@ cout<<""<<endl;
    
    }
    	}
- 
- 
+   	
+   	
    // Selection on total charge on the last row. Calculate the average charge of the first 4 rows and if the charge of the last 
    // row is smaller or larger of 50% of the average charge of the first rows the track is removed	
    for(int k=0; k<4; k++){
@@ -363,6 +363,7 @@ cout<<""<<endl;
    
    }
    	}
+
    		
 // Calculate the horizontal position resolution in a plane parallel to the tracker
 

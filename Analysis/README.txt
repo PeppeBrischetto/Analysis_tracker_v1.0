@@ -24,7 +24,14 @@ A_plot_padSpectrum_1.C  plot the charge spectrum of multiple pad in a single plo
 A_plot_padSpectrum_2.C  plot the charge spectrum of a single pad with a condition
 			on the hit multiplicity in a time window
 
+<<<<<<< HEAD
+B_anglesFinder_plot_tracker_and_sic_v5.C  
+			Macro that generate the tracks and associate the SiC hit with a 
+			track. For check only. The generation of the track file is done 
+			by trackGenerator.C
+=======
 B_anglesFinder_plot_tracker_and_sic_v5.C   
+>>>>>>> ac114bb308b3a74481c5f2d2883e9a35214595c6
 
 B_resolutionCalc.C	OBSOLETE
 

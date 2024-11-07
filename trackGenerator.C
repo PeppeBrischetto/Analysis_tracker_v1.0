@@ -91,9 +91,23 @@ void trackGenerator(int run, bool sicFileOpen)
    double cl_y_mm[5] = {0};		// y centroid of a cluster in mm
    Double_t theta;		// theta of the track in rad
    Double_t theta_deg;		// theta of the track in deg
+   Double_t theta13;		// theta row 1 & 3 of the track in rad
+   Double_t theta13_deg;	// theta row 1 & 3 of the track in deg
+   Double_t theta04;		// theta row 0 & 4 of the track in rad
+   Double_t theta04_deg;	// theta row 0 & 4 of the track in deg
+   Double_t theta024;		// theta row 0 & 4 of the track in rad
+   Double_t theta024_deg;	// theta row 0 & 4 of the track in deg
+   Double_t theta123;		// theta row 1,2 & 3 of the track in rad
+   Double_t theta123_deg;	// theta row 1,2 & 3 of the track in deg
+   
+   
    Double_t phi;
    Double_t phi_deg;
    Double_t chiSquareTheta;
+   Double_t chiSquareTheta123;
+   Double_t chiSquareTheta13;
+   Double_t chiSquareTheta04;
+   Double_t chiSquareTheta024;
    Double_t chiSquarePhi;
    
    Int_t sic_charge;
@@ -106,6 +120,10 @@ void trackGenerator(int run, bool sicFileOpen)
    
    // fitting variables
    double slopeT, interceptT, chi2T;
+   double slopeT123, interceptT123, chi2T123;
+   double slopeT13, interceptT13, chi2T13;
+   double slopeT04, interceptT04, chi2T04;        
+   double slopeT024, interceptT024, chi2T024;       
    double slopeP, interceptP, chi2F;
    double charge = 0.0;
    double weigthed_pos[60];
@@ -142,6 +160,10 @@ void trackGenerator(int run, bool sicFileOpen)
    UInt_t sicWithoutTracks=0; 
 
    int np=0; // number of point of the Tgraph
+   int np123=0; // number of point of the Tgraph
+   int np13=0; // number of point of the Tgraph
+   int np04=0; // number of point of the Tgraph
+   int np024=0; // number of point of the Tgraph
    int npTime=0; // number of point of the Tgraph of the time
    char dummyString[50];
 
@@ -233,7 +255,14 @@ void trackGenerator(int run, bool sicFileOpen)
 
 // OPEN output ROOT file //
    char fileOutName[50];
-   sprintf(fileOutName,"Tracks/tracks_run%i.root",run);
+   if(run<10){
+         sprintf(fileOutName,"Tracks/tracks_run00%i_A.root",run);
+      }else if(run <100){
+         sprintf(fileOutName,"Tracks/tracks_run0%i_A.root",run);
+      }else{
+         sprintf(fileOutName,"Tracks/tracks_run%i_A.root",run);
+      } 
+   
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
 
@@ -274,6 +303,36 @@ void trackGenerator(int run, bool sicFileOpen)
    treeOut->Branch("interceptT",&interceptT,"interceptT/D");      
    treeOut->Branch("slopeP",&slopeP,"slopeP/D");      
    treeOut->Branch("interceptP",&interceptP,"interceptP/D");  
+
+   treeOut->Branch("theta123",&theta123,"theta123/D");
+   treeOut->Branch("theta123_deg",&theta123_deg,"theta123_deg/D");
+   treeOut->Branch("chiSquareTheta123",&chiSquareTheta123,"chiSquareTheta123/D");   
+   treeOut->Branch("slopeT123",&slopeT123,"slopeT/D");      
+   treeOut->Branch("interceptT123",&interceptT123,"interceptT123/D");   
+
+   treeOut->Branch("theta13",&theta13,"theta13/D");
+   treeOut->Branch("theta13_deg",&theta13_deg,"theta13_deg/D");
+   treeOut->Branch("chiSquareTheta13",&chiSquareTheta13,"chiSquareTheta13/D");   
+   treeOut->Branch("slopeT13",&slopeT13,"slopeT13/D");      
+   treeOut->Branch("interceptT13",&interceptT13,"interceptT13/D");   
+
+   treeOut->Branch("theta04",&theta04,"theta04/D");
+   treeOut->Branch("theta04_deg",&theta04_deg,"theta04_deg/D");
+   treeOut->Branch("chiSquareTheta04",&chiSquareTheta04,"chiSquareTheta04/D");   
+   treeOut->Branch("slopeT04",&slopeT04,"slopeT04/D");      
+   treeOut->Branch("interceptT04",&interceptT04,"interceptT04/D");   
+
+   treeOut->Branch("theta024",&theta024,"theta024/D");
+   treeOut->Branch("theta024_deg",&theta024_deg,"theta024_deg/D");
+   treeOut->Branch("chiSquareTheta024",&chiSquareTheta024,"chiSquareTheta024/D");   
+   treeOut->Branch("slopeT024",&slopeT024,"slopeT024/D");      
+   treeOut->Branch("interceptT024",&interceptT024,"interceptT024/D");   
+   
+   treeOut->Branch("theta024",&theta024,"theta024/D");
+   treeOut->Branch("theta024_deg",&theta024_deg,"theta024_deg/D");
+   treeOut->Branch("chiSquareTheta024",&chiSquareTheta024,"chiSquareTheta024/D");   
+   treeOut->Branch("slopeT024",&slopeT024,"slopeT024/D");      
+   treeOut->Branch("interceptT024",&interceptT024,"interceptT024/D");
 
    // Sic variables
    treeOut->Branch("sic_fired",&FlagSicStop,"sic_fired/I");
@@ -379,8 +438,32 @@ void trackGenerator(int run, bool sicFileOpen)
    grTheta->SetMarkerSize(1);
    TF1 *lin1 = new TF1("lin1","[0]+([1]*x)",0,300);
    TFitResultPtr fitResultTheta;
+   TFitResultPtr fitResultTheta123;
+   TFitResultPtr fitResultTheta13;
+   TFitResultPtr fitResultTheta04;
+   TFitResultPtr fitResultTheta024;   
    TF1 *theta_fit_result = new TF1("theta_fit_result","[0]+([1]*x)",0.,107.);; // this function is only for drawing the fit result
+   TF1 *theta_fit_result123 = new TF1("theta_fit_result 123","[0]+([1]*x)",0.,107.);; // this function is only for drawing the fit result
+   TF1 *theta_fit_result13 = new TF1("theta_fit_result 13","[0]+([1]*x)",0.,107.);; // this function is only for drawing the fit result
+   TF1 *theta_fit_result04 = new TF1("theta_fit_result 04","[0]+([1]*x)",0.,107.);; // this function is only for drawing the fit result
+   TF1 *theta_fit_result024 = new TF1("theta_fit_result 024","[0]+([1]*x)",0.,107.);; // this function is only for drawing the fit result
+   
+   TGraph *grTheta123=new TGraph(0);
+   grTheta123->SetMarkerStyle(20);
+   grTheta123->SetMarkerSize(1);
 
+   TGraph *grTheta13=new TGraph(0);
+   grTheta13->SetMarkerStyle(20);
+   grTheta13->SetMarkerSize(1);
+
+   TGraph *grTheta04=new TGraph(0);
+   grTheta04->SetMarkerStyle(20);
+   grTheta04->SetMarkerSize(1);
+   
+   TGraph *grTheta024=new TGraph(0);
+   grTheta024->SetMarkerStyle(20);
+   grTheta024->SetMarkerSize(1);
+      
    //fit y vs z
    TGraph *grPhi=new TGraph(0);
    grPhi->SetMarkerStyle(20);
@@ -388,6 +471,7 @@ void trackGenerator(int run, bool sicFileOpen)
    TF1 *lin2 = new TF1("lin2","[0]+([1]*x)",0,200);
    TFitResultPtr fitResultPhi;
    TF1 *phi_fit_result; // this function is only for drawing the fit result
+   
    
 // END Histo and Canvas 	////////////////////////////////////
 
@@ -409,7 +493,7 @@ void trackGenerator(int run, bool sicFileOpen)
    for(int i=0; i<entriesTracker; i++){
    //for(int i=0; i<10; i++){
       treeTracker->GetEntry(i);
-      
+      cout<<"entry: "<<i<<"/"<<entriesTracker<<endl;
       //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
       if((Timestamp-timeinit)<DeltaT){
          //Fill histos
@@ -445,7 +529,11 @@ void trackGenerator(int run, bool sicFileOpen)
              cl_charge[j] = 0.;
          }
          
-         np=0;
+         np=0;	
+         np123=0;
+         np13=0;
+         np04=0;
+         np024=0;
          npTime=0;
          
          theta_deg = -1000;
@@ -482,6 +570,12 @@ void trackGenerator(int run, bool sicFileOpen)
                cl_x_rms[j] = row[j]->GetRMS();
 	       cl_x_mm[j] = cl_x[j] * padWidth + padWidth/2;
 	       if(max>100){grTheta->SetPoint(np++, zrow[j], cl_x_mm[j]);}
+	       
+	       if(max>100 && (j==1 ||j==2 || j==3)){grTheta123->SetPoint(np123++, zrow[j], cl_x_mm[j]);}
+	       if(max>100 && (j==1 || j==3)){grTheta13->SetPoint(np13++, zrow[j], cl_x_mm[j]);}
+	       if(max>100 && (j==0 || j==4)){grTheta04->SetPoint(np04++, zrow[j], cl_x_mm[j]);}
+	       if(max>100 && (j==0 || j==2 ||j==4)){grTheta024->SetPoint(np024++, zrow[j], cl_x_mm[j]);}
+	       
 
       	       timeAverage[j] = (double)(timeAverage[j]/cl_charge[j]); 
       	       cl_y[j] = timeAverage[j];    	       
@@ -572,6 +666,10 @@ void trackGenerator(int run, bool sicFileOpen)
 	    row[4]->GetYaxis()->SetRangeUser(0,max*2);
          
             fitResultTheta=grTheta->Fit("lin1","SQ");
+            fitResultTheta123=grTheta123->Fit("lin1","SQ");
+            fitResultTheta13=grTheta13->Fit("lin1","SQ");
+            fitResultTheta04=grTheta04->Fit("lin1","SQ");
+            fitResultTheta024=grTheta024->Fit("lin1","SQ");            
    	    if(fitResultTheta==0){
    	       //cout<<"### TF ### "<<fitResultTheta<<endl;
        	       interceptT = fitResultTheta->Value(0);
@@ -583,9 +681,62 @@ void trackGenerator(int run, bool sicFileOpen)
     	       //cout<<"intercept "<< interceptT <<"\t slope "<< slopeT << "\t chi2 "<< chiSquareTheta << endl;
 	       theta = TMath::ATan(slopeT);
                theta_deg = theta*180./TMath::Pi();
+               
+
+       	       interceptT123 = fitResultTheta123->Value(0);
+	       slopeT123 = fitResultTheta123->Value(1);
+	       //theta_fit_result = new TF1("theta_fit_result",Form("%f+(%f*x)",interceptT,slopeT),0.,107.);
+	       theta_fit_result123->SetParameter(0,interceptT123);
+	       theta_fit_result123->SetParameter(1,slopeT123);	       
+    	       chiSquareTheta123 = fitResultTheta123->Chi2();
+    	       //cout<<"intercept "<< interceptT <<"\t slope "<< slopeT << "\t chi2 "<< chiSquareTheta << endl;
+	       theta123 = TMath::ATan(slopeT123);
+               theta123_deg = theta123*180./TMath::Pi();
+
+      	       interceptT13 = fitResultTheta13->Value(0);
+	       slopeT13 = fitResultTheta13->Value(1);
+	       //theta_fit_result = new TF1("theta_fit_result",Form("%f+(%f*x)",interceptT,slopeT),0.,107.);
+	       theta_fit_result13->SetParameter(0,interceptT13);
+	       theta_fit_result13->SetParameter(1,slopeT13);	       
+    	       chiSquareTheta13 = fitResultTheta13->Chi2();
+    	       //cout<<"intercept "<< interceptT <<"\t slope "<< slopeT << "\t chi2 "<< chiSquareTheta << endl;
+	       theta13 = TMath::ATan(slopeT13);
+               theta13_deg = theta13*180./TMath::Pi();
+               
+       	       interceptT04 = fitResultTheta04->Value(0);
+	       slopeT04 = fitResultTheta04->Value(1);
+	       //theta_fit_result = new TF1("theta_fit_result",Form("%f+(%f*x)",interceptT,slopeT),0.,107.);
+	       theta_fit_result04->SetParameter(0,interceptT04);
+	       theta_fit_result04->SetParameter(1,slopeT04);	       
+    	       chiSquareTheta04 = fitResultTheta04->Chi2();
+    	       //cout<<"intercept "<< interceptT <<"\t slope "<< slopeT << "\t chi2 "<< chiSquareTheta << endl;
+	       theta04 = TMath::ATan(slopeT04);
+               theta04_deg = theta04*180./TMath::Pi();
+ 
+      	       interceptT024 = fitResultTheta024->Value(0);
+	       slopeT024 = fitResultTheta024->Value(1);
+	       //theta_fit_result = new TF1("theta_fit_result",Form("%f+(%f*x)",interceptT,slopeT),0.,107.);
+	       theta_fit_result024->SetParameter(0,interceptT024);
+	       theta_fit_result024->SetParameter(1,slopeT024);	       
+    	       chiSquareTheta024 = fitResultTheta024->Chi2();
+    	       //cout<<"intercept "<< interceptT <<"\t slope "<< slopeT << "\t chi2 "<< chiSquareTheta << endl;
+	       theta024 = TMath::ATan(slopeT024);
+               theta024_deg = theta04*180./TMath::Pi();                             
             }else{
                theta = -1000;
                theta_deg = -1000;
+               
+               theta123 = -1000;
+               theta123_deg = -1000;
+               
+               theta13 = -1000;
+               theta13_deg = -1000;
+               
+               theta04 = -1000;
+               theta04_deg = -1000;              
+               
+               theta024 = -1000;
+               theta024_deg = -1000;              
             }
             
             //cout << "slope " << slopeT << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
