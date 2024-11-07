@@ -22,7 +22,7 @@
 
 # Definizione variabili
 #run number
-run=151
+run=$1
 
 #################################################
 # directories
