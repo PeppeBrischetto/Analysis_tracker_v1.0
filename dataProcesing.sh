@@ -20,7 +20,11 @@
 
 # Definizione variabili
 #run number
+<<<<<<< HEAD
 run=$1
+=======
+run=151
+>>>>>>> ac114bb308b3a74481c5f2d2883e9a35214595c6
 
 #################################################
 # directories

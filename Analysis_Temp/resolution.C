@@ -120,12 +120,12 @@ cout<<""<<endl;
    double xmax; 		// X position of the bin with the most statistics
    double ymax; 		// Y position of the bin with the most statistics
    
-   double totalCharge=0;
-
+   double totalCharge=0.0;
+   int qualityFlag=0;
    
    string filename = "resolution.txt";  //File to store the values of Z0 and horizontal position resolution
    int lineCount = 0;			//Variable to store the lines' number of the file "resolution.txt"
-   double temp1[10000], temp2[10000], temp3[10000], temp4[10000];  //Matrices to store the values of Z0 and X, Y resolutions from the file resolution.txt, before passing them to resolution2.txt
+   double temp1[10000], temp2[10000], temp3[10000], temp4[10000], temp5[10000], temp6[10000], temp7[10000];  //Matrices to store the values of Z0 and X, Y resolutions from the file resolution.txt, before passing them to resolution2.txt
 
    TFitResultPtr fitResX;
    TFitResultPtr fitResX2;
@@ -137,8 +137,8 @@ cout<<""<<endl;
 // Open file
    char fileIn[50];
 
-      if(run<10){
-      sprintf(fileIn, "../Tracks/tracks_run00%i.root", run);
+   if(run<10){
+   sprintf(fileIn, "../Tracks/tracks_run00%i.root", run);
    }else if(run <100){
       sprintf(fileIn, "../Tracks/tracks_run0%i.root", run);
    }else{
@@ -273,7 +273,7 @@ cout<<""<<endl;
    //TCanvas *colplaneY=new TCanvas("colplaneY","colplaneY",800,500,1000,800);
    
    
-  /* TH2F *bg=new TH2F("bg","",100,0,300,100,-100,400);
+ /*  TH2F *bg=new TH2F("bg","",100,0,300,100,-100,400);
    colplaneY->cd();
    bg->Draw();*/
    
@@ -286,18 +286,47 @@ cout<<""<<endl;
    z0=z*1.0;
    az=z0;
    totalCharge=0;
-   char ch; 
    
    for(int i=0; i<entries; i++){
    tree->GetEntry(i);
    
-   if(energySic>0.0) {
+   qualityFlag=0;
+   totalCharge=0;
+
+   //Reject tracks that do not have a hit on SiC 
+   if(energySic<0.0){
+   qualityFlag=1;//This event is marked as bad and will not be processed//
+  }
 	
+<<<<<<< HEAD
     //Reject tracks with first or last pad of the last row hit
    //for(int j=0; j<cl_padMult[4]; j++){         
    //if(sic_fired==1){
    //if((a_pads_fired[4][j] > 2) && (a_pads_fired[4][j] < 57) && (sic_fired==1)){
+=======
+   //Reject tracks with first 2 or last 3 pads of the last row hit
+   for(int j=0; j<cl_padMult[4]; j++){ 
+>>>>>>> ac114bb308b3a74481c5f2d2883e9a35214595c6
    
+   if((a_pads_fired[4][j] <= 2) || (a_pads_fired[4][j] >= 57)){
+   qualityFlag=1; //This event is marked as bad and will not be processed//
+   
+   }
+   	}
+ 
+ 
+   // Selection on total charge on the last row. Calculate the average charge of the first 4 rows and if the charge of the last 
+   // row is smaller or larger of 50% of the average charge of the first rows the track is removed	
+   for(int k=0; k<4; k++){
+   totalCharge=totalCharge+cl_charge[k];
+      }
+      
+   if(abs(totalCharge/4-cl_charge[4])>(totalCharge/8)){
+   qualityFlag=1;//This event is marked as bad and will not be processed//
+  }     
+
+   	
+   if(qualityFlag==0){   
 
    //slopeT_inv=atan((-0.5*PI)-theta);
    slopeT_inv=(1./slopeT); //Retrieve the slope of the lines describing ion tracks from the inverse function
@@ -321,20 +350,23 @@ cout<<""<<endl;
    
    //printf("Z0: %1.2f,  slope_rot: %1.4f,  Intercept_rot: %1.4f \n",z0,slope_rot,inter_rot);
      
-   /*colplaneY->Update();
+  /* colplaneY->Update();
    colplaneY->cd();
    plot=new TF1("fit","[0]+([1]*x)",0,300);
    plot->SetParameter(0,interceptT_inv);
    plot->SetParameter(1,slopeT_inv);
    plot->SetLineColor(kGreen+1);
    plot->Draw("same");
-   colplaneY->Update();
-   //gPad->WaitPrimitive();*/
+   colplaneY->Update();*/
+   //gPad->WaitPrimitive();
    
    }
    	}
+<<<<<<< HEAD
    	    // }
    	     //	}
+=======
+>>>>>>> ac114bb308b3a74481c5f2d2883e9a35214595c6
    		
 // Calculate the horizontal position resolution in a plane parallel to the tracker
 
@@ -417,7 +449,7 @@ cout<<""<<endl;
    file.open("resolution.txt");
     
    //file << "Zo (mm)	X resolution (mm) Y resolution (mm) \n";
-   file << z0 << " " << resX << " " << resX2 << " " << resX3 << endl;
+   file << z0 << " " << resX << " " << fwhmX << " "  << resX2 << " " << fwhmX2 << " "  << resX3 << " " << fwhmX3<< endl;
 
    file.close();
    }
@@ -428,21 +460,24 @@ cout<<""<<endl;
     
    ifstream file(filename.c_str());
    while(!file.eof()) {
-   file >> temp1[lineCount] >> temp2[lineCount] >> temp3[lineCount] >> temp4[lineCount];
+   file >> temp1[lineCount] >> temp2[lineCount] >> temp3[lineCount] >> temp4[lineCount] >> temp5[lineCount] >> temp6[lineCount] >> temp7[lineCount];
    lineCount++ ;
    }
     
  
    temp1[lineCount-1]=z0;
    temp2[lineCount-1]=resX;
-   temp3[lineCount-1]=resX2;
-   temp4[lineCount-1]=resX3;
+   temp3[lineCount-1]=fwhmX;
+   temp4[lineCount-1]=resX2;
+   temp5[lineCount-1]=fwhmX2;
+   temp6[lineCount-1]=resX3;
+   temp7[lineCount-1]=fwhmX3;
 
    ofstream file2;  
    file2.open("resolution2.txt");
     
    for(int lines=0; lines<lineCount; lines++){
-   file2 << temp1[lines] << "\t" << temp2[lines] << "\t" << temp3[lines] << "\t" << temp4[lines] << endl;
+   file2 << temp1[lines] << "\t" << temp2[lines] << "\t" << temp3[lines] << "\t" << temp4[lines] << "\t" << temp5[lines] << "\t" << temp6[lines] << "\t" << temp7[lines] << endl;
    }
     
    file.close();
