@@ -1,16 +1,16 @@
 //###################################################################################################
-//#   plot phi spectra of a single SiC
+//#   plot theta spectra for different way to build theta
 //#      
 //#   required as argument the run number
-//#            
+//#
 //###################################################################################################
-//#   created may 2024 by D. Torresi
+//#   created November 2024 by D. Torresi
 //#######################################
-//#   updated: new file format 2024 November  D. Torresi
+//#   updated: 
 //# 
 //###################################################################################################
 
-void C_plot_phi(int run)
+void C_plot_theta_v3(int run)
 {
 
  //###################################################################
@@ -26,6 +26,14 @@ void C_plot_phi(int run)
    double cl_y_mm[5];		// y centroid of a cluster in mm
    Double_t theta;		// theta of the track in rad
    Double_t theta_deg;		// theta of the track in deg
+   Double_t theta123;		// theta of the track in rad
+   Double_t theta123_deg;		// theta of the track in deg
+   Double_t theta13;		// theta of the track in rad
+   Double_t theta13_deg;		// theta of the track in deg
+   Double_t theta04;		// theta of the track in rad
+   Double_t theta04_deg;		// theta of the track in deg         
+   Double_t theta024;		// theta of the track in rad
+   Double_t theta024_deg;		// theta of the track in deg     
    Double_t phi;
    Double_t phi_deg;
    Double_t chiSquareTheta;
@@ -49,7 +57,7 @@ void C_plot_phi(int run)
    }else if(run <100){
       sprintf(fileIn, "../Tracks/tracks_run0%i.root", run);
    }else{
-      sprintf(fileIn, "../Tracks/tracks_run%i.root", run);
+      sprintf(fileIn, "../Tracks/tracks_run%i_A.root", run);
    } 
 //      sprintf(fileIn, "../Tracks/tracks_run%i_B.root", run);
    cout<<fileIn<<endl;
@@ -75,8 +83,15 @@ void C_plot_phi(int run)
    tree->SetBranchAddress("pads_fired4",&a_pads_fired[4]);
    
    tree->SetBranchAddress("theta",&theta);
+   //tree->SetBranchAddress("theta123",&theta123);
+   //tree->SetBranchAddress("theta13",&theta13);
+   //tree->SetBranchAddress("theta04",&theta04);
    tree->SetBranchAddress("phi",&phi);
    tree->SetBranchAddress("theta_deg",&theta_deg);
+   tree->SetBranchAddress("theta123_deg",&theta123_deg);
+   tree->SetBranchAddress("theta13_deg",&theta13_deg);
+   tree->SetBranchAddress("theta04_deg",&theta04_deg);         
+   tree->SetBranchAddress("theta024_deg",&theta024_deg);     
    tree->SetBranchAddress("phi_deg",&phi_deg);
    tree->SetBranchAddress("chiSquareTheta",&chiSquareTheta);   
    tree->SetBranchAddress("chiSquarePhi",&chiSquarePhi);      
@@ -98,11 +113,14 @@ void C_plot_phi(int run)
    TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
    
    // all tracks
-   TH1F *histoPhi=new TH1F("","",800,-40,40);
-   histoPhi->SetStats(0);
-   histoPhi->GetXaxis()->SetTitle("charge");
-   histoPhi->GetYaxis()->SetTitle("counts");
-
+   TH1F *histoTheta=new TH1F("","",1000,-10,90);
+   histoTheta->SetStats(0);
+   histoTheta->GetXaxis()->SetTitle("charge");
+   histoTheta->GetYaxis()->SetTitle("counts");
+   TH1F *histoTheta123=new TH1F("","",1000,-10,90);
+   TH1F *histoTheta13=new TH1F("","",1000,-10,90);
+   TH1F *histoTheta04=new TH1F("","",1000,-10,90);
+   TH1F *histoTheta024=new TH1F("","",1000,-10,90);            
 
    
 //#################################################################################################
@@ -112,13 +130,29 @@ void C_plot_phi(int run)
   
     
       // Fill the histo
-      histoPhi->Fill(phi_deg);
+      
+      histoTheta->Fill(theta_deg);
+      
+      histoTheta123->Fill(theta123_deg);
+      histoTheta13->Fill(theta13_deg);
+      histoTheta04->Fill(theta04_deg);
+      histoTheta024->Fill(theta024_deg);
      
      
    }
    
-   histoPhi->SetLineColor(kBlack);
-   histoPhi->Draw();
-
+   histoTheta->SetLineColor(kBlack);
+   histoTheta->Draw();
+   histoTheta123->SetLineColor(kRed);
+   histoTheta123->Draw("same");
+   histoTheta13->SetLineColor(kGreen);
+   histoTheta13->Draw("same");
+   histoTheta04->SetLineColor(kViolet);
+   histoTheta04->Draw("same");
+   histoTheta024->SetLineColor(kOrange);
+   //histoTheta024->Draw("same");
+   
    
 }
+
+

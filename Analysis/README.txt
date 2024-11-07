@@ -27,7 +27,7 @@ A_plot_padSpectrum_2.C  plot the charge spectrum of a single pad with a conditio
 B_anglesFinder_plot_tracker_and_sic_v5.C  
 			Macro that generate the tracks and associate the SiC hit with a 
 			track. For check only. The generation of the track file is done 
-			by  
+			by trackGenerator.C
 
 B_resolutionCalc.C	OBSOLETE
 

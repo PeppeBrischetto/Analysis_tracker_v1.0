@@ -1,16 +1,16 @@
 //###################################################################################################
-//#   plot phi spectra of a single SiC
+//#   plot theta spectra of a single SiC
 //#      
 //#   required as argument the run number
-//#            
+//#
 //###################################################################################################
 //#   created may 2024 by D. Torresi
 //#######################################
-//#   updated: new file format 2024 November  D. Torresi
+//#   updated: November 2024 by D. Torresi
 //# 
 //###################################################################################################
 
-void C_plot_phi(int run)
+int C_plot_eventClusterCharge(int run)
 {
 
  //###################################################################
@@ -39,7 +39,7 @@ void C_plot_phi(int run)
 
    int entries;
    int flagA=0;
-
+   char anykey;
 
 
 // open file
@@ -98,27 +98,46 @@ void C_plot_phi(int run)
    TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
    
    // all tracks
-   TH1F *histoPhi=new TH1F("","",800,-40,40);
-   histoPhi->SetStats(0);
-   histoPhi->GetXaxis()->SetTitle("charge");
-   histoPhi->GetYaxis()->SetTitle("counts");
+   TH1F *histoTheta=new TH1F("","",1000,-10,90);
+   histoTheta->SetStats(0);
+   histoTheta->GetXaxis()->SetTitle("charge");
+   histoTheta->GetYaxis()->SetTitle("counts");
 
-
+   TGraph * gr1=new TGraph();
+   
    
 //#################################################################################################
 // Data LOOP
    for(int i=0; i<entries;i++){
       tree->GetEntry(i);
-  
-    
-      // Fill the histo
-      histoPhi->Fill(phi_deg);
-     
-     
+      cout<<"entry "<<i<<endl;
+      
+      for(int j=0; j<5; j++){
+         gr1->SetPoint(j,j,cl_charge[j]);
+         gr1->SetMarkerStyle(20);
+         gr1->SetMarkerSize(1);
+      }
+      gr1->Draw("AP");
+      C1->Update();
+      cout<<"press any key to continue, q to quit, s to save a plot, c to continue till the end"<<endl;
+      //if(flagM==0)cin>>anykey;
+      cin>>anykey;
+      if(anykey=='q')return 0; // Per uscire dal programma
+      //if(anykey=='s'){ 		 // Salvi il plot
+         //C1->Print("c1.eps");
+         //C3->Print("c3.eps");
+      //}        
+   	//if(anykey=='c')flagM=1;
+                      
+        
+      cout<<"---------------"<<endl;
+      
+      //gr1->Reset("ICES");
    }
    
-   histoPhi->SetLineColor(kBlack);
-   histoPhi->Draw();
-
+}   
    
-}
+
+
+
+

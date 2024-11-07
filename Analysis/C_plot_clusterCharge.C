@@ -1,19 +1,19 @@
 //###################################################################################################
-//#   plot energy spectrum of the cluster for each raw
+//#   plot theta spectra of a single SiC
 //#      
 //#   required as argument the run number
-//#            
+//#
 //###################################################################################################
-//#   created october 2024 by D. Torresi
+//#   created may 2024 by D. Torresi
 //#######################################
-//#   updated:
+//#   updated: November 2024 by D. Torresi
 //# 
 //###################################################################################################
 
-void C_plot_clusterCharge(int run)
+int C_plot_clusterCharge(int run)
 {
 
-//###################################################################
+ //###################################################################
 //    VARIABLES
 
    // input file variables
@@ -38,12 +38,9 @@ void C_plot_clusterCharge(int run)
    int sic_fired;
 
    int entries;
-
-   int qualityFlag=0;
    int flagA=0;
-   double totalCharge=0;
+   char anykey;
 
-   char pippo;
 
 // open file
    char fileIn[50];
@@ -88,40 +85,59 @@ void C_plot_clusterCharge(int run)
    tree->SetBranchAddress("interceptP",&interceptP);
    tree->SetBranchAddress("slopeP",&slopeP);
    
-   
+   // Sic variables
+   tree->SetBranchAddress("sic_fired",&sic_fired);
+   tree->SetBranchAddress("sic_charge",&sic_charge);
+   tree->SetBranchAddress("energySic",&energySic);
+
    entries=tree->GetEntries();
-   cout<<"Entries tracks file "<< entries <<endl;
+
+//#################################################################################################
+// GRAPHICS
+
+   TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
    
-   TCanvas *C1=new TCanvas("c1","alpha",1600, 100,1000.,600.);
-   C1->SetFillColor(kWhite);
+   // all tracks
+   TH1F *histoTheta=new TH1F("","",1000,-10,90);
+   histoTheta->SetStats(0);
+   histoTheta->GetXaxis()->SetTitle("charge");
+   histoTheta->GetYaxis()->SetTitle("counts");
+
+   TGraph * gr1=new TGraph();
    
-   TH1D *histoCC[5];
-   histoCC[0]=new TH1D("","",1000,0,100000);
-   histoCC[1]=new TH1D("","",1000,0,100000);
-   histoCC[2]=new TH1D("","",1000,0,100000);
-   histoCC[3]=new TH1D("","",1000,0,100000);
-   histoCC[4]=new TH1D("","",1000,0,100000);
-   histoCC[0]->SetStats(0);
-   histoCC[0]->GetXaxis()->SetTitle("charge");
-   histoCC[0]->GetYaxis()->SetTitle("counts");
    
-   for(int i=0; i<entries; i++){
-   //for(int i=0; i<50; i++){
+//#################################################################################################
+// Data LOOP
+   for(int i=0; i<entries;i++){
       tree->GetEntry(i);
-      for(int j=0;j<5;j++){histoCC[j]->Fill(cl_charge[j]);}
-   
+      cout<<"entry "<<i<<endl;
+      
+      for(int j=0; j<5; j++){
+         gr1->SetPoint(j,j,cl_charge[j]);
+         gr1->SetMarkerStyle(20);
+         gr1->SetMarkerSize(1);
+      }
+      gr1->Draw("AP");
+      C1->Update();
+      cout<<"press any key to continue, q to quit, s to save a plot, c to continue till the end"<<endl;
+      //if(flagM==0)cin>>anykey;
+      cin>>anykey;
+      if(anykey=='q')return 0; // Per uscire dal programma
+      //if(anykey=='s'){ 		 // Salvi il plot
+         //C1->Print("c1.eps");
+         //C3->Print("c3.eps");
+      //}        
+   	//if(anykey=='c')flagM=1;
+                      
+        
+      cout<<"---------------"<<endl;
+      
+      //gr1->Reset("ICES");
    }
    
-   histoCC[0]->Draw();
-   histoCC[0]->SetLineColor(kRed);
-   histoCC[1]->Draw("same");
-   histoCC[1]->SetLineColor(kBlue);
-   histoCC[2]->Draw("same");
-   histoCC[2]->SetLineColor(kGreen);
-   histoCC[3]->Draw("same");
-   histoCC[3]->SetLineColor(kViolet);
-   histoCC[4]->Draw("same");
-   histoCC[4]->SetLineColor(kOrange);
- }
- 
- 
+}   
+   
+
+
+
+

@@ -1,16 +1,16 @@
 //###################################################################################################
-//#   plot phi spectra of a single SiC
+//#   plot theta spectra of a single SiC
 //#      
 //#   required as argument the run number
-//#            
+//#
 //###################################################################################################
 //#   created may 2024 by D. Torresi
 //#######################################
-//#   updated: new file format 2024 November  D. Torresi
+//#   updated: November 2024 by D. Torresi
 //# 
 //###################################################################################################
 
-void C_plot_phi(int run)
+void C_plot_spectrumClusterCharge(int run)
 {
 
  //###################################################################
@@ -37,9 +37,12 @@ void C_plot_phi(int run)
    double slopeP, interceptP;
    int sic_fired;
 
+   double totalCharge;
+   char histoname[20];
+
    int entries;
    int flagA=0;
-
+   char anykey;
 
 
 // open file
@@ -94,31 +97,64 @@ void C_plot_phi(int run)
 
 //#################################################################################################
 // GRAPHICS
+   TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);  
 
-   TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
+   //TCanvas *C2=new TCanvas("c2","c2",750,160,800,600);   
    
-   // all tracks
-   TH1F *histoPhi=new TH1F("","",800,-40,40);
-   histoPhi->SetStats(0);
-   histoPhi->GetXaxis()->SetTitle("charge");
-   histoPhi->GetYaxis()->SetTitle("counts");
-
-
+   TH1D *chargeCluster[11];
+   for(int h=0; h<11; h++){
+      sprintf(histoname,"clch%i",h); 
+      chargeCluster[h]=new TH1D(histoname,histoname,6410,-0.5,320099.5);
+      chargeCluster[h]->GetXaxis()->SetTitle("charge");
+      chargeCluster[h]->GetYaxis()->SetTitle("counts");
+   }
+ 
+   TH1F *HTotalCharge = new TH1F("toch","toch",6410,-0.5,320499.5);
+   
+     
+   //TH2D *bg=new TH2D("","bg",6410,-0.5,320499.5,1000,0,10000);
+   //bg->Draw();   
+  
    
 //#################################################################################################
 // Data LOOP
-   for(int i=0; i<entries;i++){
+   for(int i=0; i<entries-1;i++){
       tree->GetEntry(i);
-  
-    
-      // Fill the histo
-      histoPhi->Fill(phi_deg);
-     
-     
+      cout<<"entry "<<i<<"  #";
+      totalCharge=0;
+      for(int j=0; j<5; j++){
+         chargeCluster[j]->Fill(cl_charge[j]);  
+         totalCharge=totalCharge+cl_charge[j];
+         cout<<cl_charge[j]<<"  ";
+      }
+      cout<<endl;
+      HTotalCharge->Fill(totalCharge);
+          
    }
    
-   histoPhi->SetLineColor(kBlack);
-   histoPhi->Draw();
+   
+   HTotalCharge->Draw();
+   HTotalCharge->SetLineColor(kBlack);
+   
+   chargeCluster[0]->SetLineColor(kRed);   
+   chargeCluster[0]->Draw("same");
+   chargeCluster[1]->Draw("same");
+   chargeCluster[1]->SetLineColor(kGreen);
+   chargeCluster[2]->Draw("same");
+   chargeCluster[2]->SetLineColor(kBlue);
+   chargeCluster[3]->Draw("same");
+   chargeCluster[3]->SetLineColor(kViolet);
+   chargeCluster[4]->Draw("same");
+   chargeCluster[4]->SetLineColor(kOrange);
 
    
-}
+   
+   
+   
+   
+}   
+   
+
+
+
+
