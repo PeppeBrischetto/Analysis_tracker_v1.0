@@ -498,7 +498,7 @@ void trackGenerator(int run, bool sicFileOpen)
       treeTracker->GetEntry(i);
 
       //cout<<"entry: "<<i<<"/"<<entriesTracker<<endl;      
-      printf("\rentry %i/%i.", i+1, entries);
+      printf("\rentry %i/%i.", i+1, entriesTracker);
       fflush(stdout);
       
       //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
