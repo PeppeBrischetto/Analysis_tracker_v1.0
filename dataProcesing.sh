@@ -122,6 +122,8 @@ mv $outfile  $merdir/merg_$run.root
 #################################################
 # Producing tracking data	4th level
 #################################################
+echo ""
+echo "---------"
 echo  -e "\033[40;35;1m Generating tracks \033[0m"  
 
 root -q -l "trackGenerator.C($run,1)"

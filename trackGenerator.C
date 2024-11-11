@@ -818,6 +818,7 @@ void trackGenerator(int run, bool sicFileOpen)
          }
       }
    }
+   cout<<"\n"<<endl;
 //################### END Event loop ######################################
    
 
