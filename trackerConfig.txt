@@ -1,6 +1,6 @@
 #########################################################
 # Configuration file for the tracker
-# the digitizer ar assigned to the proper tracker section
+# 
 
 Section number		Column	Row 	Dig	Preamp
 0    			0	0	
