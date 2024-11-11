@@ -257,11 +257,11 @@ void trackGenerator(int run, bool sicFileOpen)
 // OPEN output ROOT file //
    char fileOutName[50];
    if(run<10){
-         sprintf(fileOutName,"Tracks/tracks_run00%i_A.root",run);
+         sprintf(fileOutName,"Tracks/tracks_run00%i.root",run);
       }else if(run <100){
-         sprintf(fileOutName,"Tracks/tracks_run0%i_A.root",run);
+         sprintf(fileOutName,"Tracks/tracks_run0%i.root",run);
       }else{
-         sprintf(fileOutName,"Tracks/tracks_run%i_A.root",run);
+         sprintf(fileOutName,"Tracks/tracks_run%i.root",run);
       } 
    
    TFile *fileOut = new TFile(fileOutName, "recreate");
