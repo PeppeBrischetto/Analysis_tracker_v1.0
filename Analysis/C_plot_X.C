@@ -113,14 +113,18 @@ void C_plot_X(int run)
 // Data LOOP
    for(int i=0; i<entries;i++){
       tree->GetEntry(i);
-  
-    
+      
+      printf("\rentry %i/%i.", i+1, entries);
+      fflush(stdout);
+      
+      
       for(int h=0; h<5; h++){
          Xpos[h]->Fill(cl_x[h]);
       }
      
      
    }
+   cout<<endl;
    
    Xpos[0]->SetLineColor(kBlack);
    Xpos[0]->Draw();
