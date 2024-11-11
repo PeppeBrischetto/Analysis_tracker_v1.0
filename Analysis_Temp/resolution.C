@@ -303,7 +303,7 @@ cout<<""<<endl;
 
    //Reject tracks that do not have a hit on SiC 
    if(energySic<0.0){
-   qualityFlag=0;//This event is marked as bad and will not be processed//
+   qualityFlag=1;//This event is marked as bad and will not be processed//
   }
 	
    //Reject tracks with first 2 or last 3 pads of the last row hit
@@ -383,7 +383,7 @@ cout<<""<<endl;
    cout<<""<<endl;
    
    resX=sqrt(abs(pow(fwhmX,2.)-pow(coll_size/cos(0.5*PI-(theta_tilt*PI/180.0)),2.)));
-   
+ 
    
    // Calculate the horizontal position resolution in a plane parallel to the collimator - Method with tracks' rotation 
 
