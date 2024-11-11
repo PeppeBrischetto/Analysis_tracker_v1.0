@@ -19,8 +19,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // To do
 // option to do not convert the event with no trapezoid flag or zero charge
-// take board_id from config file
-//
 //
 
 
@@ -30,6 +28,7 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "Include/solReader.h"
+#include "Include/converter.hh"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -41,12 +40,14 @@ char fileCalCharge[200]="Calib_files/chargeCalib_PA.txt";   // charge calibratio
 char filePadMapping[200]="Calib_files/channel2pad_2.txt";   // pads mapping file
                                                             // 2024-03-20 We defined channel2pad_3.txt from channel2pad_2.txt changing the pad numbers relative to the strips from 100 and 101 (i.e. channels 60 and 61) to 1000 and 1001, respectively. This is because with the final anode the pad number will be from 0 to 239, therefore 100 and 101 will be used for pads and not for strips
 
-// Board mapping
-// the first five numbers are the first column, the second five are the second column and so on
-// 2024-03-20 Currently we have only one module of the anode, so that we need only five numbers that correspond to one column
-// Int_t board_id[20]={22642,22643,22644,22645,22646};  // run 18-18-20-21
-//Int_t board_id[20]={21247,22645,22644,22643,22642};  // run 184
-Int_t board_id[20]={22642,22643,22644,22645,21247};  // run 184 - These are the ID numbers of the digitizers for the tracker
+//#######################################################
+//  Dig Board mapping 
+Int_t preamp_ID[20];
+Int_t dig_ID[20]={22642,22643,22644,22645,21247};  
+//  Read from a file
+//readTrackerConfig(preamp_ID, dig_ID);  
+
+
 
 // calibration array where the calibration parameters are stored
 Double_t cal_fac[5][64]; // matrix 5x64 for calibration factors for 5 PAs x 64 channels
@@ -72,31 +73,31 @@ struct data {
 // Row 0-4 are row segmented in pad, from 5 to 10 are unsegmented row (aka strip)
 int findRow(int dig, int pad){
     int row=-1;
-    if(dig==board_id[0]){
+    if(dig==dig_ID[0]){
        if(pad==100){
           row=5;
        }else{
           row=0;
        }
-    }else if(dig==board_id[1]){
+    }else if(dig==dig_ID[1]){
        if(pad==100){
           row=6;
        }else{
           row=1;
        }
-    }else if(dig==board_id[2]){
+    }else if(dig==dig_ID[2]){
     	if(pad==100){
           row=7;
        }else{
     	  row=2;
        }
-    }else if(dig==board_id[3]){
+    }else if(dig==dig_ID[3]){
        if(pad==100){
           row=8;
        }else{
           row=3;
        }
-    }else if(dig==board_id[4]){
+    }else if(dig==dig_ID[4]){
        if(pad==100){
           row=9;
        }else if(pad==101){
@@ -110,22 +111,22 @@ int findRow(int dig, int pad){
 
 int findColumn(int dig){ // 2024-03-20 Check this function!!!
     int Column=-1;
-    if(dig==board_id[0]){Column=0;}
-    else if(dig==board_id[1]){Column=1;}
-    else if(dig==board_id[2]){Column=2;}
-    else if(dig==board_id[3]){Column=3;}
-    else if(dig==board_id[4]){Column=4;}
+    if(dig==dig_ID[0]){Column=0;}
+    else if(dig==dig_ID[1]){Column=1;}
+    else if(dig==dig_ID[2]){Column=2;}
+    else if(dig==dig_ID[3]){Column=3;}
+    else if(dig==dig_ID[4]){Column=4;}
     return Column;
 }
 
 
 int findSection(int dig){
     int section=-1;
-    if(dig==board_id[0]){section=0;}
-    else if(dig==board_id[1]){section=4;}
-    else if(dig==board_id[2]){section=8;}
-    else if(dig==board_id[3]){section=12;}
-    else if(dig==board_id[4]){section=16;}
+    if(dig==dig_ID[0]){section=0;}
+    else if(dig==dig_ID[1]){section=4;}
+    else if(dig==dig_ID[2]){section=8;}
+    else if(dig==dig_ID[3]){section=12;}
+    else if(dig==dig_ID[4]){section=16;}
     return section;
 }
 
@@ -386,23 +387,23 @@ void converter_solaris_tracker (const char *data_file_name_0, const UShort_t Boa
 
    //##################### Charge calibration ############################
    for(UInt_t cp=0; cp<64; cp++){    
-      if(array_Board[k]==board_id[0] && array_Channel[k]==cp){
+      if(array_Board[k]==dig_ID[0] && array_Channel[k]==cp){
          array_Charge_cal[k]=array_Charge[k]*cal_fac[0][cp];	//Charge_cal is the Charge calibration
          array_Pads[k]=pad[cp];				//a tracker pad number is associated to the corresponding digitizer channel
       }
-      if(array_Board[k]==board_id[1] && array_Channel[k]==cp){
+      if(array_Board[k]==dig_ID[1] && array_Channel[k]==cp){
          array_Charge_cal[k]=array_Charge[k]*cal_fac[1][cp];		
          array_Pads[k]=pad[cp];				
       }
-      if(array_Board[k]==board_id[2] && array_Channel[k]==cp){
+      if(array_Board[k]==dig_ID[2] && array_Channel[k]==cp){
          array_Charge_cal[k]=array_Charge[k]*cal_fac[2][cp];		
          array_Pads[k]=pad[cp];				
       }
-      if(array_Board[k]==board_id[3] && array_Channel[k]==cp){
+      if(array_Board[k]==dig_ID[3] && array_Channel[k]==cp){
          array_Charge_cal[k]=array_Charge[k]*cal_fac[3][cp];		
          array_Pads[k]=pad[cp];				
       }
-      if(array_Board[k]==board_id[4] && array_Channel[k]==cp){
+      if(array_Board[k]==dig_ID[4] && array_Channel[k]==cp){
          array_Charge_cal[k]=array_Charge[k]*cal_fac[4][cp];		
          array_Pads[k]=pad[cp];				
       }
@@ -452,23 +453,23 @@ void converter_solaris_tracker (const char *data_file_name_0, const UShort_t Boa
       //##################### Charge calibration ############################
   
       for(UInt_t cp=0; cp<64; cp++){    
-         if(array_Board[k]==board_id[0] && array_Channel[k]==cp){
+         if(array_Board[k]==dig_ID[0] && array_Channel[k]==cp){
             array_Charge_cal[k]=array_Charge[k]*cal_fac[0][cp];	//Charge_cal is the Charge calibration
             array_Pads[k]=pad[cp];				//a tracker pad number is associated to the corresponding digitizer channel
          }
-         if(array_Board[k]==board_id[1] && array_Channel[k]==cp){
+         if(array_Board[k]==dig_ID[1] && array_Channel[k]==cp){
             array_Charge_cal[k]=array_Charge[k]*cal_fac[1][cp];		
             array_Pads[k]=pad[cp];				
          }
-         if(array_Board[k]==board_id[2] && array_Channel[k]==cp){
+         if(array_Board[k]==dig_ID[2] && array_Channel[k]==cp){
             array_Charge_cal[k]=array_Charge[k]*cal_fac[2][cp];		
             array_Pads[k]=pad[cp];				
          }
-         if(array_Board[k]==board_id[3] && array_Channel[k]==cp){
+         if(array_Board[k]==dig_ID[3] && array_Channel[k]==cp){
             array_Charge_cal[k]=array_Charge[k]*cal_fac[3][cp];		
             array_Pads[k]=pad[cp];				
          }
-         if(array_Board[k]==board_id[4] && array_Channel[k]==cp){
+         if(array_Board[k]==dig_ID[4] && array_Channel[k]==cp){
             array_Charge_cal[k]=array_Charge[k]*cal_fac[4][cp];		
             array_Pads[k]=pad[cp];				
          }
