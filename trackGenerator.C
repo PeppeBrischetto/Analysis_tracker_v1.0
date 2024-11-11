@@ -18,11 +18,12 @@
 //#   modified: 6 Jun 2024 commenting 
 //# 			   renaming of variables  
 //#			   solved bug on track without sic    D. Torresi
-//#   updated : 10 Jun 2024 extension to no-segmented rows (i.e. pads), transforming 5 -> 10    A. Pitronaci
+//#   updated : 10 Jun 2024 extension to no-segmented rows (i.e. pads), transforming 5 -> 11    A. Pitronaci
 //#   updated : 24 Jun 2024 insert option to not consider the SiC file  G. Brischetto
 //#   updated :  8 oct 2024 corrected the zcoordinate D. Torresi
 //#   updated : 22 oct 2024 removed TCanvas and plot D. Torresi, add output variables slopeT slopeP interceptT interceptP D. Torresi
 //#   updated : 24 oct 2024 cl_y now is written correctly for the tracks with a Sic G. Brischetto D. Torresi
+//#   updated :  8 nov 2024 Added theta with less row and added for each event the corresponding entry of the Merged file. D. Torresi
 //###################################################################################################
 
 
@@ -113,7 +114,7 @@ void trackGenerator(int run, bool sicFileOpen)
    Int_t sic_charge;
    Double_t energySic; 
   
-  
+   int entryMerged=-1;		// entry of the first hit in the corresponding Merged file
    Int_t a_pads_fired[5][100];
    
 // other variables
@@ -333,6 +334,8 @@ void trackGenerator(int run, bool sicFileOpen)
    treeOut->Branch("chiSquareTheta024",&chiSquareTheta024,"chiSquareTheta024/D");   
    treeOut->Branch("slopeT024",&slopeT024,"slopeT024/D");      
    treeOut->Branch("interceptT024",&interceptT024,"interceptT024/D");
+   treeOut->Branch("entryMerged",&entryMerged,"entryMerged/D");
+
 
    // Sic variables
    treeOut->Branch("sic_fired",&FlagSicStop,"sic_fired/I");
@@ -571,7 +574,7 @@ void trackGenerator(int run, bool sicFileOpen)
 	       cl_x_mm[j] = cl_x[j] * padWidth + padWidth/2;
 	       if(max>100){grTheta->SetPoint(np++, zrow[j], cl_x_mm[j]);}
 	       
-	       if(max>100 && (j==1 ||j==2 || j==3)){grTheta123->SetPoint(np123++, zrow[j], cl_x_mm[j]);}
+	       if(max>100 && (j==1 || j==2 || j==3)){grTheta123->SetPoint(np123++, zrow[j], cl_x_mm[j]);}
 	       if(max>100 && (j==1 || j==3)){grTheta13->SetPoint(np13++, zrow[j], cl_x_mm[j]);}
 	       if(max>100 && (j==0 || j==4)){grTheta04->SetPoint(np04++, zrow[j], cl_x_mm[j]);}
 	       if(max>100 && (j==0 || j==2 ||j==4)){grTheta024->SetPoint(np024++, zrow[j], cl_x_mm[j]);}
@@ -788,6 +791,7 @@ void trackGenerator(int run, bool sicFileOpen)
          
 	 // Start a new Event
 	 timeinit=Timestamp;
+	 entryMerged=i;
 	 grTheta->Set(0);
 	 grPhi->Set(0);
 	
