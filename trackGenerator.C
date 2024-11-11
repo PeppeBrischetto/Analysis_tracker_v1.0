@@ -496,7 +496,11 @@ void trackGenerator(int run, bool sicFileOpen)
    for(int i=0; i<entriesTracker; i++){
    //for(int i=0; i<10; i++){
       treeTracker->GetEntry(i);
-      cout<<"entry: "<<i<<"/"<<entriesTracker<<endl;
+
+      //cout<<"entry: "<<i<<"/"<<entriesTracker<<endl;      
+      printf("\rentry %i/%i.", i+1, entries);
+      fflush(stdout);
+      
       //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
       if((Timestamp-timeinit)<DeltaT){
          //Fill histos
