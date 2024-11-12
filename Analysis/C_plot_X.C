@@ -119,7 +119,9 @@ void C_plot_X(int run)
       
       
       for(int h=0; h<5; h++){
+         
          Xpos[h]->Fill(cl_x[h]);
+         
       }
      
      

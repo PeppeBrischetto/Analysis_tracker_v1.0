@@ -1,16 +1,16 @@
 //###################################################################################################
-//#   plot theta spectra for different way to build theta
+//#   plot theta spectra of a single SiC
 //#      
 //#   required as argument the run number
 //#
 //###################################################################################################
-//#   created November 2024 by D. Torresi
+//#   created may 2024 by D. Torresi
 //#######################################
-//#   updated: 
+//#   updated: November 2024 by D. Torresi
 //# 
 //###################################################################################################
 
-void C_plot_theta_v3(int run)
+void C_plot_X_V2(int run)
 {
 
  //###################################################################
@@ -26,14 +26,6 @@ void C_plot_theta_v3(int run)
    double cl_y_mm[5];		// y centroid of a cluster in mm
    Double_t theta;		// theta of the track in rad
    Double_t theta_deg;		// theta of the track in deg
-   Double_t theta123;		// theta of the track in rad
-   Double_t theta123_deg;		// theta of the track in deg
-   Double_t theta13;		// theta of the track in rad
-   Double_t theta13_deg;		// theta of the track in deg
-   Double_t theta04;		// theta of the track in rad
-   Double_t theta04_deg;		// theta of the track in deg         
-   Double_t theta024;		// theta of the track in rad
-   Double_t theta024_deg;		// theta of the track in deg     
    Double_t phi;
    Double_t phi_deg;
    Double_t chiSquareTheta;
@@ -47,8 +39,9 @@ void C_plot_theta_v3(int run)
 
    int entries;
    int flagA=0;
-
-
+   char histoname[100];
+   
+   int flag=0;
 
 // open file
    char fileIn[50];
@@ -83,15 +76,8 @@ void C_plot_theta_v3(int run)
    tree->SetBranchAddress("pads_fired4",&a_pads_fired[4]);
    
    tree->SetBranchAddress("theta",&theta);
-   //tree->SetBranchAddress("theta123",&theta123);
-   //tree->SetBranchAddress("theta13",&theta13);
-   //tree->SetBranchAddress("theta04",&theta04);
    tree->SetBranchAddress("phi",&phi);
    tree->SetBranchAddress("theta_deg",&theta_deg);
-   tree->SetBranchAddress("theta123_deg",&theta123_deg);
-   tree->SetBranchAddress("theta13_deg",&theta13_deg);
-   tree->SetBranchAddress("theta04_deg",&theta04_deg);         
-   tree->SetBranchAddress("theta024_deg",&theta024_deg);     
    tree->SetBranchAddress("phi_deg",&phi_deg);
    tree->SetBranchAddress("chiSquareTheta",&chiSquareTheta);   
    tree->SetBranchAddress("chiSquarePhi",&chiSquarePhi);      
@@ -110,49 +96,85 @@ void C_plot_theta_v3(int run)
 //#################################################################################################
 // GRAPHICS
 
-   TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
+   TCanvas *C1=new TCanvas("c1","c1",250,160,1600,600);   
    
    // all tracks
-   TH1F *histoTheta=new TH1F("","",1000,-10,90);
-   histoTheta->SetStats(0);
-   histoTheta->GetXaxis()->SetTitle("charge");
-   histoTheta->GetYaxis()->SetTitle("counts");
-   TH1F *histoTheta123=new TH1F("","",1000,-10,90);
-   TH1F *histoTheta13=new TH1F("","",1000,-10,90);
-   TH1F *histoTheta04=new TH1F("","",1000,-10,90);
-   TH1F *histoTheta024=new TH1F("","",1000,-10,90);            
+   TH1D *XposH[5];
+   TH1D *XposL[5];
+   for(int h=0; h<5; h++){
+      sprintf(histoname,"xpos%i",h); 
+      //Xpos[h]=new TH1D(histoname,histoname,1200,-50.5,349.5);
+      XposH[h]=new TH1D(histoname,histoname,2500,-10.5,69.5);
+      XposH[h]->GetXaxis()->SetTitle("x (pad)");
+      XposH[h]->GetYaxis()->SetTitle("counts");
+      
+      XposL[h]=new TH1D(histoname,histoname,2500,-10.5,69.5);
+      XposL[h]->GetXaxis()->SetTitle("x (pad)");
+      XposL[h]->GetYaxis()->SetTitle("counts");
+   }
+
 
    
 //#################################################################################################
 // Data LOOP
    for(int i=0; i<entries;i++){
       tree->GetEntry(i);
-  
-    
-      // Fill the histo
+      flag=0;
       
-      histoTheta->Fill(theta_deg);
+      printf("\rentry %i/%i.", i+1, entries);
+      fflush(stdout);
       
-      histoTheta123->Fill(theta123_deg);
-      histoTheta13->Fill(theta13_deg);
-      histoTheta04->Fill(theta04_deg);
-      histoTheta024->Fill(theta024_deg);
+      if(cl_padMult[0]>3 && cl_padMult[1]>3 &&cl_padMult[2]>3 &&cl_padMult[3]>3 &&cl_padMult[4]>3) flag=1;
+      if(cl_padMult[0]<3 && cl_padMult[1]<3 &&cl_padMult[2]<3 &&cl_padMult[3]<3 &&cl_padMult[4]<3) flag=2;
+      
+      
+      for(int h=0; h<5; h++){
+         
+         if(flag==1) XposH[h]->Fill(cl_x[h]);
+         if(flag==2) XposL[h]->Fill(cl_x[h]);
+      }
      
      
    }
+   cout<<endl;
    
-   histoTheta->SetLineColor(kBlack);
-   histoTheta->Draw();
-   histoTheta123->SetLineColor(kRed);
-   histoTheta123->Draw("same");
-   histoTheta13->SetLineColor(kGreen);
-   histoTheta13->Draw("same");
-   histoTheta04->SetLineColor(kViolet);
-   histoTheta04->Draw("same");
-   histoTheta024->SetLineColor(kOrange);
-   //histoTheta024->Draw("same");
+   TCanvas *c1=new TCanvas("c1","High mult");
+   XposH[0]->SetLineColor(kBlack);
+   XposH[0]->Draw();
+   XposH[1]->SetLineColor(kRed);
+   XposH[1]->Draw("same");
+   XposH[2]->SetLineColor(kGreen);
+   XposH[2]->Draw("same");
+   XposH[3]->SetLineColor(kBlue);
+   XposH[3]->Draw("same");
+   XposH[4]->SetLineColor(kViolet);
+   XposH[4]->Draw("same");
    
+
+   TLegend *leg= new TLegend(0.7,0.65,0.9,0.9);
+   leg->AddEntry(XposH[0], " row 0", "l"); 
+   leg->AddEntry(XposH[1], " row 1", "l");
+   leg->AddEntry(XposH[2], " row 2", "l");
+   leg->AddEntry(XposH[3], " row 3", "l");
+   leg->AddEntry(XposH[4], " row 4", "l");
+   leg->Draw();
+
+   TCanvas *c2=new TCanvas("c2","Low mult");
+   XposL[0]->SetLineColor(kBlack);
+   XposL[0]->Draw();
+   XposL[1]->SetLineColor(kRed);
+   XposL[1]->Draw("same");
+   XposL[2]->SetLineColor(kGreen);
+   XposL[2]->Draw("same");
+   XposL[3]->SetLineColor(kBlue);
+   XposL[3]->Draw("same");
+   XposL[4]->SetLineColor(kViolet);
+   XposL[4]->Draw("same");
+   leg->Draw();
+ }  
    
-}
+
+
+
 
 
