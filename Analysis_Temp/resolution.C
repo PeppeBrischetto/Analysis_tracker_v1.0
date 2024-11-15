@@ -1,3 +1,26 @@
+//################################################################################################################################################
+
+//Macro that reads the information from a third level root file and calculates the horizontal position resolution (Xres) of the tracker//
+//For the determination of Xres, three different methods were adopted:
+
+// i)   Determine the intersection point of the ions trajectories with a plane parallel to the tracker's front face.
+// ii)  Rotate the reference frame of the tracker by an angle "theta_tilt", calculate the slope and intercept of the trajectories in the new reference frame and subsequently, 
+//      determine the interection point between the "rotated" ions trajectories and a plane paraller to the collimator's front face. 
+//iii)  Determine the interection point between the ions tracjectories and a line parallel to the collimators front face//
+
+//In every scenario mentioned above, the distance of the plane/line form the tracker is determined through a grid search//
+//The deduced resolutions adopting each one of the methods mentioned above are then saved in a .txt file named: resolution.txt// 
+
+//Input variables: Introduce in line 86 the collimator's(or beam spot) size and the angle between the collimator(beam) and the tracker in line 87//  
+
+//To run simply open a root session and type: .x resolution.C(run number,z), where "z" is the distance (in mm) between the plane/line and the tracker //
+
+//Created in October 2024 by O. Sgouros//
+
+//################################################################################################################################################
+
+
+
 #ifdef __MAKECINT__
 #pragma link C++ class vector<float>+;
 #endif

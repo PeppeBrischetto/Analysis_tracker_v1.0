@@ -1,9 +1,9 @@
 //#####################################################################################################################
 
-//Macro that read the information from a third level root file and plots the pad multiplicity for each row//
+//Macro that reads the information from a third level root file and plots the pad multiplicity for each row//
 //To run simply open a root session and type: .x plot_pad_mult.C(run number) //
 
-//Created on 15 November 2015 by O. Sgouros//
+//Created in November 2024 by O. Sgouros//
 
 //#####################################################################################################################
 
