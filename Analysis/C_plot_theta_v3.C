@@ -115,7 +115,7 @@ void C_plot_theta_v3(int run)
    // all tracks
    TH1F *histoTheta=new TH1F("","",1000,-10,90);
    histoTheta->SetStats(0);
-   histoTheta->GetXaxis()->SetTitle("charge");
+   histoTheta->GetXaxis()->SetTitle("#theta");
    histoTheta->GetYaxis()->SetTitle("counts");
    TH1F *histoTheta123=new TH1F("","",1000,-10,90);
    TH1F *histoTheta13=new TH1F("","",1000,-10,90);
@@ -144,7 +144,7 @@ void C_plot_theta_v3(int run)
    histoTheta->SetLineColor(kBlack);
    histoTheta->Draw();
    histoTheta123->SetLineColor(kRed);
-   histoTheta123->Draw("same");
+   //histoTheta123->Draw("same");
    histoTheta13->SetLineColor(kGreen);
    histoTheta13->Draw("same");
    histoTheta04->SetLineColor(kViolet);

@@ -65,6 +65,8 @@ void A_plot_EnergyVsPad(int run)
    // Ciclo sui dati   
    for(int i=0; i <entries; i++){
       tree->GetEntry(i);
+      printf("\rentry %i/%i.", i+1, entriesTracker);
+      fflush(stdout);
       if(row<5){rowHisto[row]->Fill(pad,Charge);}
       
    }
