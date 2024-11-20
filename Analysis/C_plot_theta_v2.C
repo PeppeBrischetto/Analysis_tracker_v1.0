@@ -101,8 +101,8 @@ void C_plot_theta_v2(int run)
 
    TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
    
-   // all tracks
-   TH1F *histoTheta=new TH1F("","",1000,-30,90);
+   // all tracksq
+   TH1F *histoTheta=new TH1F("","",400,-30,90);
    histoTheta->SetStats(0);
    histoTheta->GetXaxis()->SetTitle("charge");
    histoTheta->GetYaxis()->SetTitle("counts");
