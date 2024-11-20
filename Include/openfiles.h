@@ -47,7 +47,13 @@
 void openTrackFile(int runnum ){
    //open file
    char *filename = new char[100];
-   sprintf(filename, "../Tracks/tracks_run%i.root", runnum);
+   if(runnum<10){
+      sprintf(filename, "../Tracks/tracks_run00%i.root", runnum);
+   }else if(runnum <100){
+      sprintf(filename, "../Tracks/tracks_run0%i.root", runnum);
+   }else{
+      sprintf(filename, "../Tracks/tracks_run%i.root", runnum);
+   } 
 
    f=new TFile(filename,"READ");
    cout<<"Opening file:  "<<filename<<endl;
