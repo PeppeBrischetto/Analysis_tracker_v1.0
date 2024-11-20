@@ -1,13 +1,14 @@
 
 
 #include "../Include/openfiles.h"
-//#include "../Include/solReader.h"
 
 void prova()
 {
 
-  theta =4.5643;
+  int runnum=155;
+  openTrackFile(runnum);
   
+  tree->GetEntry(100);
   cout<<theta<<endl;
 
 }
