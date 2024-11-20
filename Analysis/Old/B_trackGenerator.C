@@ -14,11 +14,17 @@
 //###################################################################################################
 //#   created may 2024 from B_anglesFinder_plot_tracker_and_sic_v4.C by G. Brischetto
 //#######################################
-//#   updated: 6 june 2024 commenting 
+//#   modified: 6 Jun 2024 commenting 
 //# 			   renaming of variables  
 //#			   solved bug on track without sic    D. Torresi
-//# 
+//#   updated : 10 Jun 2024 extension to no-segmented rows (i.e. pads), transforming 5 -> 10    A. Pitronaci
+//#   updated : 24 Jun 2024 insert option to not consider the SiC file  G. Brischetto
 //###################################################################################################
+
+
+#ifdef __MAKECINT__
+#pragma link C++ class vector<float>+;
+#endif
 
 void B_trackGenerator(int run)
 {
@@ -33,7 +39,7 @@ void B_trackGenerator(int run)
    int thresh=0;
 
    Float_t timeWindowlow = 0.5E+06; // time (in ps) that the primary electrons need to reach the anode
-   Float_t timeWindowhigh = 2.0E+06;
+   Float_t timeWindowhigh = 3.0E+06;
 
    Double_t timeOffset = 10.; // time (in ps) used to avoid that the time difference Timestamp-timeinit 
                               // is equal to zero for the first event entry (see where time histos are filled)
@@ -76,28 +82,37 @@ void B_trackGenerator(int run)
 
 
   // output file variables
-   double cl_charge[5] = {0};	   	// charge sum of the pads belonging to a cluster
+   double cl_charge[11] = {0};	   	// charge sum of the pads belonging to a cluster
    Int_t cl_padMult[5]={0};		// number of pads of a cluster
    double cl_x[5];			// x centroid of a cluster in pads unit
    double cl_x_mm[5];			// x centroid of a cluster in mm
    double cl_x_rms[5];  		// rms of the charge distribution of a cluster in pads unit
    double cl_y[5] = {0};		// y centroid of a cluster in time
    double cl_y_mm[5] = {0};		// y centroid of a cluster in mm
-   Double_t theta=-1000;		// theta of the track in rad
-   Double_t theta_deg=-1000;		// theta of the track in deg
-   Double_t phi=-1000;
-   Double_t phi_deg=-1000;
+   Double_t theta;		// theta of the track in rad
+   Double_t theta_deg;		// theta of the track in deg
+   Double_t phi;
+   Double_t phi_deg;
    Double_t chiSquareTheta;
    Double_t chiSquarePhi;
    Double_t sic_charge;
-   Double_t energySic=-1000; 
+   Double_t energySic; 
   
    //Int_t pads_fired[5][60]={-1000};
+   
    //std::vector<Int_t> pads_fired0, pads_fired1, pads_fired2, pads_fired3, pads_fired4;
+   //pads_fired0.push_back(999);
+   //pads_fired0.push_back(999);
+   
+   //std::vector<Int_t> * ptr_pads_fired0 = &pads_fired0;
+      
    std::vector<Int_t> pads_fired[5];
+   
    //for (Int_t i=0; i<5; ++i) { 
    //    pads_fired[i] = {-1000};
-   //    cout << pads_fired[i] << endl;
+       //std::cout << "*** " << i << "\t" << pads_fired[i].size() << std::endl;       
+       //for(int h=0; h<pads_fired[i].size(); ++h)
+          //std::cout << "********* " << i << "\t" << h << "\t" << pads_fired[i].at(h) << std::endl;
    //}
 
 // other variables
@@ -106,8 +121,8 @@ void B_trackGenerator(int run)
    double slope, intercept, chi2;
    double charge = 0.0;
    double weigthed_pos[60];
-   Double_t alpha=-1000, alpha_deg=-1000;  // auxiliary angle for the calculation of theta
-   Double_t beta=-1000, beta_deg=-1000;    // auxiliary angle for the calculation of phi
+   Double_t alpha=-100, alpha_deg=-100;  // auxiliary angle for the calculation of theta
+   Double_t beta=-100, beta_deg=-100;    // auxiliary angle for the calculation of phi
 
    // Secondary variables  
    ULong64_t TimestampSicTemp;   
@@ -120,12 +135,13 @@ void B_trackGenerator(int run)
    int binmax=-100, max=-100;		// variables used to plot the histos
    // number of event in the run
 
+   double binStrip=0;
    UInt_t flagTrackWithSiC=0;  
    UInt_t rowMultiplicity=4; 	// consider tracks with a number of hit row bigger than rowMultiplicity
    
-   char anykey;		// variable used to pause the macro
-   int flag[5];		// variable that are true when there is at least one hit in the Row
-   for(int i =0; i<5; i++) flag[i]=0;
+   char anykey;			// variable used to pause the macro
+   int flag[11];		// variable that are true when there is at least one hit in the Row
+   for(int i =0; i<11; i++) flag[i]=0;
    int flagM=1;				// Flag used to contine the macro without interruption
    int Fstrip=1;			// flag to plot strip: 0 plot, 1 no plot
    UInt_t FlagSicStop=0;  		// variable used to pause the macro with a SiC   
@@ -138,6 +154,16 @@ void B_trackGenerator(int run)
    int np=0; // number of point of the Tgraph
    int npTime=0; // number of point of the Tgraph of the time
    char dummyString[50];
+
+   bool sicFileOpen = true; // if the SiC was not mounted in a run, this variable is to be set to false
+   TString sicOrNot;
+
+   // control variables
+   int tracksCounter=0;		// counts all the tracks
+   int trackNoSicsCounter=0;	// counts tracks without SiC
+   int tracksSiCCounter=0;	// counts event with tracks and Sic (over threshold
+   int SiCCounter=0;		// counts total Sic event over a threshold
+   int EventEntries=0;		// entries per event
 
 // END: Dichiarazione variabili		//////////////////////////////////////
 
@@ -171,50 +197,69 @@ void B_trackGenerator(int run)
    cout<<"Entries tracker file "<< entriesTracker <<endl;
 // END: open tracker file	//////////////////////////////////////////////
 
+
 //////////////////////////////////////////////////////////////////////////////   
 // open Sic file
+
+   TFile *finSic;
+   TTree *treeSic;
+
+   cout << "Does this run have a SiC file? [y]es or [n]o" << endl;
+   cin >> sicOrNot;
+   sicFileOpen = (sicOrNot=="n" || sicOrNot=="N" || sicOrNot=="No")? false : true;
+   //cout << sicFileOpen << endl;
+
    char fileInSic[50];
-   if(run<10){
-      sprintf(fileInSic, "../Merged_data/run_00%i/sic_00%i.root", run, run);
-   }else if(run <100){
-      sprintf(fileInSic, "../Merged_data/run_0%i/sic_0%i.root", run, run);
-   }else{
-      sprintf(fileInSic, "../Merged_data/run_%i/sic_%i.root", run, run);
-   } 
-   cout<<fileInSic<<endl;
-   TFile *finSic = new TFile(fileInSic);
-   TTree *treeSic = (TTree*)finSic->Get("Data_R");
+   if (sicFileOpen) {
+      if(run<10){
+         sprintf(fileInSic, "../Merged_data/run_00%i/sic_00%i.root", run, run);
+      }else if(run <100){
+         sprintf(fileInSic, "../Merged_data/run_0%i/sic_0%i.root", run, run);
+      }else{
+         sprintf(fileInSic, "../Merged_data/run_%i/sic_%i.root", run, run);
+      } 
+      cout<<fileInSic<<endl;
+      finSic = new TFile(fileInSic);
+      treeSic = (TTree*)finSic->Get("Data_R");
    
-   treeSic->SetBranchAddress("Board",&BoardSic);
-   treeSic->SetBranchAddress("Channel",&ChannelSic);
-   treeSic->SetBranchAddress("FineTSInt",&FTSSic);
-   treeSic->SetBranchAddress("CoarseTSInt",&CTSSic);
-   treeSic->SetBranchAddress("Timestamp",&TimestampSic);
-   treeSic->SetBranchAddress("Charge",&ChargeSic);
-   treeSic->SetBranchAddress("Flags",&FlagsSic);
-   treeSic->SetBranchAddress("Charge_cal",&Charge_calSic);
+      treeSic->SetBranchAddress("Board",&BoardSic);
+      treeSic->SetBranchAddress("Channel",&ChannelSic);
+      treeSic->SetBranchAddress("FineTSInt",&FTSSic);
+      treeSic->SetBranchAddress("CoarseTSInt",&CTSSic);
+      treeSic->SetBranchAddress("Timestamp",&TimestampSic);
+      treeSic->SetBranchAddress("Charge",&ChargeSic);
+      treeSic->SetBranchAddress("Flags",&FlagsSic);
+      treeSic->SetBranchAddress("Charge_cal",&Charge_calSic);
    
-   int entriesSic=treeSic->GetEntries();
-   cout<<"Entries sic file "<< entriesSic <<endl;
+      int entriesSic=treeSic->GetEntries();
+      cout<<"Entries sic file "<< entriesSic <<endl;
+   }
 // END: open SiC file	//////////////////////////////////////////////////////
 
 // OPEN output ROOT file //
    char fileOutName[50];
-   sprintf(fileOutName,"../Tracks/tracks_run%i_prova.root",run);
+   sprintf(fileOutName,"../Tracks/tracks_run%i_A.root",run);
    TFile *fileOut = new TFile(fileOutName, "recreate");
    TTree *treeOut = new TTree("Data_R", "Third level tree");
-   
+
    treeOut->Branch("cl_x", cl_x, "cl_x[5]/D");
    treeOut->Branch("cl_x_mm", cl_x_mm, "cl_x_mm[5]/D"); 
    treeOut->Branch("cl_y", timeAverage, "cl_y[5]/D");
    treeOut->Branch("cl_y_mm", cl_y_mm, "cl_y_mm[5]/D");
    treeOut->Branch("cl_x_rms", cl_x_rms, "cl_x_rms[5]/D");
+   treeOut->Branch("cl_charge", cl_charge, "cl_charge[11]/D");
    treeOut->Branch("cl_padMult",cl_padMult,"cl_padMult[5]/I");
-   treeOut->Branch("cl_charge", cl_charge, "cl_charge[5]/D");
-   //treeOut->Branch("cl_padMult0",&cl_padMult[0],"cl_padMult0/I");
-   //treeOut->Branch("cl_padMult1",&cl_padMult[1],"cl_padMult1/I");
-   //treeOut->Branch("pads_fired0",&pads_fired[0],"pads_fired0[cl_padMult0]/I");
-   //treeOut->Branch("pads_fired1",&pads_fired[1],"pads_fired1[cl_padMult1]/I");
+   treeOut->Branch("cl_padMult0",&cl_padMult[0],"cl_padMult0/I");
+   treeOut->Branch("cl_padMult1",&cl_padMult[1],"cl_padMult1/I");
+   treeOut->Branch("cl_padMult2",&cl_padMult[2],"cl_padMult2/I");
+   treeOut->Branch("cl_padMult3",&cl_padMult[3],"cl_padMult3/I");
+   treeOut->Branch("cl_padMult4",&cl_padMult[4],"cl_padMult4/I");
+   //treeOut->Branch("pads_fired0","std::vector<Int_t>",&ptr_pads_fired0);
+   //treeOut->Branch("pads_fired0",&ptr_pads_fired0);
+   //treeOut->Branch("pads_fired1",&(pads_fired[1].at(1)),"pads_fired1[cl_padMult1]/i");
+   //treeOut->Branch("pads_fired2",&pads_fired[2].at(2),"pads_fired2[cl_padMult2]/i");
+   //treeOut->Branch("pads_fired3",&pads_fired[3].at(3),"pads_fired3[cl_padMult3]/i");
+   //treeOut->Branch("pads_fired4",&pads_fired[4].at(4),"pads_fired4[cl_padMult4]/i");      
    treeOut->Branch("phi",&phi,"phi/D");
    treeOut->Branch("theta",&theta,"theta/D");
    treeOut->Branch("phi_deg",&phi_deg,"phi_deg/D");      
@@ -227,19 +272,22 @@ void B_trackGenerator(int run)
 
 //////////////////////////////////////////////////////////////////////////////
 // Dichiarazione Histo, Canvas, TGraph and Functions
-   TH1F *row[5];
+   TH1F *row[11];
    for (int i=0; i<5; ++i){
        sprintf(dummyString,"r%i",i);
-       row[i]=new TH1F(dummyString,dummyString,62,-0.5,61.5);
+       row[i]=new TH1F(dummyString,dummyString,60,-0.5,59.5);
    }
-
+   for (int i=5; i<11; ++i){
+       sprintf(dummyString,"r%i",i);
+       row[i]=new TH1F(dummyString,dummyString,4,-0.5,3.5);
+   }
    TH1D *h_time[5];
    for (int i=0; i<5; ++i) {
        sprintf(dummyString,"h_time%i",i);
-       h_time[i]=new TH1D(dummyString,dummyString,64,-0.5,63.5);
+       h_time[i]=new TH1D(dummyString,dummyString,60,-0.5,59.5);
    }
 
-   for(int i=0;i<5; i++){
+   for(int i=0;i<11; i++){
      row[i]->GetXaxis()->SetTitle("pad");
      row[i]->GetYaxis()->SetTitle("counts");
    }
@@ -247,6 +295,12 @@ void B_trackGenerator(int run)
    row[2]->SetLineColor(kBlue);
    row[3]->SetLineColor(kGreen);
    row[4]->SetLineColor(kViolet);
+   row[5]->SetLineColor(kGray+2);
+   row[6]->SetLineColor(kGray+2);
+   row[7]->SetLineColor(kGray+2);
+   row[8]->SetLineColor(kGray+2);
+   row[9]->SetLineColor(kGray+2);
+   row[10]->SetLineColor(kGray+2);
    
    for(int i=0;i<5; i++){
      h_time[i]->GetXaxis()->SetTitle("pad");
@@ -254,11 +308,11 @@ void B_trackGenerator(int run)
    }
    h_time[1]->SetLineColor(kRed);
 
-   TH1D *h_driftTime[5];
-   for(int i=0;i<5;i++){
+   TH1D *h_driftTime[11];
+   for(int i=0;i<11;i++){
       sprintf(dummyString,"h_driftTime%i",i); 
       h_driftTime[i] = new TH1D(dummyString,dummyString,500,0.5E+00,5.0E+00);
-      h_driftTime[i]->GetXaxis()->SetTitle("driftTime (us)");
+      h_driftTime[i]->GetXaxis()->SetTitle("driftTime (#mu s)");
       h_driftTime[i]->GetYaxis()->SetTitle("counts");
       h_driftTime[i]->SetLineColor(i+1);
    }
@@ -278,6 +332,7 @@ void B_trackGenerator(int run)
    h_angles[3]=new TH1D("h_phi","h_phi",nbinphi,binminphi,binmaxphi);
    h_angles[4]=new TH1D("h_phi_without_sic","h_phi_without_sic",nbinphi,binminphi,binmaxphi);
    h_angles[5]=new TH1D("h_phi_with_sic","h_phi_with_sic",nbinphi,binminphi,binmaxphi);
+  
  
    TH1D *h_alpha[3];
    h_alpha[0]=new TH1D("h_alpha_","h_alpha",nbinalpha,binminalpha,binmaxalpha);
@@ -305,13 +360,16 @@ void B_trackGenerator(int run)
  
   
    // Fitting TGraphs and functions
-   TH2D *bg= new TH2D("bg","bg",130,70,200,107, 0,107);
+   TH2D *bg= new TH2D("bg","bg",107,0,107,130, 70,200);
+   bg->GetXaxis()->SetTitle("z (mm)");
+   bg->GetYaxis()->SetTitle("x (mm)");
    //fit x vs z  
    TGraph *grTheta=new TGraph(0);
    grTheta->SetMarkerStyle(20);
    grTheta->SetMarkerSize(1);
    TF1 *lin1 = new TF1("lin1","[0]+([1]*x)",0,300);
    TFitResultPtr fitResultTheta;
+   TF1 *theta_fit_result; // this function is only for drawing the fit result
 
    //fit y vs z
    TGraph *grPhi=new TGraph(0);
@@ -319,21 +377,22 @@ void B_trackGenerator(int run)
    grPhi->SetMarkerSize(1);
    TF1 *lin2 = new TF1("lin2","[0]+([1]*x)",0,200);
    TFitResultPtr fitResultPhi;
-
+   TF1 *phi_fit_result; // this function is only for drawing the fit result
+   
    TCanvas *C1=new TCanvas("c1","alpha",900.,800.);
    C1->SetFillColor(kWhite);
    C1->SetLogy();
-   TCanvas *C2=new TCanvas("C2","C2",900.,800.);
+   TCanvas *C2=new TCanvas("C2","theta fit",900.,800.);
    bg->Draw();
    bg->SetStats(0);
-   TCanvas *C3=new TCanvas("C3","theta",900.,800.);
+   TCanvas *C3=new TCanvas("C3","theta histo",900.,800.);
    C3->SetFillColor(kWhite);
    C3->SetLogy();
    TCanvas *C4=new TCanvas("C4","C4",900.,800.);
    C4->SetFillColor(kWhite);
-   TCanvas *C5=new TCanvas("C5","C5",900.,800.);
+   TCanvas *C5=new TCanvas("C5","phi histo",900.,800.);
    C5->SetFillColor(kWhite);
-   TCanvas *C6 = new TCanvas("C6","C6",900.,800.);
+   TCanvas *C6 = new TCanvas("C6","Drift time",900.,800.);
    C6->SetFillColor(kWhite);
    
 // END Histo and Canvas 	////////////////////////////////////
@@ -345,66 +404,88 @@ void B_trackGenerator(int run)
    treeTracker->GetEntry(0);
    ULong64_t timeinit=Timestamp;
    cout<<" time init tracker: "<<timeinit<<endl;
+   
+   if (sicFileOpen) {
    treeSic->GetEntry(0);
    cout<<" time init SiC: "<<TimestampSic<<endl;
+   }
    
-   for(int i=0; i<entriesTracker; i++){
-   //for(int i=0; i<50; i++){
+//   for(int i=0; i<entriesTracker; i++){
+   for(int i=0; i<100; i++){
       treeTracker->GetEntry(i);
-      //if (i%1000==0) cout << "Entry: " << i << endl;
+      
       //if(Charge>thresh){cout<<i<<" \t"<<Board<<" \t"<<Row<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Charge<<"\t("<<Charge_cal<<")\t"<<CTS<<"\t"<<FTS<<"\t"<<Timestamp<<"\t"<<Flags<<"\t\t"<<Timestamp-timeinit+timeOffset<<endl;}
       if((Timestamp-timeinit)<DeltaT){
          //Fill histos
          if (Charge > thresh) {
-            for (int k=0; k<5; ++k) {
+            for (int k=0; k<5; ++k) {	
                if (Row==k) {
                   flag[k]=1;
                   row[k]->Fill(pad,Charge);
-                  h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);
+                  h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);                  
+               }
+            }
+            
+            //filling the charge for row from 5 to 10
+            for (int k=5; k<11; ++k) {
+               if (Row==k) {
+                  flag[k]=1;
+                  row[k]->Fill(binStrip,Charge);
                }
             }
          }
-      } else {
+      }else{
+        
       	 // The event is finished. Plot if there is something
-      	 cout << "\n-------- End Event ---------\n" << endl;
+      	 //cout << "\n-------- End Event ---------\n" << endl;
 
          //cl_charge = 0.;
       	 for (int j=0; j<5; j++) {
       	     timeAverage[j] = 0.;
-      	     cl_charge[j] = 0.;
              cl_padMult[j] = 0;
+             cl_charge[j] = 0.;
              pads_fired[j].clear();
          }
-
+         for (int j=5; j<11; j++) {
+             cl_charge[j] = 0.;
+         }
+         
+         np=0;
+         npTime=0;
+         
          //for(int q=0; q<5; ++q) {
          //   std::cout << "*** " << q << "\t" << pads_fired[q].size() << std::endl;
          //   for(int h=0; h<pads_fired[q].size(); ++h)
          //   std::cout << "+++" << q << "\t" << h << "\t" << pads_fired[q].at(h) << std::endl;
          //}
          
-         theta_deg = -1000.;
-         phi_deg = -1000.;
+         theta_deg = -100;
+         phi_deg = -100;
+         theta=-100;
+         phi=-100;
+         //if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]+flag[5]+flag[6]+flag[7]+flag[8]+flag[9]+flag[10]>rowMultiplicity){
          if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>rowMultiplicity){
-            np=0;
-            npTime=0;
+
 	    for(int j=0; j<5; j++){
 	       //cl_x[j]=0;
 	       binmax = row[j]->GetMaximumBin();
 	       max  = row[j]->GetBinContent(binmax);
 	       //cout<<binmax<<"  "<<max<<endl;
+	      
 	       for (int k=0; k<60; k++) {
                    charge = row[j]->GetBinContent(k);
-                   time   = h_time[j]->GetBinContent(k);
-                   cl_charge[j] = row[j]->Integral(0,59);
-	           //weigthed_pos[k] = (k-1)*charge/cl_charge;
+                   time   = h_time[j]->GetBinContent(k+1);
+                   //weigthed_pos[k] = (k-1)*charge/cl_charge;
 	           //cl_x[j] = cl_x[j] + weigthed_pos[k];
 	           timeAverage[j] += charge*time;
-	           cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
+	           //cl_charge[j] = row[j]->Integral(0,57);
+	           cl_charge[j] += charge;
+	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
                    if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} 
 	       }
  	       cl_x[j] = row[j]->GetMean();
                cl_x_rms[j] = row[j]->GetRMS();
-	       cl_x_mm[j] = cl_x[j] * 5 + padWidth/2.;
+	       cl_x_mm[j] = cl_x[j] * padWidth + padWidth/2;
 	       if(max>100){grTheta->SetPoint(np++, zrow[j], cl_x_mm[j]);}
 
       	       timeAverage[j] = (double)(timeAverage[j]/cl_charge[j]);
@@ -414,72 +495,84 @@ void B_trackGenerator(int run)
 
             }
             
+            for(int j=5; j<11; j++){
+               charge = row[j]->GetBinContent(1);
+               cl_charge[j] = charge;
+            }
+                        
             //for (int q=0; q<5; ++q) {
-                //for(int h=0; h<pads_fired[q].size(); ++h)
-                //std::cout << "pads fired: " << q << "\t" << h << "\t" << pads_fired[q].at(h) << std::endl;
+            //    for (int h=0; h<pads_fired[q].size(); ++h)
+            //        std::cout << "pads fired: " << q << "\t" << h << "\t" << pads_fired[q].at(h) << std::endl;
             //}
 
             // loop on the SiC file 
-            finSic->cd();
-            SicLoopFlag=1;
-            while(SicLoopFlag){
-            //cout << "Inside the while" << endl;             
-            treeSic->GetEntry(sicHits);
+            if (sicFileOpen) {
+               finSic->cd();
+               SicLoopFlag=1;
+               while(SicLoopFlag){
+                  //cout << "Inside the while" << endl;             
+                  
+                  treeSic->GetEntry(sicHits);
 
-	       if(TimestampSic>=(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
-                  //cout << "********* Tracks without SiC" << endl;
-                  tracksWithoutSic++;
-                  energySic = -1000.;
-                  ChargeSic= -1000;
-                  SicLoopFlag=0;
-                  FlagSicStop=0;
-               }else if((timeinit-TimestampSic)>timeWindowlow && (timeinit-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
-                  cout << "+++++++++++ Event detected by the SiC" << endl;
-                  energySic = ChargeSic;
-                  sic_charge = ChargeSic;
-                  tracksWithSic++;
-                  sicHits++;
-                  SicLoopFlag=0;
-                  FlagSicStop=1;
-                  for(int m=0;m<5;m++){
-                     driftTime = timeAverage[m]+timeinit-timeOffset-TimestampSic;
-                     //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
-                     h_driftTime[m]->Fill(driftTime/1000000.);
+	          if(TimestampSic>=(timeinit-timeWindowlow)){    // The Sic is after the Tracker, stop reading the SiC file and go further with the tracks
+                     //cout << "********* Tracks without SiC" << endl;
+                     tracksWithoutSic++;
+                     sic_charge = -100;
+                     energySic = -100;
+                     ChargeSic= -100;
+                     SicLoopFlag=0;
+                     FlagSicStop=0;
+                  }else if((timeinit-TimestampSic)>timeWindowlow && (timeinit-TimestampSic)<timeWindowhigh){  // the time of SiC is compatible with the track
+                     cout << "+++++++++++ Event detected by the SiC" << endl;
+                     energySic = ChargeSic;
+                     sic_charge = ChargeSic;
+                     tracksWithSic++;
+                     sicHits++;
+                     SicLoopFlag=0;
+                     FlagSicStop=1;
+                     for(int m=0;m<5;m++){
+                        driftTime = timeAverage[m]+timeinit-timeOffset-TimestampSic;
+                        //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;
+                        h_driftTime[m]->Fill(driftTime/1000000); // drift time expressed in us
+                     }
+                  }else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
+                     sicWithoutTracks++;
+                     sicHits++;
+                     SicLoopFlag=1;
+                     FlagSicStop=0;
+                     cout << "----------- SiC without track" << endl;
                   }
-               }else if(TimestampSic <= (timeinit-timeWindowhigh) ) {		// the SiC is is before the Tracker, to this SiC no track can be associated.
-                  sicWithoutTracks++;
-                  sicHits++;
-                  SicLoopFlag=1;
-                  FlagSicStop=0;
-                  cout << "----------- SiC without track" << endl;
                }
+
+               //cout << "tracksWithoutSic " << tracksWithoutSic << "\t tracksWithSic " << tracksWithSic << "\t flagTrackWithSiC " << flagTrackWithSiC << "\t flagS " << flagS << endl;
             }
-            //cout << "tracksWithoutSic " << tracksWithoutSic << "\t tracksWithSic " << tracksWithSic << "\t flagTrackWithSiC " << flagTrackWithSiC << "\t flagS " << flagS << endl;
+	    
 	    row[4]->GetYaxis()->SetRangeUser(0,max*2);
 
 	    C4->cd();
+	    C4->Update();
          
-   	    fitResultTheta=grTheta->Fit("lin1","S");
+            fitResultTheta=grTheta->Fit("lin1","S");
    	    if(fitResultTheta==0){
    	       cout<<"### TF ### "<<fitResultTheta<<endl;
        	       intercept = fitResultTheta->Value(0);
 	       slope = fitResultTheta->Value(1);
+	       theta_fit_result = new TF1("theta_fit_result",Form("%f+(%f*x)",intercept,slope),0.,107.);
     	       chiSquareTheta = fitResultTheta->Chi2();
-    	       cout<<"chi2 "<<chiSquareTheta<<endl;
-               
+    	       cout<<"intercept "<< intercept <<"\t slope "<< slope << "\t chi2 "<< chiSquareTheta << endl;
 	       theta = TMath::ATan(slope);
                theta_deg = theta*180./TMath::Pi();
             }else{
                theta = -1000;
                theta_deg = -1000;
             }
+            
             //cout << "slope " << slope << "\t theta " << theta << "\t theta_deg " << theta_deg << endl;
        	    fitResultPhi=grPhi->Fit("lin2","S");
             if(fitResultPhi==0){
     	       intercept = fitResultPhi->Value(0);
    	       slope = fitResultPhi->Value(1);
 	       chiSquarePhi = fitResultPhi->Chi2();
-               
                phi = TMath::ATan(slope);
 	       phi_deg = phi*180./TMath::Pi();
             }else{
@@ -489,9 +582,12 @@ void B_trackGenerator(int run)
             
             if(FlagSicStop==1 && flagM==1 ){           
                C2->cd(0);
+               C2->Update();
                if(np>0){
-                  grTheta->Draw("P");
-                  grTheta->Fit("lin1","Q");
+                   grTheta->Draw("P");
+                   //grTheta->Fit("lin1","Q");
+                   theta_fit_result->Draw("same");
+                   cout << "\n\n ++++++++++++++++++ theta_fit_result formula: " << theta_fit_result->GetExpFormula() << endl;
                }
                             
                cout<<"press any key to continue, q to quit, c to continue till the end"<<endl; 
@@ -500,16 +596,27 @@ void B_trackGenerator(int run)
             }
 
             if(anykey=='q'){ 
-              fileOut->Write();
-              fileOut->Close();
-              return; // Per uscire dal programma
+               fileOut->cd();
+               treeOut->Write();
+               fileOut->Purge();
+               fileOut->Close();
+               return; // Per uscire dal programma
             }
 
-      	    if(anykey=='c')flagM=0;     
+      	    if(anykey=='c') flagM=0;   
 
+
+            for (int q=0; q<5; ++q) {
+                for (int h=0; h<pads_fired[q].size(); ++h)
+                    std::cout << "------------  pads fired: " << q << "\t" << h << "\t" << pads_fired[q].at(h) << std::endl;
+            }
+            
             treeOut->Fill();
             //cout << "Filling the tree" << endl;
-            cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
+            if (sicFileOpen) 
+               cout << "Tracks without SiC " << tracksWithoutSic << "\t tracks with SiC " << tracksWithSic << "\t SiC without tracks " << sicWithoutTracks << endl;
+            else 
+               cout << "Tracks " << tracksWithoutSic << endl;
 	 }
 
          
@@ -522,7 +629,9 @@ void B_trackGenerator(int run)
 	    row[j]->Reset("ICES");
 	    h_time[j]->Reset("ICES");
 	    flag[j]=0;
-
+         }
+         for(int j=5;j<11; j++){
+	    row[j]->Reset("ICES");
 	 }
          if (Charge > thresh) {
             for (int k=0; k<5; ++k) {
@@ -535,6 +644,8 @@ void B_trackGenerator(int run)
          }
       }
    }
+
+   C2->Update();
 
    C1->cd();
    h_alpha[0]->Draw();
@@ -561,11 +672,14 @@ void B_trackGenerator(int run)
    leg2->Draw("same");
    C5->Update();
    C6->cd();
-   for(int i=0;i<5;i++)
-      h_driftTime[i]->Draw("same");
-
+   
+   if (sicFileOpen) {
+      for(int i=0;i<11;i++)
+         h_driftTime[i]->Draw("same");
+   }
+   
    TLegend *leg3 = new TLegend(0.80,0.65,0.90,0.85);
-   for(int i=0;i<5;i++){
+   for(int i=0;i<11;i++){
       sprintf(dummyString,"Row %i",i);
       leg3->AddEntry(h_driftTime[i],dummyString,"L");
    }

@@ -20,7 +20,7 @@
 //#			    D. Torresi
 //###################################################################################################
 
-void B_anglesFinder_plot_tracker_and_sic_v5(int run)
+void B_anglesFinder_plot_tracker_and_sic(int run)
 {
 
 ////////////////////////////////////////////////////////////////////

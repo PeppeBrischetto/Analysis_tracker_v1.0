@@ -1,5 +1,5 @@
 //###################################################################################################
-//#   plot theta spectra of a single SiC
+//#   plot charge of the cluster for each row event by event
 //#      
 //#   required as argument the run number
 //#
