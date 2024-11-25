@@ -1,12 +1,11 @@
 //###################################################################################################
-//#   plot theta spectra of a single SiC
+//#   Plot the specta of charge of the cluster for each row and one for the sum of all the rows
 //#      
 //#   required as argument the run number
 //#
 //###################################################################################################
-//#   created may 2024 by D. Torresi
+//#   created november 2024 by D. Torresi
 //#######################################
-//#   updated: November 2024 by D. Torresi
 //# 
 //###################################################################################################
 

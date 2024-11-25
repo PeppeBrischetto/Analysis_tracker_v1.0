@@ -1,5 +1,5 @@
 //###################################################################################################
-//#   plot theta spectra of a single SiC
+//#   plot theta spectra
 //#      
 //#   required as argument the run number
 //#
@@ -9,6 +9,8 @@
 //#   updated: November 2024 by D. Torresi
 //# 
 //###################################################################################################
+
+#include "../Include/openfiles.h"
 
 void C_plot_theta(int run)
 {

@@ -1,23 +1,24 @@
 //###################################################################################################
-//#   plot phi spectra
+//#   plot spectra of pad multiplicity of clusters for each row
 //#      
 //#   required as argument the run number
-//#            
+//#
 //###################################################################################################
 //#   created may 2024 by D. Torresi
 //#######################################
-//#   updated: new file format 2024 November  D. Torresi
+//#   updated: November 2024 by D. Torresi
 //# 
 //###################################################################################################
 
 #include "../Include/openfiles.h"
 
-void C_plot_phi(int run)
+void C_plot_clusterMolt(int run)
 {
 
 //###################################################################
 //    VARIABLES
-
+  
+   char histoname[100];
    int flagA=0;
 
 //#################################################################################################
@@ -30,24 +31,42 @@ void C_plot_phi(int run)
    TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
    
    // all tracks
-   TH1F *histoPhi=new TH1F("","",800,-40,40);
-   histoPhi->SetStats(0);
-   histoPhi->GetXaxis()->SetTitle("charge");
-   histoPhi->GetYaxis()->SetTitle("counts");
-
+   TH1F *histo[5];
+   for(int i=0; i<5; i++){
+      sprintf(histoname,"row%i",i);
+      histo[i]=new TH1F("","",20,-0.5,19.5);
+      histo[i]->GetXaxis()->SetTitle("charge");
+      histo[i]->GetYaxis()->SetTitle("counts");
+   }
+   
 //#################################################################################################
 // Data LOOP
    for(int i=0; i<entries;i++){
       tree->GetEntry(i);
-  
       // Fill the histo
-      histoPhi->Fill(phi_deg);
-      cout<<i<<"  "<<  phi_deg<<endl;
-     
+      for(int h=0; h<5; h++){
+         histo[h]->Fill(cl_padMult[h]);        
+      }
    }
    
-   histoPhi->SetLineColor(kBlack);
-   histoPhi->Draw();
+   histo[0]->SetLineColor(kBlack);
+   histo[0]->Draw();
+   histo[1]->SetLineColor(kRed);
+   histo[1]->Draw("same");
+   histo[2]->SetLineColor(kBlue);
+   histo[2]->Draw("same");
+   histo[3]->SetLineColor(kGreen);
+   histo[3]->Draw("same");
+   histo[4]->SetLineColor(kViolet);
+   histo[4]->Draw("same");
 
+
+
+}  
    
-}
+   
+
+
+
+
+

@@ -1,8 +1,6 @@
 #ifndef OPENFILES_H
 #define OPENFILES_H
 
- 
- 
 //#################################################################################################
 //  OPENING Tracks file
 //#################################################################################################
@@ -59,6 +57,7 @@ void openTrackFile(int runnum ){
    cout<<"Opening file:  "<<filename<<endl;
    cout<<"Is the file "<<filename<<" a Zomby? "<< f->IsZombie()<<endl;
    //open the tree
+   if(f->IsZombie())cout<<"\n\n\t\t\033[40;31;1m No file found!\033[0m\n\n"<<endl;
    tree = (TTree*)f->Get("Data_R");
    
    tree->SetBranchAddress("cl_x",&cl_x);

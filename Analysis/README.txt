@@ -24,7 +24,6 @@ A_plot_padSpectrum_1.C  	plot the charge spectrum of multiple pad in a single pl
 A_plot_padSpectrum_2.C  	plot the charge spectrum of a single pad with a condition
 				on the hit multiplicity in a time window
 
-
 B_anglesFinder_plot_tracker_and_sic.C  
 				Macro that generate the tracks and associate the SiC hit with a 
 				track. For check only. The generation of the track file is done 
@@ -36,15 +35,26 @@ B_trackFinder_plot.C 		find the tracks and plot them. OBSOLETE
 
 C_plot_ChargeSiC.C		plot charge spectra of the SiC
 	
-C_plot_eventClusterCharge 	plot charge of the cluster for each row event by event
+C_plot_eventClusterCharge 	plot charge of the cluster for each row event by event		
 
-C_plot_phi.C			plot phi spectra 
-
-C_plot_theta.C			plot theta spectra 
 
 C_plot_ChargeSiC.C		plot charge spectra for the SiC
 
-C_plot_clusterCharge		plot energy spectrum of the cluster for each raw
+C_plot_clusterCharge		plot energy spectrum of the cluster for each row
+
+C_plot_clusterMolt.C		plot spectra of pad multiplicity of clusters for each row
+
+C_plot_eventClusterCharge.C     Plot the specta of charge of the cluster for each row and one for the sum of all the rows
+
+C_plot_MulvsPhi.C		plot pad multiplicity of the cluster of a given row vs phi
+
+C_plot_phi.C			plot phi spectra 
+
+C_plot_spectrumClusterCharge.C
+
+C_plot_TCvsPhi.C		plot the charge of a cluste of a given row vs the phi
+
+C_plot_theta.C			plot theta spectra 
 
 C_plot_thetaDiff.C     	 	plot the difference between theta calculate with different rows
 
