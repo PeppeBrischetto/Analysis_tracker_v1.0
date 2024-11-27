@@ -1,3 +1,14 @@
+//################################################################################################################################################
+
+//Macro that reads the information from a first-level root file (dig_xxxxx.root) and determines the centroid and the RMS of the charge distribution using the SECHS algorithm and subsequently, the horizontal angle of the ion track. The deduced information is written to a third-level root file.
+
+//To run simply open a root session and type: .x A_sechs_centroid_algorithm(run number)//
+
+//Created in November 2024 by O. Sgouros based on the trackGenereator.C macro//
+
+//################################################################################################################################################
+
+
 #include <iostream>
 #include "TFile.h"
 #include "TTree.h"
@@ -7,14 +18,14 @@ void A_sechs_centroid_algorithm (int run) {
    cout<<" "<<endl;
    cout<<" "<<endl;
   
-   float DeltaT=1000000;  //in ps
-   int thresh=0;
+   float DeltaT=1000000;  // Time window (in ps) to defeine an event
+   int thresh=0;	  // Consider a threshold in the charge distribution for each entry
 
-   Double_t padWidth = 5.; // pad width in mm
+   Double_t padWidth = 5.; // Pad width in mm
 
 
-   double *zrow = new double[5];  // zcoordinate (in mm) of the row from the beginning of the active volume
-   zrow[0]=18.60-7;		  // valid for the prototype 2
+   double *zrow = new double[5];  // Z coordinate (in mm) of the row from the beginning of the active volume
+   zrow[0]=18.60-7;		  // Valid for the prototype 2
    zrow[1]=39.80-7;
    zrow[2]=61.00-7;
    zrow[3]=82.20-7;
@@ -34,30 +45,34 @@ void A_sechs_centroid_algorithm (int run) {
    UShort_t Section;
 
 
-   UInt_t rowMultiplicity=4; 	// consider tracks with a number of hit row bigger than rowMultiplicity
-   int flag[11];		// variable that are true when there is at least one hit in the Row
+   UInt_t rowMultiplicity=4; 	// Accept tracks with a number of hit row bigger than rowMultiplicity
+   int flag[11];		// Variable to mark when a row is fired
+   for(int i=0; i<11; i++) flag[i]=0; //Initialize matrix flag[11]
+   
    int binmax=0 ;
    int max=0 ;
    int entryMerged=-1;
 
-   for(int i=0; i<11; i++) flag[i]=0;
 
-   int np=0; // number of point of the Tgraph
+
+   int np=0; // Number of points of the Tgraph for plotting pairs (x,z)
    char dummyString[50];
-   char dummyString2[50];
-
 
    int kk=0;
    double charge= 0.0;
 
-   double cl_charge[11]= {0};	   	// charge sum of the pads belonging to a cluster
-   Int_t cl_padMult[5]={0};		// number of pads of a cluster
+// output file variables
+
+   double cl_charge[11]= {0};	   	// Cumulative charge of the pads belonging to the same cluster
+   Int_t cl_padMult[5]={0};		// Number of pads of a cluster
    Int_t a_pads_fired[5][100];
-   double cl_x[5];			// x centroid of a cluster in pads unit calculated with the Weighted COG algorithm
-   double cl_x_mm[5];			// x centroid of a cluster in mm calculated with the Weighted COG algorithm
-   double cl_x_rms[5];  		// rms of the charge distribution of a cluster in pads unit calculated with the Weighted COG algorithm
-   double theta;
-   double theta_deg;
+   double cl_x[5];			// X centroid of a cluster in pads unit calculated with the SECHS algorithm
+   double cl_x_mm[5];			// X centroid of a cluster in mm calculated with the the SECHS algorithm
+   double cl_x_rms[5];  		// RMS of the charge distribution of a cluster in pads units
+   
+   double slopeT, interceptT;
+   double theta;			// Horizontal angle using data from Rows 0-4 in rad
+   double theta_deg;			// Horizontal angle using data from Rows 0-4 in deg
 
  
 //////////////////////////////////////////////////////////////////////////////   
@@ -104,25 +119,35 @@ void A_sechs_centroid_algorithm (int run) {
    TTree *treeOut = new TTree("Data_R", "Third level tree");
 
    // Tracker Variables
-   treeOut->Branch("cl_x", cl_x, "cl_x[5]/D");
-   treeOut->Branch("cl_x_mm", cl_x_mm, "cl_x_mm[5]/D"); 
- 
+   treeOut->Branch("cl_x",cl_x,"cl_x[5]/D");
+   treeOut->Branch("cl_x_mm",cl_x_mm,"cl_x_mm[5]/D");
+   treeOut->Branch("cl_x_rms",cl_x_rms,"cl_x_rms[5]/D");
+   treeOut->Branch("cl_padMult0",&cl_padMult[0],"cl_padMult0/I");
+   treeOut->Branch("cl_padMult1",&cl_padMult[1],"cl_padMult1/I");
+   treeOut->Branch("cl_padMult2",&cl_padMult[2],"cl_padMult2/I");
+   treeOut->Branch("cl_padMult3",&cl_padMult[3],"cl_padMult3/I");
+   treeOut->Branch("cl_padMult4",&cl_padMult[4],"cl_padMult4/I");
+
+
+   // Fit variables
+   treeOut->Branch("interceptT",&interceptT,"interceptT/D");      
+   treeOut->Branch("slopeT",&slopeT,"slopeT/D");      
+
+   treeOut->Branch("theta",&theta,"theta/D");   
+   treeOut->Branch("theta_deg",&theta_deg,"theta_deg/D");
+
 
    int i,j,k;
 
    TH1F *row[5];
-   TH1F *xpos[5];
 
    for (int i=0; i<5; i++){
 
    sprintf(dummyString,"r%i",i);
-   sprintf(dummyString2,"XWCOG_%i",i);
-
    row[i]=new TH1F(dummyString,dummyString,60,-0.5,59.5);
-   xpos[i]=new TH1F(dummyString2,dummyString2,60,-0.5,59.5);
 
-   row[i]->GetXaxis()->SetTitle("pad");
-   row[i]->GetYaxis()->SetTitle("counts");
+   row[i]->GetXaxis()->SetTitle("Pad");
+   row[i]->GetYaxis()->SetTitle("N (Counts)");
 
    }
 
@@ -198,13 +223,16 @@ void A_sechs_centroid_algorithm (int run) {
   
    //printf("%d\n",cl_padMult[1]);
 
- if(cl_padMult[0]>2) {
+ //if(cl_padMult[0]==2) {
    func->SetParLimits(1,xmax-5,xmax+5);
    func->SetParLimits(2,1.0,10.0);
-   
+
+   cl_x_rms[j] = row[j]->GetRMS();   
    row[j]->Fit("func","QW");
    cl_x[j]= func->GetParameter(1);
    cl_x_mm[j] = cl_x[j] * padWidth + padWidth/2;
+   
+   if(max>100){grTheta->SetPoint(np++, zrow[j], cl_x_mm[j]);}
  
 
    //row[j]->Draw();
@@ -213,10 +241,28 @@ void A_sechs_centroid_algorithm (int run) {
    //cl_x_mm[j] = cl_x[j] * padWidth + padWidth/2;
 
 
-}
+//}
  
 
       }//End of the "row" loop//
+      
+   fitResultTheta=grTheta->Fit("lin1","SQ");
+   
+   if(fitResultTheta==0){
+    
+   interceptT = fitResultTheta->Value(0);
+   slopeT = fitResultTheta->Value(1);
+   
+   theta = TMath::ATan(slopeT);
+   theta_deg = theta*180./TMath::Pi();
+  
+   }
+   
+ else{
+   theta = -1000;
+   theta_deg = -1000;
+               
+           }
       
    treeOut->Fill();
 
@@ -226,7 +272,7 @@ void A_sechs_centroid_algorithm (int run) {
  	 // Start a new Event
 	 timeinit=Timestamp;
 	 entryMerged=i;
-	// grTheta->Set(0);
+	 grTheta->Set(0);
 	// grPhi->Set(0);
 	
    	 for(int j=0;j<5; j++){
