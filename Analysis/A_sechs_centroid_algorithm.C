@@ -2,7 +2,7 @@
 #include "TFile.h"
 #include "TTree.h"
 
-void sechs_centroid_algorithm (int run) {
+void A_sechs_centroid_algorithm (int run) {
 
    cout<<" "<<endl;
    cout<<" "<<endl;
@@ -64,11 +64,11 @@ void sechs_centroid_algorithm (int run) {
 // open tracker file
    char fileInTracker[50];
       if(run<10){
-      sprintf(fileInTracker, "Merged_data/run_00%i/merg_00%i.root", run, run);
+      sprintf(fileInTracker, "../Merged_data/run_00%i/merg_00%i.root", run, run);
    }else if(run <100){
-      sprintf(fileInTracker, "Merged_data/run_0%i/merg_0%i.root", run, run);
+      sprintf(fileInTracker, "../Merged_data/run_0%i/merg_0%i.root", run, run);
    }else{
-      sprintf(fileInTracker, "Merged_data/run_%i/merg_%i.root", run, run);
+      sprintf(fileInTracker, "../Merged_data/run_%i/merg_%i.root", run, run);
    } 
 
 
@@ -93,11 +93,11 @@ void sechs_centroid_algorithm (int run) {
    // OPEN output ROOT file //
    char fileOutName[50];
    if(run<10){
-         sprintf(fileOutName,"Tracks/tracks_run00%i_akis.root",run);
+         sprintf(fileOutName,"../Tracks/tracks_run00%i_akis.root",run);
       }else if(run <100){
-         sprintf(fileOutName,"Tracks/tracks_run0%i_akis.root",run);
+         sprintf(fileOutName,"../Tracks/tracks_run0%i_akis.root",run);
       }else{
-         sprintf(fileOutName,"Tracks/tracks_run%i_akis.root",run);
+         sprintf(fileOutName,"../Tracks/tracks_run%i_akis.root",run);
       } 
    
    TFile *fileOut = new TFile(fileOutName, "recreate");
