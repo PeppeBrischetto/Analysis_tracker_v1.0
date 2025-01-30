@@ -30,19 +30,10 @@ run=$1
 #caldir=/home/torresi/Analisi/NUMEN/Analysis_tracker_v1.1/Cal_data/run_$run
 #merdir=/home/torresi/Analisi/NUMEN/Analysis_tracker_v1.1/Merged_data/run_$run
 
-if [ $run -le 9 ]; then 
-bindir=~/Analysis_tracker_v1.0/Raw_data/run00$run
-caldir=~/Analysis_tracker_v1.0/Cal_data/run_00$run
-merdir=~/Analysis_tracker_v1.0/Merged_data/run_00$run
-elif [ $run -le 99 ]; then
-bindir=~/Analysis_tracker_v1.0/Raw_data/run0$run
-caldir=~/Analysis_tracker_v1.0/Cal_data/run_0$run
-merdir=~/Analysis_tracker_v1.0/Merged_data/run_0$run
-else
+#if [ $run -l 10 ]; then 
 bindir=~/Analysis_tracker_v1.0/Raw_data/run$run
 caldir=~/Analysis_tracker_v1.0/Cal_data/run_$run
 merdir=~/Analysis_tracker_v1.0/Merged_data/run_$run
-fi
 
 
 #################################################
@@ -64,15 +55,7 @@ echo  -e "\033[40;31;1m Converting tracker files \033[0m"
 cont=1
 for dig in 22642 22643 22644 22645 21247
 do   
-  
-   if [ $run -le 9 ]; then 
-      infile=$bindir/TrackerSP_00$run\_0$cont\_$dig\_000.sol
-   elif [ $run -le 99 ]; then
-      infile=$bindir/TrackerSP_0$run\_0$cont\_$dig\_000.sol
-   else
-      infile=$bindir/TrackerSP_$run\_0$cont\_$dig\_000.sol
-   fi
-   
+   infile=$bindir/TrackerSP_$run\_0$cont\_$dig\_000.sol
    outfile=$caldir/dig_$dig\_cal.root
    cont=$(($cont+1))
    
@@ -93,27 +76,19 @@ echo  -e "\033[0m"
 cont=0
 dig=25716
 
-
-if [ $run -le 9 ]; then 
-infile=$bindir/TrackerSP_00$run\_0$cont\_$dig\_000.sol
-outfile=$merdir/sic_00$run.root
-elif [ $run -le 99 ]; then
-infile=$bindir/TrackerSP_0$run\_0$cont\_$dig\_000.sol
-outfile=$merdir/sic_0$run.root
-else
 infile=$bindir/TrackerSP_$run\_0$cont\_$dig\_000.sol
 outfile=$merdir/sic_$run.root
-fi
+
 
 root -q -l "converter_solaris_sic.C(\"$infile\",$dig,\"$outfile\")"
+
 
 #################################################
 # Merging data			3rd level
 #################################################
 echo  -e "\033[40;35;1m Merging files \033[0m"  
 
-
-#merfile=$merdir/merged.root
+merfile=$merdir/merged.root
 
 initfile=$caldir/dig_22642_cal.root    # very first file to be merged
 file1=a_run$run.root			        # first argument of macro
@@ -143,14 +118,9 @@ rm $file1 $file2				# file usde for the merging
 #rm $caldir/dig_$dig\_cal.root			# calibrated file that are used only for the merging
 
 # put the final output in the correct directory
-
-if [ $run -le 9 ]; then 
-mv $outfile  $merdir/merg_00$run.root
-elif [ $run -le 99 ]; then
-mv $outfile  $merdir/merg_0$run.root
-else
 mv $outfile  $merdir/merg_$run.root
-fi
+
+
 
 
 #################################################
@@ -158,11 +128,11 @@ fi
 #################################################
 echo ""
 echo "---------"
-echo  -e "\033[40;35;1m Generating tracks \033[0m"  
+#echo  -e "\033[40;35;1m Generating tracks \033[0m"  
 
 
 
-root -q -l "trackGenerator.C($run,1)"
+#root -q -l "trackGenerator.C($run,1)"
 echo ""
 
 

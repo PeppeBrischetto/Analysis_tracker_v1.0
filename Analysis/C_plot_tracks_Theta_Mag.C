@@ -1,17 +1,17 @@
 //###################################################################################################
-//#   macro that plot tracks from files Tracks
+//#   macro that plot tracks from files Tracks the detector is magnified in the region of interest.
 //#   
 //#   required as argument the run number and y/n for the presence of a SiC file
 //#   theta and phi angles are defined with respect to the z-axis 
 //###################################################################################################
-//#   created october 2024 from scratch D. Torresi
+//#   created dicember 2024 from C_plot_tracks_Theta
 //#######################################
 //#   modified:
 //###################################################################################################
 
 #include "../Include/openfiles.h"
 
-void C_plot_tracks_Theta(int run){
+void C_plot_tracks_Theta_Mag(int run){
 
 //###################################################################
 //    VARIABLES
@@ -28,8 +28,8 @@ void C_plot_tracks_Theta(int run){
 //#########################################################
 // GRAPHICS
 
-   int xmin=-10;
-   int xmax= 310;
+   int xmin=60;
+   int xmax= 170;
    int DeltaX=xmax-xmin;
    int ymin=-80;
    int ymax= 118;
@@ -63,7 +63,7 @@ void C_plot_tracks_Theta(int run){
    line2->SetLineColor(kViolet);
    
    
-   for(int i=0; i<100;i++){
+   for(int i=0; i<1000;i++){
       tree->GetEntry(i);
       //for(int j=0; j<5; j++){cout<<cl_x[j]<<"  "; }
       cout<<"theta| "<<theta_deg<<endl;
@@ -112,9 +112,12 @@ void C_plot_tracks_Theta(int run){
          cout<<cl_charge[k]<<"\t";
          //if(cl_padMult[k]<4)qualityFlag=1;         
       }
-       
+
+      
+      
       cout<<" | "<<qualityFlag<<endl;
-           
+      
+      
       if(qualityFlag==0){   
          runningLine=new TF1("line","[0]+([1]*x)",-100,300);
          runningLine->SetParameter(0,-interceptT/slopeT);

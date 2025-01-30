@@ -40,7 +40,7 @@ void trackGenerator(int run, bool sicFileOpen)
    int thresh=0;
 
    Float_t timeWindowlow = 0.5E+06; // time (in ps) that the primary electrons need to reach the anode
-   Float_t timeWindowhigh = 3.0E+06;
+   Float_t timeWindowhigh = 6.0E+06; //With triple THGEM without RIM this value was 3.0E+06 - It was chenge during Sao Paulo experiment//
 
    Double_t timeOffset = 10.; // time (in ps) used to avoid that the time difference Timestamp-timeinit 
                               // is equal to zero for the first event entry (see where time histos are filled)
@@ -134,7 +134,7 @@ void trackGenerator(int run, bool sicFileOpen)
    // Secondary variables  
    ULong64_t TimestampSicTemp;   
    UInt_t SicLoopFlag;			// variable used to stop the loop on the Sic file
-   
+   ULong64_t timeinit;			// variable used to search the event   
    Long64_t TimeDiff;                   // variable needed to properly calculate the difference between timeinit and timestampSic, otherwise it is not a Long64 but maybe an Int
 
    Double_t timeAverage[5] = {0.}; 	// variable used to calculate the average time (weighted by the charge) on a raw
@@ -334,7 +334,7 @@ void trackGenerator(int run, bool sicFileOpen)
    treeOut->Branch("chiSquareTheta024",&chiSquareTheta024,"chiSquareTheta024/D");   
    treeOut->Branch("slopeT024",&slopeT024,"slopeT024/D");      
    treeOut->Branch("interceptT024",&interceptT024,"interceptT024/D");
-   treeOut->Branch("entryMerged",&entryMerged,"entryMerged/D");
+   treeOut->Branch("entryMerged",&entryMerged,"entryMerged/I");
 
 
    // Sic variables
@@ -483,7 +483,8 @@ void trackGenerator(int run, bool sicFileOpen)
 
    finTracker->cd();
    treeTracker->GetEntry(0);
-   ULong64_t timeinit=Timestamp;
+   timeinit=Timestamp;
+   entryMerged=0;
    //cout<<" time init tracker: "<<timeinit<<endl;
    
    if (sicFileOpen) {
@@ -527,14 +528,12 @@ void trackGenerator(int run, bool sicFileOpen)
       	 //cout << "\n-------- End Event ---------\n" << endl;
 
          //cl_charge = 0.;
-      	 for (int j=0; j<5; j++) {
+      	 for(int j=0; j<5; j++){
       	     timeAverage[j] = 0.;
              cl_padMult[j] = 0;
              cl_charge[j] = 0.;
          }
-         for (int j=5; j<11; j++) {
-             cl_charge[j] = 0.;
-         }
+         for(int j=5; j<11; j++){cl_charge[j] = 0.;}
          
          np=0;	
          np123=0;
@@ -567,10 +566,8 @@ void trackGenerator(int run, bool sicFileOpen)
 	           cl_charge[j] += charge;
 	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
                    //if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} // commented out 2024-06-26 by G.B.
-                   if (charge) {cl_padMult[j]++; a_pads_fired[j][kk]=k; kk++;}  // 2024-06-26 G.B. writing the fired pads in a 2D array, one array for each row
-                   
-	       }
-	       
+                   if (charge) {cl_padMult[j]++; a_pads_fired[j][kk]=k; kk++;}  // 2024-06-26 G.B. writing the fired pads in a 2D array, one array for each row                  
+	       }	       
 	       //cout << "****** " << cl_padMult[j] << endl;
 	       
  	       cl_x[j] = row[j]->GetMean();
@@ -581,15 +578,13 @@ void trackGenerator(int run, bool sicFileOpen)
 	       if(max>100 && (j==1 || j==2 || j==3)){grTheta123->SetPoint(np123++, zrow[j], cl_x_mm[j]);}
 	       if(max>100 && (j==1 || j==3)){grTheta13->SetPoint(np13++, zrow[j], cl_x_mm[j]);}
 	       if(max>100 && (j==0 || j==4)){grTheta04->SetPoint(np04++, zrow[j], cl_x_mm[j]);}
-	       if(max>100 && (j==0 || j==2 ||j==4)){grTheta024->SetPoint(np024++, zrow[j], cl_x_mm[j]);}
-	       
+	       if(max>100 && (j==0 || j==2 ||j==4)){grTheta024->SetPoint(np024++, zrow[j], cl_x_mm[j]);} 
 
       	       timeAverage[j] = (double)(timeAverage[j]/cl_charge[j]); 
       	       cl_y[j] = timeAverage[j];    	       
       	       cl_y_mm[j] = timeAverage[j]*velocity_mm_ps;
 	       //printf("timeAverage[%d] = %10.2f (ps) \t cl_y_mm[%d] = %6.2f (mm) \n\n", j, timeAverage[j], j, cl_y_mm[j]);
       	       if(max>100){grPhi->SetPoint(npTime++, zrow[j], cl_y_mm[j]);}
-
             }
             
             for(int j=5; j<11; j++){
@@ -603,11 +598,11 @@ void trackGenerator(int run, bool sicFileOpen)
             //}
 
             // loop on the SiC file 
-            if (sicFileOpen) {
+            if(sicFileOpen){
                finSic->cd();
                SicLoopFlag=1;
                npTime=0;    // rezeroing the number of point of grPhi becouse can be rewritten after this point.
-               TimeDiff=timeinit-TimestampSic;
+               //TimeDiff=timeinit-TimestampSic;
                
                /*
                cout<< "*** Sic entry  "<<sicHits<<endl;
@@ -636,6 +631,7 @@ void trackGenerator(int run, bool sicFileOpen)
                      FlagSicStop=0;
                   }else if(TimeDiff>timeWindowlow && TimeDiff<timeWindowhigh){  // the time of SiC is compatible with the track
                      //cout << "+++++++++++ Event detected by the SiC" << endl;
+                     //cout << "----------- SiC with track" << endl;
                      energySic = ChargeSic;
                      sic_charge = ChargeSic;
                      tracksWithSic++;
@@ -643,6 +639,7 @@ void trackGenerator(int run, bool sicFileOpen)
                      SicLoopFlag=0;
                      FlagSicStop=1;
                      for(int m=0;m<5;m++){
+                        
                         driftTime = timeAverage[m]+timeinit-timeOffset-TimestampSic;
                         //cout << "timeAverage[2]=" << timeAverage[2] << "\t TimestampSic=" << TimestampSic << "\t driftTime=" << driftTime  << endl;     
                         //timeAverage[m]=driftTime/100000;
@@ -667,7 +664,7 @@ void trackGenerator(int run, bool sicFileOpen)
                   }
                }
 
-               //cout << "tracksWithoutSic " << tracksWithoutSic << "\t tracksWithSic " << tracksWithSic << "\t flagTrackWithSiC " << flagTrackWithSiC << "\t flagS " << flagS << endl;
+               //cout << "tracksWithoutSic " << tracksWithoutSic << "\t tracksWithSic " << tracksWithSic << "\t flagTrackWithSiC " << flagTrackWithSiC << endl;// "\t flagS " << flagS << endl;
             }
 	    
 	    row[4]->GetYaxis()->SetRangeUser(0,max*2);
@@ -791,11 +788,10 @@ void trackGenerator(int run, bool sicFileOpen)
             cout << "########## TimeDiff   "<< TimeDiff<<endl;
             */
 	 }
-
-         
+   
 	 // Start a new Event
-	 timeinit=Timestamp;
 	 entryMerged=i;
+	 timeinit=Timestamp;	 
 	 grTheta->Set(0);
 	 grPhi->Set(0);
 	
@@ -807,6 +803,7 @@ void trackGenerator(int run, bool sicFileOpen)
          for(int j=5;j<11; j++){
 	    row[j]->Reset("ICES");
 	 }
+	 // Fill the new event with the hit if 
          if (Charge > thresh) {
             for (int k=0; k<5; ++k) {
                if (Row==k) {

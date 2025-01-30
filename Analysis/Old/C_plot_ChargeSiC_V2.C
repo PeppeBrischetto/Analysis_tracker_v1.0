@@ -1,5 +1,5 @@
 //###################################################################################################
-//#   plot charge spectra for the SiC
+//#   plot charge spectra for the SiC compare the spectra coming from two runs
 //#      
 //#   required as argument the run number
 //#
@@ -12,17 +12,31 @@
 
 #include "../Include/openfiles.h"
 
-void C_plot_ChargeSiC(int run)
+void C_plot_ChargeSiC_V2(int run1, int run2)
 {
 
 //###################################################################
 //    VARIABLES
 
-
+  int sic_fired2, sic_charge2, entries2;
 //#################################################################################################
-//OpenFile
-   openTrackFile(run);
+//OpenFile 1
+   openTrackFile(run1);
  
+//Open file 2
+   char *filename2 = new char[100];
+   if(run2<10){
+      sprintf(filename2, "../Tracks/tracks_run00%i.root", run2);
+   }else if(run2 <100){
+      sprintf(filename2, "../Tracks/tracks_run0%i.root", run2);
+   }else{
+      sprintf(filename2, "../Tracks/tracks_run%i.root", run2);
+   } 
+   TFile *f2=new TFile(filename2,"READ");
+   TTree *tree2 = (TTree*)f2->Get("Data_R");
+   tree->SetBranchAddress("sic_fired",&sic_fired2);
+   tree->SetBranchAddress("sic_charge",&sic_charge2);
+   entries2=tree2->GetEntries();
 //#################################################################################################
 // GRAPHICS
   
@@ -36,6 +50,10 @@ void C_plot_ChargeSiC(int run)
    
    TH1F *sicChargeNT=new TH1F("","",2000,0,20000);
    TH1F *sicChargeT=new TH1F("","",2000,0,20000);
+   
+   TH1F *sicCharge2=new TH1F("","",2000,0,20000);
+   TH1F *sicCharge2NT=new TH1F("","",2000,0,20000);
+   TH1F *sicCharge2T=new TH1F("","",2000,0,20000);
    
 //#################################################################################################
 // Data LOOP
@@ -51,12 +69,30 @@ void C_plot_ChargeSiC(int run)
       }
       
    }
+   
+   
+   for(int i=0; i<entries2; i++){
+   //for(int i=0; i<50; i++){
+      tree2->GetEntry(i);
+      sicCharge2->Fill(sic_charge2);
+      if(sic_fired){
+         sicCharge2T->Fill(sic_charge2);
+      }else{
+         sicCharge2NT->Fill(sic_charge2);
+      }
+      
+   }
+   
+   
    sicCharge->SetLineColor(kBlack);
-   sicChargeT->SetLineColor(kRed);
-   sicChargeNT->SetLineColor(kBlue);
+   sicCharge2->SetLineColor(kRed);
+   //sicChargeT->SetLineColor(kRed);
+   //sicChargeNT->SetLineColor(kBlue);
    sicCharge->Draw();
-   sicChargeT->Draw("SAME");
-   sicChargeNT->Draw("SAME");
+   sicCharge2->Draw("SAME");
+   //sicChargeT->Draw("SAME");
+   //sicChargeNT->Draw("SAME");
    
  }
+ 
  

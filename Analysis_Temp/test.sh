@@ -1,5 +1,5 @@
-for z in {-60..-20..1}
+for run in {173..190..1}
 do
-run=133
-root -q -l "resolution.C($run,$z)"
+z=0
+root -q -l "XY_drift.C($run,$z)"
 done

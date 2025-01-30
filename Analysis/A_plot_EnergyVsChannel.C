@@ -75,32 +75,32 @@ void A_plot_EnergyVsChannel(int run)
       
    }
    
-   TCanvas *C1=new TCanvas("c1","c1",100,50,900,400);
+   TCanvas *C1=new TCanvas("c1","row 0",100,50,900,400);
    C1->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
    digit[0]->Draw("colz");   
 
    
-   TCanvas *C2=new TCanvas("c2","c2",1000,50,900,400);
+   TCanvas *C2=new TCanvas("c2","row 1",1000,50,900,400);
    C2->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
    digit[1]->Draw("colz");   
    
-   TCanvas *C3=new TCanvas("c3","c3",100,500,900,400);
+   TCanvas *C3=new TCanvas("c3","row 2",100,500,900,400);
    C3->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
    digit[2]->Draw("colz");   
 
-   TCanvas *C4=new TCanvas("c4","c4",1000,500,900,400);
+   TCanvas *C4=new TCanvas("c4","row 3",1000,500,900,400);
    C4->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();
    digit[3]->Draw("colz");   
 
-   TCanvas *C5=new TCanvas("c5","c5",100,950,900,400);
+   TCanvas *C5=new TCanvas("c5","row 4",100,950,900,400);
    C5->SetFillColor(kWhite);
    gPad->SetFrameFillColor(17);
    gPad->SetGridy();

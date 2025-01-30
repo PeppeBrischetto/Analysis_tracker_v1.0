@@ -29,6 +29,8 @@ B_anglesFinder_plot_tracker_and_sic.C
 				track. For check only. The generation of the track file is done 
 				by trackGenerator.C
 
+B_plot_ChargeSiC.C		plot charge spectra for the SiC
+
 B_resolutionCalc.C		OBSOLETE
 
 B_trackFinder_plot.C 		find the tracks and plot them. OBSOLETE
@@ -43,6 +45,10 @@ C_plot_ChargeSiC.C		plot charge spectra for the SiC
 C_plot_clusterCharge		plot energy spectrum of the cluster for each row
 
 C_plot_clusterMolt.C		plot spectra of pad multiplicity of clusters for each row
+
+C_plot_de.C			plot the DeltaE spectrum for particle crossing the detector
+
+C_plot_de_e.C 			plot the DE E plot from joining the data of two different files
 
 C_plot_eventClusterCharge.C     Plot the specta of charge of the cluster for each row and one for the sum of all the rows
 

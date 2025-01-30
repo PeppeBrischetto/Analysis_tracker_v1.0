@@ -32,6 +32,8 @@ int A_eventFinder_plot(int run)
    int thresh=0;
    // row multiplicity required to plot the event
    int rowMult=0; 
+   // 
+   
    
    UShort_t Channel; 
    UShort_t pad; 
@@ -158,7 +160,7 @@ int A_eventFinder_plot(int run)
    cout<<" time init: "<<timeinit<<endl;
  
    cout<<"Board Channel (pad) Energy (Energy_cal) Timestamp Flags"<<endl;
-   for(int i=0;i <entries; i++){
+   for(int i=40;i <entries; i++){
       tree->GetEntry(i);
       
       //if(Energy>0){cout<< Board<<" \t"<<Channel<<" ("<<pad<<")  "<<"\t"<<Energy<<"\t("<<Energy_cal<<")\t"<<Timestamp<<"\t"<<Flags<<endl;}
@@ -244,6 +246,7 @@ int A_eventFinder_plot(int run)
            eventNumber++;
            cout<<"entry "<<i<<endl;
            cout<<"Event number: "<<eventNumber<<endl;
+           cout<<"timestamp: "<<Timestamp * 1e-09 << " ms" << endl;
            cout<<"press any key to continue, q to quit, s to save a plot, c to continue till the end"<<endl;
            if(flagM==0)cin>>anykey;
            if(anykey=='q')return 0; // Per uscire dal programma
