@@ -35,18 +35,37 @@ void C_plot_theta(int run)
    histoTheta->GetXaxis()->SetTitle("charge");
    histoTheta->GetYaxis()->SetTitle("counts");
    
+   TH1F *h_theta_geq2000=new TH1F("","",1000,-10,90);
+   TH1F *h_theta_rms=new TH1F("","",1000,-10,90);
 //#################################################################################################
 // Data LOOP
    for(int i=0; i<entries;i++){
       tree->GetEntry(i);
       // Fill the histo
-      histoTheta->Fill(theta_deg);
+      
+      if(cl_x_rms[0] < 2.5 && cl_x_rms[1] < 2.5 && cl_x_rms[3] < 2.5 && cl_x_rms[4] < 2.5){
+        histoTheta->Fill(-theta_deg);
+      }
+      
+      
+      if(energySic>2000){
+         h_theta_geq2000->Fill(-theta_deg);
+      }
+        
+      if(energySic>2000 && cl_x_rms[0] < 2.5 && cl_x_rms[1] < 2.5 && cl_x_rms[3] < 2.5 && cl_x_rms[4] < 2.5){
+         h_theta_rms->Fill(-theta_deg);
+         //sicCounts++;
+      }
+    
+
+      
         
    }
    
    histoTheta->SetLineColor(kBlack);
    histoTheta->Draw();
-
+   h_theta_rms->SetLineColor(kRed);
+   h_theta_rms->Draw("same");
 }  
    
    

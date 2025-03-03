@@ -392,6 +392,7 @@ void B_trackFinder_plot(int run)
             if(anykey=='q')return ; // Per uscire dal programma
             if(anykey=='s'){ 		 // Salvi il plot
                C1->Print("c1.eps");
+               C3->Print("C3.eps");
                C5->Print("C5.eps");
    	    }        
 	 }

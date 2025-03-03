@@ -38,11 +38,11 @@ void C_plot_theta(int run)
    /* Reading block variables */  
    char fileInName[50];
    if(run<10){
-      sprintf(fileInName, "../Tracks/tracks_run00%i_A.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run00%i.root", run);
    }else if(run <100){
-      sprintf(fileInName, "../Tracks/tracks_run0%i_A.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run0%i.root", run);
    }else{
-      sprintf(fileInName, "../Tracks/tracks_run%i_B.root", run);
+      sprintf(fileInName, "../Tracks/tracks_run%i.root", run);
    } 
    TFile *fileIn = new TFile(fileInName);
    TTree *treeTracks = (TTree*)fileIn->Get("Data_R");
