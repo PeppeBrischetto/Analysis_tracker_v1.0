@@ -101,7 +101,7 @@ void trackGeneratorNino(int run, bool sicFileOpen)
    Double_t theta024_deg;	// theta row 0 & 4 of the track in deg
    Double_t theta123;		// theta row 1,2 & 3 of the track in rad
    Double_t theta123_deg;	// theta row 1,2 & 3 of the track in deg
-   Double_t cl_chargePad[5][60];                // 2025.02.14 - by Nino: charge info for signle Pad in each row
+   Double_t padCharge[5][60];                // 2025.02.14 - by Nino: charge info for signle Pad in each row
    
    
    Double_t phi;
@@ -287,11 +287,11 @@ void trackGeneratorNino(int run, bool sicFileOpen)
    treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[cl_padMult2]/I");
    treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[cl_padMult3]/I");
    treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[cl_padMult4]/I");
-   treeOut->Branch("cl_charge0",&cl_chargePad[0],"cl_charge0[60]/D");     // 2025.14.02 - by Nino
-   treeOut->Branch("cl_charge1",&cl_chargePad[1],"cl_charge1[60]/D");
-   treeOut->Branch("cl_charge2",&cl_chargePad[2],"cl_charge2[60]/D");
-   treeOut->Branch("cl_charge3",&cl_chargePad[3],"cl_charge3[60]/D");
-   treeOut->Branch("cl_charge4",&cl_chargePad[4],"cl_charge4[60]/D");
+   treeOut->Branch("padCharge0",&padCharge[0],"padCharge0[cl_padMult0]/D");     // 2025.14.02 - by Nino
+   treeOut->Branch("padCharge1",&padCharge[1],"padCharge1[cl_padMult1]/D");
+   treeOut->Branch("padCharge2",&padCharge[2],"padCharge2[cl_padMult2]/D");
+   treeOut->Branch("padCharge3",&padCharge[3],"padCharge3[cl_padMult3]/D");
+   treeOut->Branch("padCharge4",&padCharge[4],"padCharge4[cl_padMult4]/D");
    
    //treeOut->Branch("pads_fired0",&a_pads_fired[0],"a_pads_fired0[100]/I");
    //treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[100]/I");
@@ -571,10 +571,13 @@ void trackGeneratorNino(int run, bool sicFileOpen)
 	           timeAverage[j] += charge*time;
 	           //cl_charge[j] = row[j]->Integral(0,57);
 	           cl_charge[j] += charge;
-	           cl_chargePad[j][k] = charge;
 	           //cout << "+++++++++++++ " << j << "\t " << k << "\t" << charge << "\t " << time << "\t " << cl_charge[j] << endl;
                    //if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} // commented out 2024-06-26 by G.B.
-                   if (charge) {cl_padMult[j]++; a_pads_fired[j][kk]=k; kk++;}  // 2024-06-26 G.B. writing the fired pads in a 2D array, one array for each row                  
+                   if (charge) {
+                      cl_padMult[j]++;
+                      a_pads_fired[j][kk]=k;
+                      padCharge[j][kk] = charge;
+                      kk++;}  // 2024-06-26 G.B. writing the fired pads in a 2D array, one array for each row                  
 	       }	       
 	       //cout << "****** " << cl_padMult[j] << endl;
 	       
