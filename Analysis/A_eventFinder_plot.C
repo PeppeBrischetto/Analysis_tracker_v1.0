@@ -96,7 +96,7 @@ int A_eventFinder_plot(int run)
 
    for(int i=0;i<5; i++){
      hrow[i]->GetXaxis()->SetTitle("pad");
-     hrow[i]->GetYaxis()->SetTitle("counts");
+     hrow[i]->GetYaxis()->SetTitle("charge (ch)");
    }
    hrow[1]->SetLineColor(kRed);
    hrow[2]->SetLineColor(kBlue);
