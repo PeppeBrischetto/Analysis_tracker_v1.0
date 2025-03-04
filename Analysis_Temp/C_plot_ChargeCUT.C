@@ -112,20 +112,24 @@ void C_plot_ChargeCUT(int run)
 // Loop to get charge distribution referred to every single rows for each event
 //#################################################################################################
 
+   char pippo;
    
    
-   for(Int_t i=0; i<entries; i++){
+   //for(Int_t i=0; i<entries; i++){
+   for(Int_t i=0; i<100; i++){
        tree->GetEntry(i);
+       cout<<"#@@#"<<i<<endl;
        for(Int_t j=0; j<5; j++){
           
           Double_t charge[60] = {0.};
-          for(Int_t k=0; k<nPads; k++){
-             charge[k] = padCharge[j][k];
-             histo_c[j]->SetBinContent(a_pads_fired[j][k],charge[k]);
+          for(Int_t k=0; k<cl_padMult[j]; k++){
+             //charge[k] = pads_charge[j][k];
+             histo_c[j]->SetBinContent(a_pads_fired[j][k],pads_charge[j][k]);
           }
        //cout << "Evt: " << i << "  Row: " << j << endl; 
        //cout << "Charge integral: " << charge[j] << "   Compared to: " << cl_charge[j] << endl;
        histo_c[j]->Fit(f,"R+");
+
        sigma=f->GetParameter(2);
        if(sic_fired==1){
          gr[j]->SetPoint(n_point_tot,n_point_tot,2.35*sigma);
@@ -136,7 +140,7 @@ void C_plot_ChargeCUT(int run)
        }
        n_point_tot ++;
        outFit << endl;
-       /*TCanvas *c = new TCanvas("c");
+       TCanvas *c = new TCanvas("c");
        c->Divide(3,2);
        c->cd(1);
        histo_c[0]->Draw("histo");
@@ -148,12 +152,17 @@ void C_plot_ChargeCUT(int run)
        histo_c[3]->Draw("histo");
        c->cd(5);
        histo_c[4]->Draw("histo");
+
        
-       sprintf(histoname,"../../NinoAnalysis/Run171/pict/ChargeDistrib%d.png",i);
-       c->SaveAs(histoname);*/
+       sprintf(histoname,"ChargeDistrib%d.png",i);
+       c->SaveAs(histoname);//*/
+       
+        cin>> pippo;      
        for(Int_t j=0; j<5; j++){
           histo_c[j]->Reset();
        }
+       
+
    }
    TCanvas *c = new TCanvas("c");
    c->Divide(3,2);

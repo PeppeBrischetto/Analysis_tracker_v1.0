@@ -7,7 +7,7 @@
 
 // file variables for tracks file
    Double_t cl_charge[11];	   	// charge sum of the pads belonging to a cluster
-   Double_t cl_chargePad[5][60];                // 2025.02.14 - by Nino: charge info for signle Pad in each row
+   Double_t pads_charge[5][60];                // 2025.02.14 - by Nino: charge info for signle Pad in each row
    Int_t cl_padMult[5];		// number of pads of a cluster
    Double_t cl_x[5];			// x centroid of a cluster in pads unit
    Double_t cl_x_mm[5];			// x centroid of a cluster in mm
@@ -47,11 +47,11 @@ void openTrackFile(int runnum ){
    //open file
    char *filename = new char[100];
    if(runnum<10){
-      sprintf(filename, "../Tracks/Ninotracks_run00%i.root", runnum);
+      sprintf(filename, "../Tracks_Br/Ninotracks_run00%i.root", runnum);
    }else if(runnum <100){
-      sprintf(filename, "../Tracks/Ninotracks_run0%i.root", runnum);
+      sprintf(filename, "../Tracks_Br/Ninotracks_run0%i.root", runnum);
    }else{
-      sprintf(filename, "../Tracks/Ninotracks_run%i.root", runnum);
+      sprintf(filename, "../Tracks_Br/Ninotracks_run%i.root", runnum);
    } 
 
    f=new TFile(filename,"READ");
@@ -67,11 +67,11 @@ void openTrackFile(int runnum ){
    tree->SetBranchAddress("cl_y_mm",&cl_y_mm);
    tree->SetBranchAddress("cl_x_rms",&cl_x_rms);
    tree->SetBranchAddress("cl_charge",&cl_charge);
-   tree->SetBranchAddress("cl_charge0",&cl_chargePad[0]);     // 2025.14.02 - by Nino
-   tree->SetBranchAddress("cl_charge1",&cl_chargePad[1]);
-   tree->SetBranchAddress("cl_charge2",&cl_chargePad[2]);
-   tree->SetBranchAddress("cl_charge3",&cl_chargePad[3]);
-   tree->SetBranchAddress("cl_charge4",&cl_chargePad[4]);
+   tree->SetBranchAddress("pads_charge0",&pads_charge[0]);     // 2025.14.02 - by Nino
+   tree->SetBranchAddress("pads_charge1",&pads_charge[1]);
+   tree->SetBranchAddress("pads_charge2",&pads_charge[2]);
+   tree->SetBranchAddress("pads_charge3",&pads_charge[3]);
+   tree->SetBranchAddress("pads_charge4",&pads_charge[4]);
    tree->SetBranchAddress("cl_padMult0",&cl_padMult[0]);
    tree->SetBranchAddress("cl_padMult1",&cl_padMult[1]);
    tree->SetBranchAddress("cl_padMult2",&cl_padMult[2]);

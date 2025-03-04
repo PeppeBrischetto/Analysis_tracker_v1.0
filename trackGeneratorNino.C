@@ -86,6 +86,7 @@ void trackGeneratorNino(int run, bool sicFileOpen)
   // output file variables
    double cl_charge[11] = {0};	   	// charge sum of the pads belonging to a cluster
    Int_t cl_padMult[5]={0};		// number of pads of a cluster
+   
    double cl_x[5];			// x centroid of a cluster in pads unit
    double cl_x_mm[5];			// x centroid of a cluster in mm
    double cl_x_rms[5];  		// rms of the charge distribution of a cluster in pads unit
@@ -101,7 +102,7 @@ void trackGeneratorNino(int run, bool sicFileOpen)
    Double_t theta024_deg;	// theta row 0 & 4 of the track in deg
    Double_t theta123;		// theta row 1,2 & 3 of the track in rad
    Double_t theta123_deg;	// theta row 1,2 & 3 of the track in deg
-   Double_t padCharge[5][60];                // 2025.02.14 - by Nino: charge info for signle Pad in each row
+
    
    
    Double_t phi;
@@ -116,9 +117,9 @@ void trackGeneratorNino(int run, bool sicFileOpen)
    Int_t sic_charge;
    Double_t energySic; 
   
-   int entryMerged=-1;		// entry of the first hit in the corresponding Merged file
-   Int_t a_pads_fired[5][100];
-   
+   int entryMerged=-1;			// entry of the first hit in the corresponding Merged file
+   Int_t a_pads_fired[5][100];		// id of pads that are fired
+   Double_t pads_charge[5][60];         // charge info for signle Pad in each row - 2025.02.14 - by Nino
 // other variables
    
    // fitting variables
@@ -188,11 +189,11 @@ void trackGeneratorNino(int run, bool sicFileOpen)
 // open tracker file
    char fileInTracker[50];
       if(run<10){
-      sprintf(fileInTracker, "Merged_data/run_00%i/merg_00%i.root", run, run);
+      sprintf(fileInTracker, "Merged_data_Br/run_00%i/merg_00%i.root", run, run);
    }else if(run <100){
-      sprintf(fileInTracker, "Merged_data/run_0%i/merg_0%i.root", run, run);
+      sprintf(fileInTracker, "Merged_data_Br/run_0%i/merg_0%i.root", run, run);
    }else{
-      sprintf(fileInTracker, "Merged_data/run_%i/merg_%i.root", run, run);
+      sprintf(fileInTracker, "Merged_data_Br/run_%i/merg_%i.root", run, run);
    } 
    cout<<fileInTracker<<endl;
    TFile *finTracker = new TFile(fileInTracker);
@@ -232,11 +233,11 @@ void trackGeneratorNino(int run, bool sicFileOpen)
    //if (sicFileOpen) {
    if (sicFileOpen) {
       if(run<10){
-         sprintf(fileInSic, "Merged_data/run_00%i/sic_00%i.root", run, run);
+         sprintf(fileInSic, "Merged_data_Br/run_00%i/sic_00%i.root", run, run);
       }else if(run <100){
-         sprintf(fileInSic, "Merged_data/run_0%i/sic_0%i.root", run, run);
+         sprintf(fileInSic, "Merged_data_Br/run_0%i/sic_0%i.root", run, run);
       }else{
-         sprintf(fileInSic, "Merged_data/run_%i/sic_%i.root", run, run);
+         sprintf(fileInSic, "Merged_data_Br/run_%i/sic_%i.root", run, run);
       } 
       cout<<fileInSic<<endl;
       finSic = new TFile(fileInSic);
@@ -287,11 +288,11 @@ void trackGeneratorNino(int run, bool sicFileOpen)
    treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[cl_padMult2]/I");
    treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[cl_padMult3]/I");
    treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[cl_padMult4]/I");
-   treeOut->Branch("padCharge0",&padCharge[0],"padCharge0[cl_padMult0]/D");     // 2025.14.02 - by Nino
-   treeOut->Branch("padCharge1",&padCharge[1],"padCharge1[cl_padMult1]/D");
-   treeOut->Branch("padCharge2",&padCharge[2],"padCharge2[cl_padMult2]/D");
-   treeOut->Branch("padCharge3",&padCharge[3],"padCharge3[cl_padMult3]/D");
-   treeOut->Branch("padCharge4",&padCharge[4],"padCharge4[cl_padMult4]/D");
+   treeOut->Branch("pads_charge0",&pads_charge[0],"pads_charge0[cl_padMult0]/D");     // 2025.14.02 - by Nino
+   treeOut->Branch("pads_charge1",&pads_charge[1],"pads_charge1[cl_padMult1]/D");
+   treeOut->Branch("pads_charge2",&pads_charge[2],"pads_charge2[cl_padMult2]/D");
+   treeOut->Branch("pads_charge3",&pads_charge[3],"pads_charge3[cl_padMult3]/D");
+   treeOut->Branch("pads_charge4",&pads_charge[4],"pads_charge4[cl_padMult4]/D");
    
    //treeOut->Branch("pads_fired0",&a_pads_fired[0],"a_pads_fired0[100]/I");
    //treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[100]/I");
@@ -576,7 +577,7 @@ void trackGeneratorNino(int run, bool sicFileOpen)
                    if (charge) {
                       cl_padMult[j]++;
                       a_pads_fired[j][kk]=k;
-                      padCharge[j][kk] = charge;
+                      pads_charge[j][kk] = charge;
                       kk++;}  // 2024-06-26 G.B. writing the fired pads in a 2D array, one array for each row                  
 	       }	       
 	       //cout << "****** " << cl_padMult[j] << endl;

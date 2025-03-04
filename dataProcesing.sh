@@ -31,17 +31,17 @@ run=$1
 #merdir=/home/torresi/Analisi/NUMEN/Analysis_tracker_v1.1/Merged_data/run_$run
 
 if [ $run -le 9 ]; then 
-bindir=~/Analysis_tracker_v1.0/Raw_data/run00$run
-caldir=~/Analysis_tracker_v1.0/Cal_data/run_00$run
-merdir=~/Analysis_tracker_v1.0/Merged_data/run_00$run
+bindir=Raw_data_Br/run00$run
+caldir=Cal_data_Br/run_00$run
+merdir=Merged_data_Br/run_00$run
 elif [ $run -le 99 ]; then
-bindir=~/Analysis_tracker_v1.0/Raw_data/run0$run
-caldir=~/Analysis_tracker_v1.0/Cal_data/run_0$run
-merdir=~/Analysis_tracker_v1.0/Merged_data/run_0$run
+bindir=Raw_data_Br/run0$run
+caldir=Cal_data_Br/run_0$run
+merdir=Merged_data_Br/run_0$run
 else
-bindir=~/Analysis_tracker_v1.0/Raw_data/run$run
-caldir=~/Analysis_tracker_v1.0/Cal_data/run_$run
-merdir=~/Analysis_tracker_v1.0/Merged_data/run_$run
+bindir=Raw_data_Br/run$run
+caldir=Cal_data_Br/run_$run
+merdir=Merged_data_Br/run_$run
 fi
 
 
@@ -162,7 +162,7 @@ echo  -e "\033[40;35;1m Generating tracks \033[0m"
 
 
 
-root -q -l "trackGenerator.C($run,1)"
+#root -q -l "trackGenerator.C($run,1)"
 echo ""
 
 
