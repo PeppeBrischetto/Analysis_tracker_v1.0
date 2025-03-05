@@ -16,7 +16,7 @@ const Int_t nPads = 60;
 const Int_t minPad = 0;
 const Int_t maxPad = 59;
 
-const TString OutputFile = "../../NinoAnalysis/Run171/coutFit_MULT.txt";
+const TString OutputFile = "../../NinoAnalysis/Run38/coutFit_MULT.txt";
 
 
 void C_plot_ChargeCUT(int run)
@@ -130,13 +130,13 @@ void C_plot_ChargeCUT(int run)
        if(sic_fired==1){
          gr[j]->SetPoint(n_point_tot,n_point_tot,2.35*sigma);
          charge_evts[j]->SetPoint(n_point_tot,n_point_tot,cl_charge[j]);
-         outFit << sigma << "	";  
+         //outFit << sigma << "	";  
          }
        
        }
        n_point_tot ++;
-       outFit << endl;
-       /*TCanvas *c = new TCanvas("c");
+       //outFit << endl;
+       TCanvas *c = new TCanvas("c");
        c->Divide(3,2);
        c->cd(1);
        histo_c[0]->Draw("histo");
@@ -149,13 +149,15 @@ void C_plot_ChargeCUT(int run)
        c->cd(5);
        histo_c[4]->Draw("histo");
        
-       sprintf(histoname,"../../NinoAnalysis/Run171/pict/ChargeDistrib%d.png",i);
-       c->SaveAs(histoname);*/
-       for(Int_t j=0; j<5; j++){
-          histo_c[j]->Reset();
+       if(i==entries-100){
+         sprintf(histoname,"../../NinoAnalysis/Run38/pict/ChargeDistrib%d.png",i);
+         c->SaveAs(histoname);
+         for(Int_t j=0; j<5; j++){
+            histo_c[j]->Reset();
+         }
        }
    }
-   TCanvas *c = new TCanvas("c");
+   /*TCanvas *c = new TCanvas("c");
    c->Divide(3,2);
    c->cd(1);
    histo_c[0]->Draw("histo");
@@ -167,7 +169,7 @@ void C_plot_ChargeCUT(int run)
    histo_c[3]->Draw("histo");
    c->cd(5);
    histo_c[4]->Draw("histo");
-   c->SaveAs("../../NinoAnalysis/Run171/ChargeDistribEND.png");
+   c->SaveAs("../../NinoAnalysis/Run38/ChargeDistribEND.png");*/
    TCanvas *c2 = new TCanvas("c2");
    c2->Divide(3,2);
    c2->cd(1);
