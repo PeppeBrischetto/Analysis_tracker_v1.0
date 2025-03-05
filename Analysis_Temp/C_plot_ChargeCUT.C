@@ -16,7 +16,7 @@ const Int_t nPads = 60;
 const Int_t minPad = 0;
 const Int_t maxPad = 59;
 
-const TString OutputFile = "../../NinoAnalysis/Run38/coutFit_MULT.txt";
+const TString OutputFile = "../../OutputFiles/run332.txt";
 
 
 void C_plot_ChargeCUT(int run)
@@ -116,9 +116,10 @@ void C_plot_ChargeCUT(int run)
    
    
    //for(Int_t i=0; i<entries; i++){
-   for(Int_t i=0; i<100; i++){
+   for(Int_t i=0; i<entries; i++){
        tree->GetEntry(i);
        cout<<"#@@#"<<i<<endl;
+       if(i<100){                                              // loop to save the last 100 evts
        for(Int_t j=0; j<5; j++){
           
           Double_t charge[60] = {0.};
@@ -128,22 +129,18 @@ void C_plot_ChargeCUT(int run)
           }
        //cout << "Evt: " << i << "  Row: " << j << endl; 
        //cout << "Charge integral: " << charge[j] << "   Compared to: " << cl_charge[j] << endl;
-       histo_c[j]->Fit(f,"R+");
+       //histo_c[j]->Fit(f,"R+");
 
        sigma=f->GetParameter(2);
        if(sic_fired==1){
          gr[j]->SetPoint(n_point_tot,n_point_tot,2.35*sigma);
          charge_evts[j]->SetPoint(n_point_tot,n_point_tot,cl_charge[j]);
-         //outFit << sigma << "	";  
+         outFit << cl_padMult[j] << "	";
          }
        
        }
        n_point_tot ++;
-<<<<<<< HEAD
-       //outFit << endl;
-=======
        outFit << endl;
->>>>>>> 78e83bafde28bba0fac30b5471ed30f6cdbbd646
        TCanvas *c = new TCanvas("c");
        c->Divide(3,2);
        c->cd(1);
@@ -158,23 +155,15 @@ void C_plot_ChargeCUT(int run)
        histo_c[4]->Draw("histo");
 
        
-<<<<<<< HEAD
-       if(i==entries-100){
-         sprintf(histoname,"../../NinoAnalysis/Run38/pict/ChargeDistrib%d.png",i);
-         c->SaveAs(histoname);
-         for(Int_t j=0; j<5; j++){
-            histo_c[j]->Reset();
-         }
-=======
-       sprintf(histoname,"ChargeDistrib%d.png",i);
-       c->SaveAs(histoname);//*/
+       sprintf(histoname,"../../Pictures_Analysis/Run332/pict/ChargeDistrib%d.png",i);
+       c->SaveAs(histoname);
        
-        cin>> pippo;      
+       //cin>> pippo;      
        for(Int_t j=0; j<5; j++){
           histo_c[j]->Reset();
->>>>>>> 78e83bafde28bba0fac30b5471ed30f6cdbbd646
        }
        
+     }   // end loop for the last 100 evts
 
    }
    /*TCanvas *c = new TCanvas("c");
@@ -189,7 +178,7 @@ void C_plot_ChargeCUT(int run)
    histo_c[3]->Draw("histo");
    c->cd(5);
    histo_c[4]->Draw("histo");
-   c->SaveAs("../../NinoAnalysis/Run38/ChargeDistribEND.png");*/
+   c->SaveAs("../../NinoAnalysis/Run332/ChargeDistribEND.png");*/
    TCanvas *c2 = new TCanvas("c2");
    c2->Divide(3,2);
    c2->cd(1);
