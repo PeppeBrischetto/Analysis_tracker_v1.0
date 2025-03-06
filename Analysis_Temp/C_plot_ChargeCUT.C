@@ -16,7 +16,7 @@ const Int_t nPads = 60;
 const Int_t minPad = 0;
 const Int_t maxPad = 59;
 
-const TString OutputFile = "../../OutputFiles/run332.txt";
+const TString OutputFile = "../../OutputFiles/run171.txt";
 
 
 void C_plot_ChargeCUT(int run)
@@ -25,8 +25,11 @@ void C_plot_ChargeCUT(int run)
 // Required variables
   
    char histoname[100];
+   char cond[100];
    Double_t sigma = 0;
+   Double_t width[5] = {0};
    Int_t n_point_tot = 0;
+   Double_t media[5] = {0.};
    
    ofstream outFit;
    
@@ -108,6 +111,7 @@ void C_plot_ChargeCUT(int run)
    alpha->SetPoint(4,182,193);
    alpha->SetPoint(5,154,214);
    alpha->SetPoint(6,55,85);
+   alpha->SetPoint(7,17,40);
 //#################################################################################################
 // Loop to get charge distribution referred to every single rows for each event
 //#################################################################################################
@@ -119,28 +123,28 @@ void C_plot_ChargeCUT(int run)
    for(Int_t i=0; i<entries; i++){
        tree->GetEntry(i);
        cout<<"#@@#"<<i<<endl;
-       if(i<100){                                              // loop to save the last 100 evts
+       if(i<100){                                              // loop to save an evtSet
        for(Int_t j=0; j<5; j++){
           
           Double_t charge[60] = {0.};
           for(Int_t k=0; k<cl_padMult[j]; k++){
-             //charge[k] = pads_charge[j][k];
              histo_c[j]->SetBinContent(a_pads_fired[j][k],pads_charge[j][k]);
           }
+       
+       
        //cout << "Evt: " << i << "  Row: " << j << endl; 
        //cout << "Charge integral: " << charge[j] << "   Compared to: " << cl_charge[j] << endl;
-       //histo_c[j]->Fit(f,"R+");
+       histo_c[j]->Fit(f,"R+");
+       sigma = f->GetParameter(2);
+       width[j] += sigma;
 
-       sigma=f->GetParameter(2);
        if(sic_fired==1){
          gr[j]->SetPoint(n_point_tot,n_point_tot,2.35*sigma);
          charge_evts[j]->SetPoint(n_point_tot,n_point_tot,cl_charge[j]);
-         outFit << cl_padMult[j] << "	";
          }
        
        }
        n_point_tot ++;
-       outFit << endl;
        TCanvas *c = new TCanvas("c");
        c->Divide(3,2);
        c->cd(1);
@@ -155,30 +159,84 @@ void C_plot_ChargeCUT(int run)
        histo_c[4]->Draw("histo");
 
        
-       sprintf(histoname,"../../Pictures_Analysis/Run332/pict/ChargeDistrib%d.png",i);
+       sprintf(histoname,"../../Pictures_Analysis/Run171/pict/ChargeDistrib%d.png",i);
        c->SaveAs(histoname);
        
        //cin>> pippo;      
        for(Int_t j=0; j<5; j++){
           histo_c[j]->Reset();
+          histo_li[j]->Reset();
+          histo_he[j]->Reset();
        }
        
-     }   // end loop for the last 100 evts
-
+       /*if("alpha==0"){
+         for(Int_t j=0; j<5; j++){
+            for(Int_t k=0; k<60; k++){
+               sprintf(histoname,"a_pads_fired%d",j);
+               sprintf(cond,"pads_charge%d",j);
+               tree->Project("histo_li[j]",histoname,cond);
+            }
+         }
+       }else
+        if("alpha==1"){
+          for(Int_t j=0; j<5; j++){
+             for(Int_t k=0; k<60; k++){
+                sprintf(histoname,"a_pads_fired%d",j);
+               sprintf(cond,"pads_charge%d",j);
+               tree->Project("histo_he[j]",histoname,cond);
+             }
+          }
+       }*/
+       //cin >> pippo;
+       /* TCanvas block for Li & He */  
+       /*TCanvas *cli = new TCanvas("cli");
+       cli->Divide(3,2);
+       cli->cd(1);
+       histo_li[0]->Draw("histo");
+       cli->cd(2);
+       histo_li[1]->Draw("histo");
+       cli->cd(3);
+       histo_li[2]->Draw("histo");
+       cli->cd(4);
+       histo_li[3]->Draw("histo");
+       cli->cd(5);
+       histo_li[4]->Draw("histo");
+       sprintf(histoname,"../../Pictures_Analysis/Run171/pictLi/ChargeDistribLi%d.png",i);
+       cli->SaveAs(histoname);
+       TCanvas *che = new TCanvas("che");
+       che->Divide(3,2);
+       che->cd(1);
+       histo_he[0]->Draw("histo");
+       che->cd(2);
+       histo_he[1]->Draw("histo");
+       che->cd(3);
+       histo_he[2]->Draw("histo");
+       che->cd(4);
+       histo_he[3]->Draw("histo");
+       che->cd(5);
+       histo_he[4]->Draw("histo");
+       sprintf(histoname,"../../Pictures_Analysis/Run171/pictHe/ChargeDistribHe%d.png",i);
+       che->SaveAs(histoname);*/
+       
+     }   // end loop for the evtSet
+     
+     for(Int_t j=0; j<5; j++){
+     media[j] += cl_padMult[j];
+     }
    }
-   /*TCanvas *c = new TCanvas("c");
-   c->Divide(3,2);
-   c->cd(1);
-   histo_c[0]->Draw("histo");
-   c->cd(2);
-   histo_c[1]->Draw("histo");
-   c->cd(3);
-   histo_c[2]->Draw("histo");
-   c->cd(4);
-   histo_c[3]->Draw("histo");
-   c->cd(5);
-   histo_c[4]->Draw("histo");
-   c->SaveAs("../../NinoAnalysis/Run332/ChargeDistribEND.png");*/
+   
+   outFit << "<M0>	<M1>	<M2>	<M3>	<M4>" << endl;
+   for(Int_t j=0; j<5; j++){
+      media[j] = media[j]/entries;
+      width[j] = width[j]/100;
+      outFit << media[j] << "	";
+   }
+   outFit << endl;
+   outFit << "<E0>	<E1>	<E2>	<E3>	<E4>" << endl;
+   for(Int_t j=0; j<5; j++){
+      outFit << width[j] << "	";
+   }
+   
    TCanvas *c2 = new TCanvas("c2");
    c2->Divide(3,2);
    c2->cd(1);
@@ -204,20 +262,7 @@ void C_plot_ChargeCUT(int run)
    c3->cd(5);
    charge_evts[4]->Draw();
    
-       /*if("alpha==0"){
-         for(Int_t j=0; j<5; j++){
-            for(Int_t k=0; k<60; k++){
-               histo_li[j]->Fill(k,cl_chargePad[j][k]);
-            }
-         }
-       }else
-        if("alpha==1"){
-          for(Int_t j=0; j<5; j++){
-             for(Int_t k=0; k<60; k++){
-                histo_he[j]->Fill(k,cl_chargePad[j][k]);
-             }
-          }
-       }*/    
+         
    
 //##################################################################################################
 // Visualization Block
