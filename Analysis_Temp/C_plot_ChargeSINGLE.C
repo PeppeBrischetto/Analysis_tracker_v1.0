@@ -16,7 +16,7 @@ const Int_t nPads = 60;
 const Int_t minPad = 0;
 const Int_t maxPad = 59;
 
-const TString OutputFile = "../../OutputFiles/run171.txt";
+const TString OutputFile = "../../OutputFiles/Run188.txt";
 
 
 void C_plot_ChargeSINGLE(int run)
@@ -158,7 +158,7 @@ void C_plot_ChargeSINGLE(int run)
        histo_c[4]->Draw("histo");
 
        
-       sprintf(histoname,"../../Pictures_Analysis/Run171/pict/ChargeDistrib%d.png",i);
+       sprintf(histoname,"../../Pictures_Analysis/Run188/pict/ChargeDistrib%d.png",i);
        c->SaveAs(histoname);
        
        //cin>> pippo;      
@@ -200,7 +200,7 @@ void C_plot_ChargeSINGLE(int run)
        histo_li[3]->Draw("histo");
        cli->cd(5);
        histo_li[4]->Draw("histo");
-       sprintf(histoname,"../../Pictures_Analysis/Run171/pictLi/ChargeDistribLi%d.png",i);
+       sprintf(histoname,"../../Pictures_Analysis/Run188/pictLi/ChargeDistribLi%d.png",i);
        cli->SaveAs(histoname);
        TCanvas *che = new TCanvas("che");
        che->Divide(3,2);
@@ -214,7 +214,7 @@ void C_plot_ChargeSINGLE(int run)
        histo_he[3]->Draw("histo");
        che->cd(5);
        histo_he[4]->Draw("histo");
-       sprintf(histoname,"../../Pictures_Analysis/Run171/pictHe/ChargeDistribHe%d.png",i);
+       sprintf(histoname,"../../Pictures_Analysis/Run188/pictHe/ChargeDistribHe%d.png",i);
        che->SaveAs(histoname);*/
        
      }   // end loop for the evtSet
