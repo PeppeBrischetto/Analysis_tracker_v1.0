@@ -64,6 +64,24 @@ void diffusionWidth_vs_theta_beta() {
    Double_t x_he[5] = {0.};
    Double_t errXhe[5] = {0.};
    Int_t n_point_tot = 0;
+   Double_t average_clMult1[5] = {0.};
+   Int_t counter1[5] = {0};
+   Double_t average_clMult2[5] = {0.};
+   Int_t counter2[5] = {0};
+   Double_t average_clMult3[5] = {0.};
+   Int_t counter3[5] = {0};
+   Double_t average_clMult4[5] = {0.};
+   Int_t counter4[5] = {0};
+   Double_t average_clMult5[5] = {0.};
+   Int_t counter5[5] = {0};
+   Double_t average_clMult6[5] = {0.};
+   Int_t counter6[5] = {0}; 
+   Double_t mean_thetaHe1[5] = {0.};
+   Double_t mean_thetaHe2[5] = {0.};
+   Double_t mean_thetaHe3[5] = {0.};
+   Double_t mean_thetaHe4[5] = {0.};
+   Double_t mean_thetaHe5[5] = {0.};
+   Double_t mean_thetaHe6[5] = {0.};
  
    Double_t x_c[5] = {0};
    Double_t errXc[5] = {0.};
@@ -140,18 +158,79 @@ void diffusionWidth_vs_theta_beta() {
    f_o.open(InputFileO);
    f_he.open(InputFileHe);
    
-   TGraphErrors *gr1he[5];
+   TGraphErrors *gr1he1[5];
    for(int i=0; i<5; i++){
       sprintf(histoname,"row%i",i);
-      gr1he[i]=new TGraphErrors();
-      gr1he[i]->GetXaxis()->SetTitle("#theta (#circ)");
-      gr1he[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
-      gr1he[i]->SetMarkerSize(1.2);
-      gr1he[i]->SetMarkerStyle(20);
-      gr1he[i]->SetMarkerColor(kGreen+2);
-      gr1he[i]->SetLineColor(kGreen+2);
-      gr1he[i]->SetLineWidth(2);
+      gr1he1[i]=new TGraphErrors();
+      gr1he1[i]->GetXaxis()->SetTitle("#theta (#circ)");
+      gr1he1[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+      gr1he1[i]->SetMarkerSize(1.2);
+      gr1he1[i]->SetMarkerStyle(20);
+      gr1he1[i]->SetMarkerColor(kGreen+2);
+      gr1he1[i]->SetLineColor(kGreen+2);
+      gr1he1[i]->SetLineWidth(2);
    }
+   TGraphErrors *gr1he2[5];
+   for(int i=0; i<5; i++){
+      sprintf(histoname,"row%i",i);
+      gr1he2[i]=new TGraphErrors();
+      gr1he2[i]->GetXaxis()->SetTitle("#theta (#circ)");
+      gr1he2[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+      gr1he2[i]->SetMarkerSize(1.2);
+      gr1he2[i]->SetMarkerStyle(20);
+      gr1he2[i]->SetMarkerColor(kGreen+2);
+      gr1he2[i]->SetLineColor(kGreen+2);
+      gr1he2[i]->SetLineWidth(2);
+   }
+   TGraphErrors *gr1he3[5];
+   for(int i=0; i<5; i++){
+      sprintf(histoname,"row%i",i);
+      gr1he3[i]=new TGraphErrors();
+      gr1he3[i]->GetXaxis()->SetTitle("#theta (#circ)");
+      gr1he3[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+      gr1he3[i]->SetMarkerSize(1.2);
+      gr1he3[i]->SetMarkerStyle(20);
+      gr1he3[i]->SetMarkerColor(kGreen+2);
+      gr1he3[i]->SetLineColor(kGreen+2);
+      gr1he3[i]->SetLineWidth(2);
+   }
+   TGraphErrors *gr1he4[5];
+   for(int i=0; i<5; i++){
+      sprintf(histoname,"row%i",i);
+      gr1he4[i]=new TGraphErrors();
+      gr1he4[i]->GetXaxis()->SetTitle("#theta (#circ)");
+      gr1he4[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+      gr1he4[i]->SetMarkerSize(1.2);
+      gr1he4[i]->SetMarkerStyle(20);
+      gr1he4[i]->SetMarkerColor(kGreen+2);
+      gr1he4[i]->SetLineColor(kGreen+2);
+      gr1he4[i]->SetLineWidth(2);
+   }
+   TGraphErrors *gr1he5[5];
+   for(int i=0; i<5; i++){
+      sprintf(histoname,"row%i",i);
+      gr1he5[i]=new TGraphErrors();
+      gr1he5[i]->GetXaxis()->SetTitle("#theta (#circ)");
+      gr1he5[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+      gr1he5[i]->SetMarkerSize(1.2);
+      gr1he5[i]->SetMarkerStyle(20);
+      gr1he5[i]->SetMarkerColor(kGreen+2);
+      gr1he5[i]->SetLineColor(kGreen+2);
+      gr1he5[i]->SetLineWidth(2);
+   }
+   TGraphErrors *gr1he6[5];
+   for(int i=0; i<5; i++){
+      sprintf(histoname,"row%i",i);
+      gr1he6[i]=new TGraphErrors();
+      gr1he6[i]->GetXaxis()->SetTitle("#theta (#circ)");
+      gr1he6[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+      gr1he6[i]->SetMarkerSize(1.2);
+      gr1he6[i]->SetMarkerStyle(20);
+      gr1he6[i]->SetMarkerColor(kGreen+2);
+      gr1he6[i]->SetLineColor(kGreen+2);
+      gr1he6[i]->SetLineWidth(2);
+   }
+   
    
    TGraphErrors *gr1li[5];
    for(Int_t i=0; i<5; i++){
@@ -242,13 +321,67 @@ void diffusionWidth_vs_theta_beta() {
       f_he >> x_he[0] >>  x_he[1]  >> x_he[2] >>  x_he[3] >>  x_he[4] >> theta_he ;
       for(Int_t j=0; j<5; j++){
          x_he[j] = 5*x_he[j];
-         gr1he[j]->SetPoint(n_point_tot,theta_he,x_he[j]);
-         gr1he[j]->SetPointError(n_point_tot,0,0);
+         //gr1he[j]->SetPoint(n_point_tot,theta_he,x_he[j]);
+         //gr1he[j]->SetPointError(n_point_tot,0,0);
+         
+         if(theta_he>20 && theta_he<30){
+           average_clMult1[j] += x_he[j];
+           mean_thetaHe1[j] += theta_he;
+           counter1[j] ++;
+         }else
+         if(theta_he>30 && theta_he<40){
+           average_clMult2[j] += x_he[j];
+           mean_thetaHe2[j] += theta_he;
+           counter2[j] ++;
+         }else
+         if(theta_he>40 && theta_he<50){
+           average_clMult3[j] += x_he[j];
+           mean_thetaHe3[j] += theta_he;
+           counter3[j] ++;
+         }else
+         if(theta_he>50 && theta_he<60){
+           average_clMult4[j] += x_he[j];
+           mean_thetaHe4[j] += theta_he;
+           counter4[j] ++;
+         }else
+         if(theta_he>60 && theta_he<70){
+           average_clMult5[j] += x_he[j];
+           mean_thetaHe5[j] += theta_he;
+           counter5[j] ++;
+         }else
+         if(theta_he>10 && theta_he<20){
+           average_clMult6[j] += x_he[j];
+           mean_thetaHe6[j] += theta_he;
+           counter6[j] ++;
+         }
       }
       n_point_tot ++;
    }
    
+   for(Int_t j=0; j<5; j++){
+      mean_thetaHe1[j] = mean_thetaHe1[j]/counter1[j];
+      mean_thetaHe2[j] = mean_thetaHe2[j]/counter2[j];
+      mean_thetaHe3[j] = mean_thetaHe3[j]/counter3[j];
+      mean_thetaHe4[j] = mean_thetaHe4[j]/counter4[j];
+      mean_thetaHe5[j] = mean_thetaHe5[j]/counter5[j];
+      mean_thetaHe6[j] = mean_thetaHe6[j]/counter6[j];
+      average_clMult1[j] = average_clMult1[j]/counter1[j];
+      average_clMult2[j] = average_clMult2[j]/counter2[j];
+      average_clMult3[j] = average_clMult3[j]/counter3[j];
+      average_clMult4[j] = average_clMult4[j]/counter4[j];
+      average_clMult5[j] = average_clMult5[j]/counter5[j];
+      average_clMult6[j] = average_clMult6[j]/counter6[j];
+      
+      gr1he1[j]->SetPoint(0,mean_thetaHe1[j],average_clMult1[j]);
+      gr1he2[j]->SetPoint(0,mean_thetaHe2[j],average_clMult2[j]);
+      gr1he3[j]->SetPoint(0,mean_thetaHe3[j],average_clMult3[j]);
+      gr1he4[j]->SetPoint(0,mean_thetaHe4[j],average_clMult4[j]);
+      gr1he5[j]->SetPoint(0,mean_thetaHe5[j],average_clMult5[j]);
+      gr1he6[j]->SetPoint(0,mean_thetaHe6[j],average_clMult6[j]);
+   }
    
+   cout << average_clMult1[0] << "   " << average_clMult2[0] << "   " << average_clMult3[0] << "   " << average_clMult4[0] << "   " << average_clMult5[0] << "   " << average_clMult6[0] << endl;
+   cout << counter1[0] << "   " << counter2[0] << "   " << counter3[0] << "   " << counter4[0] << "   " << counter5[0] << "   " << counter6[0] <<  "   " << n_point_tot << endl; 
    
    
    
@@ -261,7 +394,12 @@ void diffusionWidth_vs_theta_beta() {
    l->AddEntry(gr1_11mbar,"Theo. predict. - 11mbar","lp");
    l->AddEntry(gr1li[0],"Lithium","lp");
    l->AddEntry(gr1c[0],"Carbon","lp");
-   l->AddEntry(gr1he[0],"Helium","lp");
+   l->AddEntry(gr1he6[0],"Helium 10#circ-20#circ","lp");
+   l->AddEntry(gr1he1[0],"Helium 20#circ-30#circ","lp");
+   l->AddEntry(gr1he2[0],"Helium 30#circ-40#circ","lp");
+   l->AddEntry(gr1he3[0],"Helium 40#circ-50#circ","lp");
+   l->AddEntry(gr1he4[0],"Helium 50#circ-60#circ","lp");
+   l->AddEntry(gr1he5[0],"Helium 60#circ-70#circ","lp");
    l->AddEntry(gr1o[0],"Oxigen","lp");
    
    c->cd();
@@ -271,7 +409,12 @@ void diffusionWidth_vs_theta_beta() {
    gr1_9mbar->Draw("PC SAME");
    gr1_11mbar->Draw("PC SAME");
    gr1li[0]->Draw("P SAME");
-   gr1he[0]->Draw("P SAME");
+   gr1he1[0]->Draw("P SAME");
+   gr1he2[0]->Draw("P SAME");
+   gr1he3[0]->Draw("P SAME");
+   gr1he4[0]->Draw("P SAME");
+   gr1he5[0]->Draw("P SAME");
+   gr1he6[0]->Draw("P SAME");
    gr1c[0]->Draw("P SAME");
    gr1o[0]->Draw("P SAME");
    

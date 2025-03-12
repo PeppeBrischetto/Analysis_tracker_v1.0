@@ -16,8 +16,8 @@ const Int_t nPads = 60;
 const Int_t minPad = 0;
 const Int_t maxPad = 59;
 
-const TString OutputFileLi = "../../OutputFiles/Run247Li.txt";
-const TString OutputFileA = "../../OutputFiles/Run247Alpha.txt";
+const TString OutputFileLi = "../../OutputFiles/Run332Li.txt";
+const TString OutputFileA = "../../OutputFiles/Run332Alpha.txt";
 const TString CutFileA = "cutGa.root";
 const TString CutFileLi = "cutGli.root";
 
@@ -171,7 +171,7 @@ void C_plot_ChargeCUT(int run)
                  }
                  
              }
-             theta_he = ((3.1415/2)-theta)*(180/3.1415);
+             theta_he = (theta)*(180/3.1415);
              outFitA << theta_he << endl;
              if(he<100){
              for(Int_t j=0; j<5; j++){
@@ -193,7 +193,7 @@ void C_plot_ChargeCUT(int run)
              che->cd(5);
              histo_he[4]->Draw("histo");
              
-             sprintf(histoname,"../../Pictures_Analysis/Run247/pictHe/ChargeDistribHe%d.png",i);
+             sprintf(histoname,"../../Pictures_Analysis/Run332/pictHe/ChargeDistribHe%d.png",i);
              che->SaveAs(histoname);}
           }else
           if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
@@ -223,7 +223,7 @@ void C_plot_ChargeCUT(int run)
              histo_li[3]->Draw("histo");
              cli->cd(5);
              histo_li[4]->Draw("histo");
-             sprintf(histoname,"../../Pictures_Analysis/Run247/pictLi/ChargeDistribLi%d.png",i);
+             sprintf(histoname,"../../Pictures_Analysis/Run332/pictLi/ChargeDistribLi%d.png",i);
              cli->SaveAs(histoname);}
           }
        } 
