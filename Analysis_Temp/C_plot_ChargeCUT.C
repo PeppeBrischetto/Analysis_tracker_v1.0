@@ -16,8 +16,8 @@ const Int_t nPads = 60;
 const Int_t minPad = 0;
 const Int_t maxPad = 59;
 
-const TString OutputFileLi = "../../OutputFiles/Run445Li.txt";
-const TString OutputFileA = "../../OutputFiles/Run445Alpha.txt";
+const TString OutputFileLi = "../../OutputFiles/Run247Li.txt";
+const TString OutputFileA = "../../OutputFiles/Run247Alpha.txt";
 const TString CutFileA = "cutGa.root";
 const TString CutFileLi = "cutGli.root";
 
@@ -36,13 +36,14 @@ void C_plot_ChargeCUT(int run)
    Int_t n_point_tot = 0;
    Double_t media_he[5] = {0.};
    Double_t media_li[5] = {0.};
+   Double_t theta_he = 0;
    
    Int_t li = 0;
    Int_t he = 0;
    
    ofstream outFitLi, outFitA;
    
-   TF1 *f = new TF1("f","gaus",-0.5,60);
+   TF1 *f = new TF1("f","gaus",-60,60);
    f->SetParameters(1,1,1);
    
    outFitLi.open(OutputFileLi,std::ios_base::app);
@@ -57,6 +58,14 @@ void C_plot_ChargeCUT(int run)
       histo_li[i]->GetXaxis()->SetTitle("Pad number");
       histo_li[i]->GetYaxis()->SetTitle("Charge (a.u.)");
       histo_li[i]->SetLineColor(kBlue);
+   }
+   TH1F *histo_liStat[5];
+   for(int i=0; i<5; i++){
+      sprintf(histoname,"Charge Distrib. - row%i",i);
+      histo_liStat[i]=new TH1F("","",60,0,59);
+      histo_liStat[i]->GetXaxis()->SetTitle("Pad number");
+      histo_liStat[i]->GetYaxis()->SetTitle("Charge (a.u.)");
+      histo_liStat[i]->SetLineColor(kBlue);
    }
    
    TH1F *histo_he[5];
@@ -139,7 +148,6 @@ void C_plot_ChargeCUT(int run)
    //TCutG cutG = (TCutG)cutFile->Get("cutG");
  
    for(Int_t i=0; i<entries; i++){
-       
        tree->GetEntry(i);
        cout<<"#@@#"<<i<<endl;
        //if(i<100){                                              // loop to save an evtSet
@@ -151,16 +159,20 @@ void C_plot_ChargeCUT(int run)
           //tree->Draw("cl_x_mm[1]:cl_x_mm[0]"); // Disegna cl_x_mm[1] in funzione di cl_x_mm[0]
           //cutG->Draw("L SAME"); // Sovrapponi il taglio grafico
           if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
-             //cout << "Event " << i << " satisfies TCutGa" << endl;
+             cout << "Event " << i << " satisfies TCutGa" << endl;
              he += 1;
+             
              //cout << "Eventi di alpha: " << he << endl;
              for (Int_t j = 0; j < 5; j++) {
+                 outFitA << cl_padMult[j] << "	" ;
                  for (Int_t k = 0; k < cl_padMult[j]; k++) {
                      //cout << "  j = " << j << ", k = " << k << ", a_pads_fired = " << a_pads_fired[j][k] << ", pads_charge = " << pads_charge[j][k] << endl;
                      histo_he[j]->SetBinContent(a_pads_fired[j][k], pads_charge[j][k]);
                  }
                  
              }
+             theta_he = ((3.1415/2)-theta)*(180/3.1415);
+             outFitA << theta_he << endl;
              if(he<100){
              for(Int_t j=0; j<5; j++){
                 histo_he[j]->Fit(f,"R+");
@@ -181,27 +193,24 @@ void C_plot_ChargeCUT(int run)
              che->cd(5);
              histo_he[4]->Draw("histo");
              
-             sprintf(histoname,"../../Pictures_Analysis/Run445/pictHe/ChargeDistribHe%d.png",i);
+             sprintf(histoname,"../../Pictures_Analysis/Run247/pictHe/ChargeDistribHe%d.png",i);
              che->SaveAs(histoname);}
           }else
           if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
-             //cout << "Event " << i << " satisfies TCutGli" << endl;
+             cout << "Event " << i << " satisfies TCutGli" << endl;
              li += 1;
+             
              //cout << "Eventi di 7Li: " << li << endl;
              for (Int_t j = 0; j < 5; j++) {
                  for (Int_t k = 0; k < cl_padMult[j]; k++) {
+                     histo_liStat[j]->Fill(cl_padMult[j]);
                      //cout << "  j = " << j << ", k = " << k << ", a_pads_fired = " << a_pads_fired[j][k] << ", pads_charge = " << pads_charge[j][k] << endl;
                      histo_li[j]->SetBinContent(a_pads_fired[j][k], pads_charge[j][k]);
                  }
                  
              }
              if(li<100){
-             for(Int_t j=0; j<5; j++){
-                histo_li[j]->Fit(f,"R+");
-                sigma_li = f->GetParameter(2);
-                width_li[j] += sigma_li;
-                media_li[j] += cl_padMult[j];
-             }
+             
              TCanvas *cli = new TCanvas("cli");
              cli->Divide(3,2);
              cli->cd(1);
@@ -214,41 +223,20 @@ void C_plot_ChargeCUT(int run)
              histo_li[3]->Draw("histo");
              cli->cd(5);
              histo_li[4]->Draw("histo");
-             sprintf(histoname,"../../Pictures_Analysis/Run445/pictLi/ChargeDistribLi%d.png",i);
+             sprintf(histoname,"../../Pictures_Analysis/Run247/pictLi/ChargeDistribLi%d.png",i);
              cli->SaveAs(histoname);}
           }
-          
-          /*for(Int_t j=0; j<5; j++){
-             sprintf(histoname,"a_pads_fired%d>>histo_li[%d]",j,j);
-             cout << histoname << endl;
-             sprintf(cond,"pads_charge%d && alpha==0",j);
-             cout << cond << endl;
-             tree->Draw(histoname, cond);
-       
-             sprintf(histoname,"a_pads_fired%d>>histo_he[%d]",j,j);
-             cout << histoname << endl;
-             sprintf(cond,"pads_charge%d && alpha==1",j);
-             cout << cond << endl;
-             tree->Draw(histoname, cond);*/
-             
-             /* TCanvas block for Li & He */  
-             
-          //}      // end loop for the evtSet
-       
-       //cin >> pippo;
-       
-       //cutFile->Close();
        } 
        
        outFitLi << "<M0>	<M1>	<M2>	<M3>	<M4>" << endl;
-       outFitA << "<M0>	<M1>	<M2>	<M3>	<M4>" << endl;
+       
        for(Int_t j=0; j<5; j++){
-          media_li[j] = media_li[j]/100;
-          width_li[j] = width_li[j]/100;
+          histo_liStat[j]->Fit(f,"R+");
+          media_li[j] = f->GetParameter(1);
+          width_li[j] = f->GetParameter(2);;
           outFitLi << media_li[j] << "	";
           
-          media_he[j] = media_he[j]/100;
-          width_he[j] = width_he[j]/100;
+          
           outFitA << media_he[j] << "	";
        }
        outFitLi << endl;
@@ -259,6 +247,6 @@ void C_plot_ChargeCUT(int run)
           outFitLi << width_li[j] << "	";
           outFitA << width_he[j] << "	";
        }  
-     
+       cout << "Theta_he: " << theta_he << endl;
        
    }
