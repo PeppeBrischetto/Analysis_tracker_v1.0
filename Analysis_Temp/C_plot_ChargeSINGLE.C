@@ -17,7 +17,7 @@ const Int_t nPads = 60;
 const Int_t minPad = 0;
 const Int_t maxPad = 59;
 
-const TString OutputFile = "../../OutputFiles/Run188.txt";
+const TString OutputFile = "../../OutputFiles/Run38.txt";
 
 
 void C_plot_ChargeSINGLE(int run)
@@ -99,9 +99,11 @@ void C_plot_ChargeSINGLE(int run)
    for(Int_t i=0; i<entries; i++){
        tree->GetEntry(i);
        cout<<"#@@#"<<i<<endl;
-       if(i<100){                                              // loop to save an evtSet
        for(Int_t j=0; j<5; j++){
           histoStat[j]->Fill(cl_padMult[j]);
+       }
+       if(i<100){                                              // loop to save an evtSet
+       for(Int_t j=0; j<5; j++){
           Double_t charge[60] = {0.};
           for(Int_t k=0; k<cl_padMult[j]; k++){
              histo_c[j]->SetBinContent(a_pads_fired[j][k],pads_charge[j][k]);
@@ -132,7 +134,7 @@ void C_plot_ChargeSINGLE(int run)
        histo_c[4]->Draw("histo");
 
        
-       sprintf(histoname,"../../Pictures_Analysis/Run188/pict/ChargeDistrib%d.png",i);
+       sprintf(histoname,"../../Pictures_Analysis/Run38/pict/ChargeDistrib%d.png",i);
        c->SaveAs(histoname);
        
        //cin>> pippo;      

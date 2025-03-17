@@ -119,9 +119,9 @@ void C_plot_ChargeCUT(int run)
    cutGli->SetPoint(2,10,39);
    cutGli->SetPoint(3,25,50);
    cutGli->SetPoint(4,54,94);
-   cutGli->SetPoint(5,69,126);
-   cutGli->SetPoint(6,36,142);
-   cutGli->SetPoint(7,13,65);
+   cutGli->SetPoint(5,69,118);
+   cutGli->SetPoint(6,96,148);
+   cutGli->SetPoint(7,24,158);
    cutGli->SaveAs(CutFileLi);
    
    TCutG *cutGa = new TCutG("cutGa",8);

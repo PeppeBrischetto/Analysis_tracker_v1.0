@@ -54,6 +54,9 @@ void diffusionWidth_vs_theta_beta() {
    Double_t delta_x_tot[10] = {0.};
    Double_t delta_x_tot_9mbar[10] = {0.};
    Double_t delta_x_tot_11mbar[10] = {0.};
+   Double_t delta_x_totSQ[10] = {0.};
+   Double_t delta_x_totSQ_9mbar[10] = {0.};
+   Double_t delta_x_totSQ_11mbar[10] = {0.};
    
    Double_t thetaEX= 62.5;
    Double_t errTheta = 2.5;
@@ -83,6 +86,10 @@ void diffusionWidth_vs_theta_beta() {
    Double_t mean_thetaHe5[5] = {0.};
    Double_t mean_thetaHe6[5] = {0.};
  
+   Double_t mean_thetaLi[5] = {0.};
+   Double_t mean_thetaC[5] = {0.};
+   Double_t mean_thetaO[5] = {0.};
+   
    Double_t x_c[5] = {0};
    Double_t errXc[5] = {0.};
    Double_t x_li[5] = {0.};
@@ -105,31 +112,34 @@ void diffusionWidth_vs_theta_beta() {
    
            /* fwhm evaluation */
            for(Int_t i=0;i<10;i++){
-              fwhm_pads[i] = sigma_x*2.35*Cos(theta[i]*Pi()/180);
+              fwhm_pads[i] = sigma_x*2.35*Cos(theta[i]*Pi()/180);                                     // 6 means 6-sigma i.e. 3 [mu-3sigma;mu+3sigma]
               fwhm_pads_9mbar[i] = sigma_x_9mbar*2.35*Cos(theta[i]*Pi()/180);
               fwhm_pads_11mbar[i] = sigma_x_11mbar*2.35*Cos(theta[i]*Pi()/180);
               delta_x[i] = padLenght * Tan(theta[i]*Pi()/180);
               delta_x_9mbar[i] = padLenght * Tan(theta[i]*Pi()/180);
               delta_x_11mbar[i] = padLenght * Tan(theta[i]*Pi()/180);
+              delta_x_totSQ[i] = sqrt((fwhm_pads[i]*fwhm_pads[i]) + (delta_x[i]*delta_x[i]));
+              delta_x_totSQ_9mbar[i] = sqrt((fwhm_pads_9mbar[i]*fwhm_pads_9mbar[i]) + (delta_x_9mbar[i]*delta_x_9mbar[i]));
+              delta_x_totSQ_11mbar[i] = sqrt((fwhm_pads_11mbar[i]*fwhm_pads_11mbar[i]) + (delta_x_11mbar[i]*delta_x_11mbar[i])); 
               delta_x_tot[i] = fwhm_pads[i] + delta_x[i];
               delta_x_tot_9mbar[i] = fwhm_pads_9mbar[i] + delta_x_9mbar[i];
-              delta_x_tot_11mbar[i] = fwhm_pads_11mbar[i] + delta_x_11mbar[i];    
-              mult[i] = delta_x_tot[i]/padWidth;   
+              delta_x_tot_11mbar[i] = fwhm_pads_11mbar[i] + delta_x_11mbar[i]; 
            }
 
-   
    TGraph *gr1 = new TGraph(10,theta,delta_x_tot);
-   gr1->SetTitle("Diffusion width - Row0");
+   gr1->SetTitle("Diffusion width - Row1 - no rim");
    gr1->SetLineWidth(1);
+   gr1->SetLineStyle(1);
    gr1->SetMarkerStyle(1);
    //gr1->SetMarkerSize(1.2);
-   gr1->SetMarkerColor(kBlue);
+   gr1->SetMarkerColor(kBlack);
    gr1->GetXaxis()->SetTitle("#theta (#circ)");
    gr1->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
    
    TGraph *gr1_9mbar = new TGraph(10,theta,delta_x_tot_9mbar);
-   gr1_9mbar->SetTitle("Diffusion width - Row0");
+   gr1_9mbar->SetTitle("Diffusion width - Row1 - no rim");
    gr1_9mbar->SetLineWidth(1);
+   gr1_9mbar->SetLineStyle(1);
    gr1_9mbar->SetLineColor(kBlue);
    gr1_9mbar->SetMarkerStyle(1);
    //gr1_9mbar->SetMarkerSize(1.2);
@@ -138,14 +148,47 @@ void diffusionWidth_vs_theta_beta() {
    gr1_9mbar->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
    
    TGraph *gr1_11mbar = new TGraph(10,theta,delta_x_tot_11mbar);
-   gr1_11mbar->SetTitle("Diffusion width - Row0");
+   gr1_11mbar->SetTitle("Diffusion width - Row1 - no rim");
    gr1_11mbar->SetLineWidth(1);
+   gr1_11mbar->SetLineStyle(1);
    gr1_11mbar->SetLineColor(kRed);
    gr1_11mbar->SetMarkerStyle(1);
    //gr1_11mbar->SetMarkerSize(1.2);
    gr1_11mbar->SetMarkerColor(kRed);
    gr1_11mbar->GetXaxis()->SetTitle("#theta (#circ)");
    gr1_11mbar->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+   
+   TGraph *gr1SQ = new TGraph(10,theta,delta_x_totSQ);
+   gr1SQ->SetTitle("Diffusion width - Row1 - no rim");
+   gr1SQ->SetLineWidth(1);
+   gr1SQ->SetLineStyle(2);
+   gr1SQ->SetMarkerStyle(1);
+   //gr1SQ->SetMarkerSize(1.2);
+   gr1SQ->SetMarkerColor(kBlack);
+   gr1SQ->GetXaxis()->SetTitle("#theta (#circ)");
+   gr1SQ->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+   
+   TGraph *gr1SQ_9mbar = new TGraph(10,theta,delta_x_totSQ_9mbar);
+   gr1SQ_9mbar->SetTitle("Diffusion width - Row1 - no rim");
+   gr1SQ_9mbar->SetLineWidth(1);
+   gr1SQ_9mbar->SetLineStyle(2);
+   gr1SQ_9mbar->SetLineColor(kBlue);
+   gr1SQ_9mbar->SetMarkerStyle(1);
+   //gr1SQ_9mbar->SetMarkerSize(1.2);
+   gr1SQ_9mbar->SetMarkerColor(kBlue);
+   gr1SQ_9mbar->GetXaxis()->SetTitle("#theta (#circ)");
+   gr1SQ_9mbar->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+   
+   TGraph *gr1SQ_11mbar = new TGraph(10,theta,delta_x_totSQ_11mbar);
+   gr1SQ_11mbar->SetTitle("Diffusion width - Row1 - no rim");
+   gr1SQ_11mbar->SetLineWidth(1);
+   gr1SQ_11mbar->SetLineStyle(2);
+   gr1SQ_11mbar->SetLineColor(kRed);
+   gr1SQ_11mbar->SetMarkerStyle(1);
+   //gr1SQ_11mbar->SetMarkerSize(1.2);
+   gr1SQ_11mbar->SetMarkerColor(kRed);
+   gr1SQ_11mbar->GetXaxis()->SetTitle("#theta (#circ)");
+   gr1SQ_11mbar->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
    
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                           //
@@ -271,6 +314,8 @@ void diffusionWidth_vs_theta_beta() {
       gr1c[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
    }
    
+   
+   
    for(Int_t i=0; i<13; i++){
       getline(f_li,badLines);
       //cout << badLines << endl;
@@ -321,8 +366,6 @@ void diffusionWidth_vs_theta_beta() {
       f_he >> x_he[0] >>  x_he[1]  >> x_he[2] >>  x_he[3] >>  x_he[4] >> theta_he ;
       for(Int_t j=0; j<5; j++){
          x_he[j] = 5*x_he[j];
-         //gr1he[j]->SetPoint(n_point_tot,theta_he,x_he[j]);
-         //gr1he[j]->SetPointError(n_point_tot,0,0);
          
          if(theta_he>20 && theta_he<30){
            average_clMult1[j] += x_he[j];
@@ -380,18 +423,16 @@ void diffusionWidth_vs_theta_beta() {
       gr1he6[j]->SetPoint(0,mean_thetaHe6[j],average_clMult6[j]);
    }
    
-   cout << average_clMult1[0] << "   " << average_clMult2[0] << "   " << average_clMult3[0] << "   " << average_clMult4[0] << "   " << average_clMult5[0] << "   " << average_clMult6[0] << endl;
-   cout << counter1[0] << "   " << counter2[0] << "   " << counter3[0] << "   " << counter4[0] << "   " << counter5[0] << "   " << counter6[0] <<  "   " << n_point_tot << endl; 
-   
-   
-   
    /* Visualization block */
 
    TCanvas *c = new TCanvas("c");
    TLegend *l = new TLegend();
-   l->AddEntry(gr1,"Theo. predict.","lp");
-   l->AddEntry(gr1_9mbar,"Theo. predict. - 9mbar","lp");
-   l->AddEntry(gr1_11mbar,"Theo. predict. - 11mbar","lp");
+   l->AddEntry(gr1_9mbar,"Theo. predict. - SD - 9mbar","lp");
+   l->AddEntry(gr1,"Theo. predict. - SD - 10mbar","lp");
+   l->AddEntry(gr1_11mbar,"Theo. predict. - SD - 11mbar","lp");
+   l->AddEntry(gr1SQ_9mbar,"Theo. predict. - SQ - 9mbar","lp");
+   l->AddEntry(gr1SQ,"Theo. predict. - SQ - 10mbar","lp");
+   l->AddEntry(gr1SQ_11mbar,"Theo. predict. - SQ - 11mbar","lp");
    l->AddEntry(gr1li[0],"Lithium","lp");
    l->AddEntry(gr1c[0],"Carbon","lp");
    l->AddEntry(gr1he6[0],"Helium 10#circ-20#circ","lp");
@@ -405,18 +446,21 @@ void diffusionWidth_vs_theta_beta() {
    c->cd();
    gr1->Draw("APC same");
    gr1->GetXaxis()->SetRangeUser(0,85);
-   gr1->GetYaxis()->SetRangeUser(0,90);
+   gr1->GetYaxis()->SetRangeUser(0,60);
    gr1_9mbar->Draw("PC SAME");
    gr1_11mbar->Draw("PC SAME");
-   gr1li[0]->Draw("P SAME");
-   gr1he1[0]->Draw("P SAME");
-   gr1he2[0]->Draw("P SAME");
-   gr1he3[0]->Draw("P SAME");
-   gr1he4[0]->Draw("P SAME");
-   gr1he5[0]->Draw("P SAME");
-   gr1he6[0]->Draw("P SAME");
-   gr1c[0]->Draw("P SAME");
-   gr1o[0]->Draw("P SAME");
+   gr1SQ->Draw("PC SAME");
+   gr1SQ_9mbar->Draw("PC SAME");
+   gr1SQ_11mbar->Draw("PC SAME");
+   gr1li[1]->Draw("P SAME");
+   gr1he1[1]->Draw("P SAME");
+   gr1he2[1]->Draw("P SAME");
+   gr1he3[1]->Draw("P SAME");
+   gr1he4[1]->Draw("P SAME");
+   //gr1he5[1]->Draw("P SAME");
+   gr1he6[1]->Draw("P SAME");
+   gr1c[1]->Draw("P SAME");
+   gr1o[1]->Draw("P SAME");
    
    l->Draw("same");
 }
