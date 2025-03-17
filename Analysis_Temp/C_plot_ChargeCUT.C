@@ -127,7 +127,7 @@ void C_plot_ChargeCUT(int run)
           }
           cout << "Evento " << i << ": cl_x_mm[0] = " << cl_x_mm[0] << ", cl_x_mm[1] = " << cl_x_mm[1] << endl;
           tree->Draw("cl_x_mm[1]:cl_x_mm[0]"); // Disegna cl_x_mm[1] in funzione di cl_x_mm[0]
-cutG->Draw("L SAME"); // Sovrapponi il taglio grafico
+	  cutG->Draw("L SAME"); // Sovrapponi il taglio grafico
           if(cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
              cout << "Event " << i << " satisfies TCutG" << endl;
              for (Int_t j = 0; j < 5; j++) {
