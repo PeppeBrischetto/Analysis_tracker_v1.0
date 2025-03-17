@@ -43,6 +43,9 @@ Tracks          File where all the data from Merged data are reorganized in trac
 ###################################################################################################
 FILES
 ####################
+		
+compila.sh	Shell script that compile converter.cc
+
 converter_nudaq.C	converts the raw data produced by nudaq DAQ from binary to root, calibrates 
 		the charge and pads #
 		Input from   Raw_data
@@ -70,11 +73,32 @@ converter_solaris_tracker.cc	same as converter_solaris_tracker.C but do not use 
 
 converter_solaris_Sic.C	
 
+dataProcessing.sh  Shell script that use converter_xxx_.C and merger.C generating in the final merged 
+		file in a single step. Require in input just run number
+		check the correct path where the file are.
+		$ dataProcessing n 
+		where n is the number of the run
 
-merger.C	merge 2 root files at a time
+
+merger.C	merge 2 root files 
 		Input from Cal_data 
  		Output to Cal_data 
 		
+merger_v2.C	merge 5 root files togheter, written by G. Brischetto, is slower than 'merger.C'. do not use!
+		Input from Cal_data 
+ 		Output to Cal_data 
+	
+readTrackerConfig.C
+		Read parameters the ID of preamplifier and digitizer from th tracker configuration files.
+		to be completed.
+
+toDoList.txt	
+		To do list.
+
+trackerConfig.txt
+		template for the readTrackerConfig.C macro.
+		
+				
 trackerGenerator.C		Take as input file from tracker and (optionally) from SiC and produce a file with tracks. Each entry of the
 		generated file is a tracks with a number of info for the track.  It must be introduced in the dataProcessing.sh macro
 		
@@ -84,10 +108,4 @@ trackerGenerator.C		Take as input file from tracker and (optionally) from SiC an
                 	
 		
 		
-dataProcessing.sh  Shell script that use converter_xxx_.C and merger.C generating in the final merged 
-		file in a single step. Require in input just run number
-		check the correct path where the file are.
-		$ dataProcessing n 
-		where n is the number of the run
-		
-compila.sh	Shell script that compile converter.cc
+

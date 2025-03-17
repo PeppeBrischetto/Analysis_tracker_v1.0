@@ -118,7 +118,7 @@ void trackGenerator(int run, bool sicFileOpen)
    Double_t energySic; 
   
    int entryMerged=-1;			// entry of the first hit in the corresponding Merged file
-   Int_t a_pads_fired[5][100];		// id of pads that are fired
+   Int_t pads_fired[5][100];		// id of pads that are fired
    Double_t pads_charge[5][60];         // charge info for signle Pad in each row - 2025.02.14 - by A. Pitronaci
 // other variables
    
@@ -260,11 +260,11 @@ void trackGenerator(int run, bool sicFileOpen)
 // OPEN output ROOT file //
    char fileOutName[50];
    if(run<10){
-         sprintf(fileOutName,"../Tracks_Br/tracks_run00%i.root",run);
+         sprintf(fileOutName,"Tracks_Br/tracks_run00%i.root",run);
       }else if(run <100){
-         sprintf(fileOutName,"../Tracks_Br/tracks_run0%i.root",run);
+         sprintf(fileOutName,"Tracks_Br/tracks_run0%i.root",run);
       }else{
-         sprintf(fileOutName,"../Tracks_Br/tracks_run%i.root",run);
+         sprintf(fileOutName,"Tracks_Br/tracks_run%i.root",run);
       } 
    
    TFile *fileOut = new TFile(fileOutName, "recreate");
@@ -283,23 +283,23 @@ void trackGenerator(int run, bool sicFileOpen)
    treeOut->Branch("cl_padMult2",&cl_padMult[2],"cl_padMult2/I");
    treeOut->Branch("cl_padMult3",&cl_padMult[3],"cl_padMult3/I");
    treeOut->Branch("cl_padMult4",&cl_padMult[4],"cl_padMult4/I");
-   treeOut->Branch("pads_fired0",&a_pads_fired[0],"a_pads_fired0[cl_padMult0]/I");
-   treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[cl_padMult1]/I");
-   treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[cl_padMult2]/I");
-   treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[cl_padMult3]/I");
-   treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[cl_padMult4]/I");
+   treeOut->Branch("pads_fired0",&pads_fired[0],"pads_fired0[cl_padMult0]/I");
+   treeOut->Branch("pads_fired1",&pads_fired[1],"pads_fired1[cl_padMult1]/I");
+   treeOut->Branch("pads_fired2",&pads_fired[2],"pads_fired2[cl_padMult2]/I");
+   treeOut->Branch("pads_fired3",&pads_fired[3],"pads_fired3[cl_padMult3]/I");
+   treeOut->Branch("pads_fired4",&pads_fired[4],"pads_fired4[cl_padMult4]/I");
    treeOut->Branch("pads_charge0",&pads_charge[0],"pads_charge0[cl_padMult0]/D");     // 2025.14.02 - by A. Pitronaci
    treeOut->Branch("pads_charge1",&pads_charge[1],"pads_charge1[cl_padMult1]/D");
    treeOut->Branch("pads_charge2",&pads_charge[2],"pads_charge2[cl_padMult2]/D");
    treeOut->Branch("pads_charge3",&pads_charge[3],"pads_charge3[cl_padMult3]/D");
    treeOut->Branch("pads_charge4",&pads_charge[4],"pads_charge4[cl_padMult4]/D");
    
-   //treeOut->Branch("pads_fired0",&a_pads_fired[0],"a_pads_fired0[100]/I");
-   //treeOut->Branch("pads_fired1",&a_pads_fired[1],"a_pads_fired1[100]/I");
-   //treeOut->Branch("pads_fired2",&a_pads_fired[2],"a_pads_fired2[100]/I");
-   //treeOut->Branch("pads_fired3",&a_pads_fired[3],"a_pads_fired3[100]/I");
-   //treeOut->Branch("pads_fired4",&a_pads_fired[4],"a_pads_fired4[100]/I");
-   //treeOut->Branch("lastEntryEvent",&last,"a_pads_fired4[cl_padMult4]/I");          
+   //treeOut->Branch("pads_fired0",&pads_fired[0],"pads_fired0[100]/I");
+   //treeOut->Branch("pads_fired1",&pads_fired[1],"pads_fired1[100]/I");
+   //treeOut->Branch("pads_fired2",&pads_fired[2],"pads_fired2[100]/I");
+   //treeOut->Branch("pads_fired3",&pads_fired[3],"pads_fired3[100]/I");
+   //treeOut->Branch("pads_fired4",&pads_fired[4],"pads_fired4[100]/I");
+   //treeOut->Branch("lastEntryEvent",&last,"pads_fired4[cl_padMult4]/I");          
    
    // Fit variables
    treeOut->Branch("phi",&phi,"phi/D");
@@ -576,7 +576,7 @@ void trackGenerator(int run, bool sicFileOpen)
                    //if (charge) {cl_padMult[j]++; pads_fired[j].push_back(k);} // commented out 2024-06-26 by G.B.
                    if (charge) {
                       cl_padMult[j]++;
-                      a_pads_fired[j][kk]=k;
+                      pads_fired[j][kk]=k;
                       pads_charge[j][kk] = charge;
                       kk++;}  // 2024-06-26 G.B. writing the fired pads in a 2D array, one array for each row                  
 	       }	       
@@ -781,7 +781,7 @@ void trackGenerator(int run, bool sicFileOpen)
 
             //for (int q=0; q<5; ++q) {
                 //for (int h=0; h<cl_padMult[q]; ++h)
-                    //std::cout << "------------  pads fired: " << q << "\t" << h << "\t" << a_pads_fired[q][h] << std::endl;
+                    //std::cout << "------------  pads fired: " << q << "\t" << h << "\t" << pads_fired[q][h] << std::endl;
             //}
             
             treeOut->Fill();

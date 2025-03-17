@@ -18,7 +18,7 @@
 #include "TString.h"
 #include "TChain.h"
    
-void merger_new_version(Int_t nRun) {
+void merger_v2(Int_t nRun) {
    
    TString fileInName;
    TString treeInName = "Data_R";
