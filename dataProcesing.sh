@@ -162,7 +162,7 @@ echo  -e "\033[40;35;1m Generating tracks \033[0m"
 
 
 
-#root -q -l "trackGenerator.C($run,1)"
+root -q -l "trackGenerator.C($run,1)"
 echo ""
 
 

@@ -30,7 +30,7 @@
    Double_t chiSquarePhi;   
    Int_t sic_charge;
    Double_t energySic; 
-   Int_t a_pads_fired[5][100];
+   Int_t pads_fired[5][100];
    Double_t slopeT, interceptT;
    Double_t slopeP, interceptP;
    Int_t sic_fired;
@@ -47,11 +47,11 @@ void openTrackFile(int runnum ){
    //open file
    char *filename = new char[100];
    if(runnum<10){
-      sprintf(filename, "../../Tracks_Br/tracks_run00%i.root", runnum);
+      sprintf(filename, "../Tracks_Br/tracks_run00%i.root", runnum);
    }else if(runnum <100){
-      sprintf(filename, "../../Tracks_Br/tracks_run0%i.root", runnum);
+      sprintf(filename, "../Tracks_Br/tracks_run0%i.root", runnum);
    }else{
-      sprintf(filename, "../../Tracks_Br/tracks_run%i.root", runnum);
+      sprintf(filename, "../Tracks_Br/tracks_run%i.root", runnum);
    } 
 
    f=new TFile(filename,"READ");
@@ -77,11 +77,11 @@ void openTrackFile(int runnum ){
    tree->SetBranchAddress("cl_padMult2",&cl_padMult[2]);
    tree->SetBranchAddress("cl_padMult3",&cl_padMult[3]);
    tree->SetBranchAddress("cl_padMult4",&cl_padMult[4]);
-   tree->SetBranchAddress("pads_fired0",&a_pads_fired[0]);
-   tree->SetBranchAddress("pads_fired1",&a_pads_fired[1]);
-   tree->SetBranchAddress("pads_fired2",&a_pads_fired[2]);
-   tree->SetBranchAddress("pads_fired3",&a_pads_fired[3]);
-   tree->SetBranchAddress("pads_fired4",&a_pads_fired[4]);
+   tree->SetBranchAddress("pads_fired0",&pads_fired[0]);
+   tree->SetBranchAddress("pads_fired1",&pads_fired[1]);
+   tree->SetBranchAddress("pads_fired2",&pads_fired[2]);
+   tree->SetBranchAddress("pads_fired3",&pads_fired[3]);
+   tree->SetBranchAddress("pads_fired4",&pads_fired[4]);
    
    tree->SetBranchAddress("theta",&theta);
    tree->SetBranchAddress("phi",&phi);
