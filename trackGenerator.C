@@ -24,7 +24,8 @@
 //#   updated : 22 oct 2024 removed TCanvas and plot D. Torresi, add output variables slopeT slopeP interceptT interceptP D. Torresi
 //#   updated : 24 oct 2024 cl_y now is written correctly for the tracks with a Sic G. Brischetto D. Torresi
 //#   updated :  8 nov 2024 Added theta with less row and added for each event the corresponding entry of the Merged file. D. Torresi
-//#   modified: 14 feb 2025 Added array to take into account the charge in each pad and for each row
+//#   modified: 14 feb 2025 Added array for charge of each pad on a row  A. Pitronaci
+//#   updated:     mar 2025 Added the last entry of each event in the Merged file  D. Torresi
 //###################################################################################################
 
 
@@ -92,6 +93,7 @@ void trackGenerator(int run, bool sicFileOpen)
    double cl_x_rms[5];  		// rms of the charge distribution of a cluster in pads unit
    double cl_y[5] = {0};		// y centroid of a cluster in time [ps]
    double cl_y_mm[5] = {0};		// y centroid of a cluster in mm
+  
    Double_t theta;		// theta of the track in rad
    Double_t theta_deg;		// theta of the track in deg
    Double_t theta13;		// theta row 1 & 3 of the track in rad
@@ -104,7 +106,7 @@ void trackGenerator(int run, bool sicFileOpen)
    Double_t theta123_deg;	// theta row 1,2 & 3 of the track in deg
 
    
-   
+   Int_t entryMF;		// entry of the last hit of the event in the merged file
    Double_t phi;
    Double_t phi_deg;
    Double_t chiSquareTheta;
@@ -119,7 +121,8 @@ void trackGenerator(int run, bool sicFileOpen)
   
    int entryMerged=-1;			// entry of the first hit in the corresponding Merged file
    Int_t pads_fired[5][100];		// id of pads that are fired
-   Double_t pads_charge[5][60];         // charge info for signle Pad in each row - 2025.02.14 - by A. Pitronaci
+   Int_t pad_charge[5][60];         	// charge for signle Pad in each row - 2025.02.14 - by A. Pitronaci
+   Int_t pads_time[5][60];         	// Delta T for each pad from the first hit of the event (to be implemented)
 // other variables
    
    // fitting variables
@@ -271,6 +274,8 @@ void trackGenerator(int run, bool sicFileOpen)
    TTree *treeOut = new TTree("Data_R", "Third level tree");
 
    // Tracker Variables
+   
+   treeOut->Branch("entryMF", &entryMF, "entryMF/I");
    treeOut->Branch("cl_x", cl_x, "cl_x[5]/D");
    treeOut->Branch("cl_x_mm", cl_x_mm, "cl_x_mm[5]/D"); 
    treeOut->Branch("cl_y", cl_y, "cl_y[5]/D");
@@ -288,11 +293,11 @@ void trackGenerator(int run, bool sicFileOpen)
    treeOut->Branch("pads_fired2",&pads_fired[2],"pads_fired2[cl_padMult2]/I");
    treeOut->Branch("pads_fired3",&pads_fired[3],"pads_fired3[cl_padMult3]/I");
    treeOut->Branch("pads_fired4",&pads_fired[4],"pads_fired4[cl_padMult4]/I");
-   treeOut->Branch("pads_charge0",&pads_charge[0],"pads_charge0[cl_padMult0]/D");     // 2025.14.02 - by A. Pitronaci
-   treeOut->Branch("pads_charge1",&pads_charge[1],"pads_charge1[cl_padMult1]/D");
-   treeOut->Branch("pads_charge2",&pads_charge[2],"pads_charge2[cl_padMult2]/D");
-   treeOut->Branch("pads_charge3",&pads_charge[3],"pads_charge3[cl_padMult3]/D");
-   treeOut->Branch("pads_charge4",&pads_charge[4],"pads_charge4[cl_padMult4]/D");
+   treeOut->Branch("pad_charge0",&pad_charge[0],"pad_charge0[cl_padMult0]/D");     // 2025.14.02 - by A. Pitronaci
+   treeOut->Branch("pad_charge1",&pad_charge[1],"pad_charge1[cl_padMult1]/D");
+   treeOut->Branch("pad_charge2",&pad_charge[2],"pad_charge2[cl_padMult2]/D");
+   treeOut->Branch("pad_charge3",&pad_charge[3],"pad_charge3[cl_padMult3]/D");
+   treeOut->Branch("pad_charge4",&pad_charge[4],"pad_charge4[cl_padMult4]/D");
    
    //treeOut->Branch("pads_fired0",&pads_fired[0],"pads_fired0[100]/I");
    //treeOut->Branch("pads_fired1",&pads_fired[1],"pads_fired1[100]/I");
@@ -352,7 +357,7 @@ void trackGenerator(int run, bool sicFileOpen)
 
 //////////////////////////////////////////////////////////////////////////////
 // Dichiarazione Histo, Canvas, TGraph and Functions
-   TH1F *row[11];
+   TH1F *row[11];		
    for (int i=0; i<5; ++i){
        sprintf(dummyString,"r%i",i);
        row[i]=new TH1F(dummyString,dummyString,60,-0.5,59.5);
@@ -500,6 +505,7 @@ void trackGenerator(int run, bool sicFileOpen)
    //cout<<" time init SiC: "<<TimestampSic<<endl;
    } else{cerr<<" Error, SiC file not found!"<<endl;}
    
+   entryMF=0;
    
 //################### Event loop ######################################
    for(int i=0; i<entriesTracker; i++){
@@ -531,7 +537,7 @@ void trackGenerator(int run, bool sicFileOpen)
             }
          }
       }else{
-        
+         entryMF=i;
       	 // The event is finished. Plot if there is something
       	 //cout << "\n-------- End Event ---------\n" << endl;
 
@@ -540,6 +546,7 @@ void trackGenerator(int run, bool sicFileOpen)
       	     timeAverage[j] = 0.;
              cl_padMult[j] = 0;
              cl_charge[j] = 0.;
+   
          }
          for(int j=5; j<11; j++){cl_charge[j] = 0.;}
          
@@ -577,7 +584,8 @@ void trackGenerator(int run, bool sicFileOpen)
                    if (charge) {
                       cl_padMult[j]++;
                       pads_fired[j][kk]=k;
-                      pads_charge[j][kk] = charge;
+                      pad_charge[j][kk] = charge;
+                      
                       kk++;}  // 2024-06-26 G.B. writing the fired pads in a 2D array, one array for each row                  
 	       }	       
 	       //cout << "****** " << cl_padMult[j] << endl;
@@ -585,6 +593,7 @@ void trackGenerator(int run, bool sicFileOpen)
  	       cl_x[j] = row[j]->GetMean();
                cl_x_rms[j] = row[j]->GetRMS();
 	       cl_x_mm[j] = cl_x[j] * padWidth + padWidth/2;
+	       
 	       if(max>100){grTheta->SetPoint(np++, zrow[j], cl_x_mm[j]);}
 	       
 	       if(max>100 && (j==1 || j==2 || j==3)){grTheta123->SetPoint(np123++, zrow[j], cl_x_mm[j]);}
@@ -595,6 +604,7 @@ void trackGenerator(int run, bool sicFileOpen)
       	       timeAverage[j] = (double)(timeAverage[j]/cl_charge[j]); 
       	       cl_y[j] = timeAverage[j];    	       
       	       cl_y_mm[j] = timeAverage[j]*velocity_mm_ps;
+      	       
 	       //printf("timeAverage[%d] = %10.2f (ps) \t cl_y_mm[%d] = %6.2f (mm) \n\n", j, timeAverage[j], j, cl_y_mm[j]);
       	       if(max>100){grPhi->SetPoint(npTime++, zrow[j], cl_y_mm[j]);}
             }

@@ -1,25 +1,17 @@
 //###################################################################################################
-//#   plot spectra of charga distribution for aach row
+//#   plot spectra of multiplicity theta and phi for Gcut alpha and Li
 //#      
 //#   required as argument the run number
 //#
 //###################################################################################################
-//#   creatd feb 2025 by A. Pitronaci - based on D. Torresi's sources
+//#   creatd march 2025 by D. Torresi
 //#######################################
-//#   updated: Febbruary 2025 by A. Pitronaci
+
 //# 
 //###################################################################################################
 
 #include "../Include/openfiles.h"
 
-const Int_t nPads = 60;
-const Int_t minPad = 0;
-const Int_t maxPad = 59;
-
-//const TString OutputFileLi = "../../OutputFiles/Run332Li.txt";
-//const TString OutputFileA = "../../OutputFiles/Run332Alpha.txt";
-//const TString CutFileA = "GCut/cutGa.root";
-//const TString CutFileLi = "GCut/cutGli.root";
 
 void C_plot_multiplicity_CUT(int run)
 {
@@ -28,25 +20,9 @@ void C_plot_multiplicity_CUT(int run)
   
    char histoname[100];
    char cond[100];
-   Double_t sigma_he = 0;
-   Double_t width_he[5] = {0};
-   Double_t sigma_li = 0;
-   Double_t width_li[5] = {0};
-   Int_t n_point_tot = 0;
-   Double_t media_he[5] = {0.};
-   Double_t media_li[5] = {0.};
-   Double_t theta_he = 0;
+
    
-   Int_t li = 0;
-   Int_t he = 0;
-   
-   //ofstream outFitLi, outFitA;
-   
-   TF1 *f = new TF1("f","gaus",-60,60);
-   f->SetParameters(1,1,1);
-   
-   //outFitLi.open(OutputFileLi,std::ios_base::app);
-   //outFitA.open(OutputFileA,std::ios_base::app);
+
   
    
    // all charg distributions
@@ -58,14 +34,9 @@ void C_plot_multiplicity_CUT(int run)
       histo_li[i]->GetYaxis()->SetTitle("Charge (a.u.)");
       histo_li[i]->SetLineColor(kBlue);
    }
-   TH1F *histo_liStat[5];
-   for(int i=0; i<5; i++){
-      sprintf(histoname,"Charge Distrib. - row%i",i);
-      histo_liStat[i]=new TH1F("","",60,-0.5,59.5);
-      histo_liStat[i]->GetXaxis()->SetTitle("Pad number");
-      histo_liStat[i]->GetYaxis()->SetTitle("Charge (a.u.)");
-      histo_liStat[i]->SetLineColor(kBlue);
-   }
+
+
+
    
    TH1F *histo_he[5];
    for(int i=0; i<5; i++){
@@ -76,32 +47,16 @@ void C_plot_multiplicity_CUT(int run)
       histo_he[i]->SetLineColor(kRed);
    }
    
-   TGraph *gr[5];
-   for(int i=0; i<5; i++){
-      sprintf(histoname,"row%i",i);
-      gr[i]=new TGraph();
-      gr[i]->GetXaxis()->SetTitle("#. evts");
-      gr[i]->GetYaxis()->SetTitle("Average multiplicity");
-      gr[i]->SetMarkerStyle(20);
-      gr[i]->SetMarkerColor(kBlue);
-      gr[i]->GetYaxis()->SetRangeUser(0,11);
-      gr[i]->SetLineWidth(0);   
-   }  
+   TH1F *histo_phi_li=new TH1F("","",500,-30,30);
+   TH1F *histo_phi_he=new TH1F("","",500,-30,30);
    
-   TGraph *charge_evts[5];
-   for(int i=0; i<5; i++){
-      sprintf(histoname,"row%i",i);
-      charge_evts[i]=new TGraph();
-      charge_evts[i]->GetXaxis()->SetTitle("#. evts");
-      charge_evts[i]->GetYaxis()->SetTitle("Cluster charge");
-      charge_evts[i]->SetMarkerStyle(20);
-      charge_evts[i]->SetMarkerColor(kBlue);
-      charge_evts[i]->GetYaxis()->SetRangeUser(0,11);
-      charge_evts[i]->SetLineWidth(0);   
-   }  
+   TH1F *histo_theta_li=new TH1F("","",500,-5,80);
+   TH1F *histo_theta_he=new TH1F("","",500,-5,80);   
    
+   TCanvas *mult = new TCanvas("mult");
+   TCanvas *phi = new TCanvas("phi");
+   TCanvas *theta = new TCanvas("theta");
    
-   TCanvas *che = new TCanvas("che");
 //#################################################################################################
 // OpenFile
    openTrackFile(run);
@@ -123,7 +78,7 @@ void C_plot_multiplicity_CUT(int run)
    cutGli->SetPoint(5,69,126);
    cutGli->SetPoint(6,36,142);
    cutGli->SetPoint(7,13,65);
-   //cutGli->SaveAs(CutFileLi);
+   cutGli->SetPoint(8,13,65);
    
    TCutG *cutGa = new TCutG("cutGa",8);
    cutGa->SetVarX("cl_x_mm[0]");
@@ -136,140 +91,51 @@ void C_plot_multiplicity_CUT(int run)
    cutGa->SetPoint(5,154,214);
    cutGa->SetPoint(6,55,85);
    cutGa->SetPoint(7,17,40);
-   //cutGa->SaveAs(CutFileA);
+
    
 //#################################################################################################
 // Loop to get charge distribution referred to every single rows for each event
 //#################################################################################################
 
-   char pippo;
-   
-   //TFile *cutFilea = TFile::Open(CutFileA);
-   //TFile *cutFileli = TFile::Open(CutFileLi);
-   //TCutG cutG = (TCutG)cutFile->Get("cutG");
- 
+
+
    for(Int_t i=0; i<entries; i++){
        tree->GetEntry(i);
-       //cout<<"#@@#"<<i<<endl;
-       //if(i<100){                                              // loop to save an evtSet
-          /*for(Int_t j=0; j<5;j++){
-             histo_li[j]->Reset();
-             histo_he[j]->Reset();
-          }*/
-
-          /*cout << "Evento " << i << ": cl_x_mm[0] = " << cl_x_mm[0] << ", cl_x_mm[1] = " << cl_x_mm[1] << endl;
-          tree->Draw("cl_x_mm[1]:cl_x_mm[0]"); // Disegna cl_x_mm[1] in funzione di cl_x_mm[0]
-	  cutGLi->Draw("L SAME"); // Sovrapponi il taglio grafico*/
-          if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
-             cout << "Event " << i << " satisfies TCutGli" << endl;
+       
+       if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
+          histo_phi_li->Fill(phi_deg);
+          histo_theta_li->Fill(theta_deg);
+          for(int j=0; j<5; j++){
+             histo_li[j]->Fill(cl_padMult[j]);
              
-             for(int j=0; j<5; j++){
-                histo_li[j]->Fill(cl_padMult[j]);
-             }
-          
           }
-          //cout << "Evento " << i << ": cl_x_mm[0] = " << cl_x_mm[0] << ", cl_x_mm[1] = " << cl_x_mm[1] << endl;
-          //tree->Draw("cl_x_mm[1]:cl_x_mm[0]"); // Disegna cl_x_mm[1] in funzione di cl_x_mm[0]
-          //cutG->Draw("L SAME"); // Sovrapponi il taglio grafico
-          if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
-             cout << "Event " << i << " satisfies TCutGa" << endl;
-             he += 1;
-             
-             //cout << "Eventi di alpha: " << he << endl;
-
-             for (Int_t j = 0; j < 5; j++) {
-                 //outFitA << cl_padMult[j] << "	" ;
-                 for (Int_t k = 0; k < cl_padMult[j]; k++) {
-                     //cout << "  j = " << j << ", k = " << k << ", a_pads_fired = " << a_pads_fired[j][k] << ", pads_charge = " << pads_charge[j][k] << endl;
-                     //histo_he[j]->SetBinContent(a_pads_fired[j][k], pads_charge[j][k]);
-                     histo_he[j]->Fill(cl_padMult[j]);
-                 }
-                 
-             }
-             /*theta_he = (theta)*(180/3.1415);
-             outFitA << theta_he << endl;
-             if(he<100){
-             for(Int_t j=0; j<5; j++){
-                histo_he[j]->Fit(f,"R+");
-                sigma_he = f->GetParameter(2);
-                width_he[j] += sigma_he;
-                media_he[j] += cl_padMult[j];
-             }
-             TCanvas *che = new TCanvas("che");
-             che->Divide(3,2);
-             che->cd(1);
-             histo_he[0]->Draw("histo");
-             che->cd(2);
-             histo_he[1]->Draw("histo");
-             che->cd(3);
-             histo_he[2]->Draw("histo");
-             che->cd(4);
-             histo_he[3]->Draw("histo");
-             che->cd(5);
-             histo_he[4]->Draw("histo");
-             
-             sprintf(histoname,"../../Pictures_Analysis/Run332/pictHe/ChargeDistribHe%d.png",i);
-             che->SaveAs(histoname);}
-          }else
-          if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
-             cout << "Event " << i << " satisfies TCutGli" << endl;
-             li += 1;
-             
-             //cout << "Eventi di 7Li: " << li << endl;
-             for (Int_t j = 0; j < 5; j++) {
-                 for (Int_t k = 0; k < cl_padMult[j]; k++) {
-                     histo_liStat[j]->Fill(cl_padMult[j]);
-                     //cout << "  j = " << j << ", k = " << k << ", a_pads_fired = " << a_pads_fired[j][k] << ", pads_charge = " << pads_charge[j][k] << endl;
-                     histo_li[j]->SetBinContent(a_pads_fired[j][k], pads_charge[j][k]);
-                 }
-                 
-             }
-             if(li<100){
-             
-             TCanvas *cli = new TCanvas("cli");
-             cli->Divide(3,2);
-             cli->cd(1);
-             histo_li[0]->Draw("histo");
-             cli->cd(2);
-             histo_li[1]->Draw("histo");
-             cli->cd(3);
-             histo_li[2]->Draw("histo");
-             cli->cd(4);
-             histo_li[3]->Draw("histo");
-             cli->cd(5);
-             histo_li[4]->Draw("histo");
-             sprintf(histoname,"../../Pictures_Analysis/Run332/pictLi/ChargeDistribLi%d.png",i);
-             cli->SaveAs(histoname);}
-          }*/
-       } 
-       
-       /*outFitLi << "<M0>	<M1>	<M2>	<M3>	<M4>" << endl;
-       
-       for(Int_t j=0; j<5; j++){
-          histo_liStat[j]->Fit(f,"R+");
-          media_li[j] = f->GetParameter(1);
-          width_li[j] = f->GetParameter(2);;
-          outFitLi << media_li[j] << "	";
           
-          
-          outFitA << media_he[j] << "	";
        }
-       outFitLi << endl;
-       outFitA << endl;
-       outFitLi << "<E0>	<E1>	<E2>	<E3>	<E4>" << endl;
-       outFitA << "<E0>	<E1>	<E2>	<E3>	<E4>" << endl;
-       for(Int_t j=0; j<5; j++){
-          outFitLi << width_li[j] << "	";
-          outFitA << width_he[j] << "	";
-       }  
-       cout << "Theta_he: " << theta_he << endl;*/
-      histo_he[3]->SetLineColor(kGreen);
-      histo_he[3]->Draw();
-      histo_li[3]->SetLineColor(kRed);
-      histo_li[3]->Draw("Same");
 
-       
+       if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
+          histo_phi_he->Fill(phi_deg);
+          histo_theta_he->Fill(theta_deg);
+          for (Int_t j = 0; j < 5; j++) {
+             histo_he[j]->Fill(cl_padMult[j]);
+          }
+ 
+       } 
    }
-   
- }
+
+   mult->cd();
+   histo_li[3]->SetLineColor(kRed);
+   histo_li[3]->Draw();
+   histo_he[3]->SetLineColor(kGreen);
+   histo_he[3]->Draw("Same");
+   phi->cd();
+   histo_phi_li->Draw();
+   histo_phi_li->SetLineColor(kRed);
+   histo_phi_he->Draw("same");
+   histo_phi_he->SetLineColor(kGreen);
+   theta->cd();
+   histo_theta_li->Draw();
+   histo_theta_li->SetLineColor(kRed);
+   histo_theta_he->Draw("same");
+   histo_theta_he->SetLineColor(kGreen);   
+}
    

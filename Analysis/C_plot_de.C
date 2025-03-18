@@ -35,10 +35,10 @@ cout<<""<<endl;
 
 // Declaring Histos 
 
-   TH1F *de_rows = new TH1F("de_rows","",20000,0.0,500000.0);      //Histogram with the charge measured by the 5 rows//
-   TH1F *de_rows_SiC = new TH1F("de_rows","",20000,0.0,500000.0);      //Histogram with the charge measured by the 5 rows//
-   TH1F *de_strips = new TH1F("de_strips","",20000,0.0,500000.0);  //Histogram with the charge measured by the 4 strips//
-   TH1F *de_tot = new TH1F("de_tot","",20000,0.0,500000.0);        //Histogram with the sum (charge_rows+charge_strips) //
+   TH1F *de_rows = new TH1F("de_rows","",20000,0.0,1500000.0);      //Histogram with the charge measured by the 5 rows//
+   TH1F *de_rows_SiC = new TH1F("de_rows","",20000,0.0,1500000.0);      //Histogram with the charge measured by the 5 rows//
+   TH1F *de_strips = new TH1F("de_strips","",20000,0.0,1500000.0);  //Histogram with the charge measured by the 4 strips//
+   TH1F *de_tot = new TH1F("de_tot","",20000,0.0,1500000.0);        //Histogram with the sum (charge_rows+charge_strips) //
    
    de_rows->GetXaxis()->SetTitle("Charge rows (a.u.)");
    de_rows->GetXaxis()->SetTitleOffset(1.05);
