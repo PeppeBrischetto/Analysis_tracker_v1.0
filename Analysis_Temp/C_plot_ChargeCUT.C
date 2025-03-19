@@ -37,6 +37,8 @@ void C_plot_ChargeCUT(int run)
    Double_t media_he[5] = {0.};
    Double_t media_li[5] = {0.};
    Double_t theta_he = 0;
+   Double_t theta_li = 0;
+   Double_t err_theta_li = 0;
    
    Int_t li = 0;
    Int_t he = 0;
@@ -67,6 +69,12 @@ void C_plot_ChargeCUT(int run)
       histo_liStat[i]->GetYaxis()->SetTitle("Charge (a.u.)");
       histo_liStat[i]->SetLineColor(kBlue);
    }
+   TH1F *histo_liTheta = new TH1F("histo_liTheta","",40,30,70);
+   histo_liTheta=new TH1F("","",90,0,90);
+   histo_liTheta->GetXaxis()->SetTitle("Pad number");
+   histo_liTheta->GetYaxis()->SetTitle("Charge (a.u.)");
+   histo_liTheta->SetLineColor(kBlue);
+   
    
    TH1F *histo_he[5];
    for(int i=0; i<5; i++){
@@ -199,7 +207,7 @@ void C_plot_ChargeCUT(int run)
           if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
              cout << "Event " << i << " satisfies TCutGli" << endl;
              li += 1;
-             
+             histo_liTheta->Fill(theta);
              //cout << "Eventi di 7Li: " << li << endl;
              for (Int_t j = 0; j < 5; j++) {
                  for (Int_t k = 0; k < cl_padMult[j]; k++) {
@@ -229,7 +237,9 @@ void C_plot_ChargeCUT(int run)
        } 
        
        outFitLi << "<M0>	<M1>	<M2>	<M3>	<M4>" << endl;
-       
+       histo_liTheta->Fit(f,"","+",0,90);
+       theta_li = f->GetParameter(1);
+       err_theta_li = f->GetParError(1);
        for(Int_t j=0; j<5; j++){
           histo_liStat[j]->Fit(f,"R+");
           media_li[j] = f->GetParameter(1);
@@ -239,7 +249,7 @@ void C_plot_ChargeCUT(int run)
           
           outFitA << media_he[j] << "	";
        }
-       outFitLi << endl;
+       outFitLi << theta_li << endl;
        outFitA << endl;
        outFitLi << "<E0>	<E1>	<E2>	<E3>	<E4>" << endl;
        outFitA << "<E0>	<E1>	<E2>	<E3>	<E4>" << endl;
@@ -247,6 +257,7 @@ void C_plot_ChargeCUT(int run)
           outFitLi << width_li[j] << "	";
           outFitA << width_he[j] << "	";
        }  
+       outFitLi << err_theta_li << endl;
        cout << "Theta_he: " << theta_he << endl;
        
    }
