@@ -1,15 +1,9 @@
 //###################################################################################################
 //#   macro that take as input a tracks file, plot the anode map of each event
-//#   and plot the track by means of a fit procedure
+//#   //and plot the track by means of a fit procedure
 //#   
 //#   required as argument the run number
 //#            
-//#   Parameters to chage
-//# 	 input the DeltaT, time interval that is used to define an event 
-//#	 threshold value
-//#	 Flag Fstrip if you want to plot strip or not
-//#	 rowmult ultiplicita di cluster per definire un evento.
-//#		
 //#		
 //#				
 //###################################################################################################
@@ -30,18 +24,8 @@ void C_trackFinder_plot(int run)
 ////////////////////////////////////////////////////////////////////
 // Dichiarazione variabili
 
-  
-   // energy threshold to defin an hit
-   int thresh=0;
-
-   int Fstrip=1;			// flag to plot strip: 0 plot, 1 no plot
-   // row multiplicity required to plot the event
-   int rowMult=4; 
      
-   
    char anykey;
-   int flag[5];
-   for(int i =0; i<5; i++) flag[i]=0;
    
    int binmax, max;
    // number of event in the run
@@ -58,9 +42,7 @@ void C_trackFinder_plot(int run)
 
    char dummyString[50];
    
-
-
-   // cut grafici
+   // Gcut for selection!
    const TString CutFileA = "GCut/cutGa.root";
    const TString CutFileLi = "GCut/cutGli.root";
   
@@ -116,14 +98,6 @@ void C_trackFinder_plot(int run)
    tracks->GetYaxis()->SetTitle("row");
    // graph filled with centroids of clusters
    TGraph *grTrack=new TGraph(0);
-
-   // map of anode filled with time
-   TH2D *anodeTime=new TH2D("anodeTime","anodeTime",60,-0.5,59.5,11,-0.75,4.75);
-   anodeTime->SetStats(kFALSE);
-   anodeTime->GetXaxis()->SetTitle("pad");
-   anodeTime->GetYaxis()->SetTitle("row");
-   anodeTime->GetYaxis()->SetNdivisions(-11);		// setta il numero di divisioni per la grid
-   anodeTime->GetYaxis()->SetLabelSize(0);		// rimuovi il label di questo asse
    
    //crea un nuovo asse per il numero di row
    TGaxis *axis1 = new TGaxis(-0.5,-0.75,-0.5,4.75,-0.75,4.75,10,"+");
@@ -139,7 +113,7 @@ void C_trackFinder_plot(int run)
    /*TCanvas *C21=new TCanvas("c21","distr1",50,860,900,400);
    C21->SetFillColor(kWhite);
 
-   TCanvas *C22=new TCanvas("c22","distr2",100,900,900,400);
+   /*TCanvas *C22=new TCanvas("c22","distr2",100,900,900,400);
    C22->SetFillColor(kWhite);
 
    TCanvas *C23=new TCanvas("c23","distr3",150,940,900,400);
@@ -178,7 +152,6 @@ void C_trackFinder_plot(int run)
    edgeLo->Draw();
    edgeUp->Draw();
   
-   
    double charge = 0.0;
    double total_charge = 0.0;
    double weigthed_pos[62];
@@ -192,14 +165,11 @@ void C_trackFinder_plot(int run)
    anode_fit->SetStats(kFALSE);
    anode_fit->GetXaxis()->SetTitle("pad");
    anode_fit->GetYaxis()->SetTitle("row");
-  
-
-   
 // END Histo and Canvas 	////////////////////////////////////
 
 
 ////////////////////////////////////////////////////////////////////
-// Opening the GCut files
+// Opening the GCut files FOR RUN 332
 
    TCutG *cutGli = new TCutG("cutGli",8);
    cutGli->SetVarX("cl_x_mm[0]");
@@ -224,12 +194,9 @@ void C_trackFinder_plot(int run)
    cutGa->SetPoint(4,182,193);
    cutGa->SetPoint(5,154,214);
    cutGa->SetPoint(6,55,85);
-   cutGa->SetPoint(7,17,40);
-   /*TFile *cutFilea = TFile::Open(CutFileA);
-   TFile *cutFileli = TFile::Open(CutFileLi);
+   cutGa->SetPoint(7,17,40); //*/
    
-   TCutG cutGa = (TCutG)cutFilea->Get("cutGa");
-   TCutG cutGli = (TCutG)cutFileli->Get("cutGli");*/
+
 ////////////////////////////////////////////////////////////////////
 // Opening the files
 
@@ -239,21 +206,37 @@ void C_trackFinder_plot(int run)
  
       for(int j=0; j<5; j++){
          for(int h=0; h<cl_padMult[j]; h++){
-           anode->Fill(pads_fired[j][h],j,pads_charge[j][h]); //flag[0]=1;
+           anode->Fill(pads_fired[j][h],j,pad_charge[j][h]); //flag[0]=1;
          }      
       }    
           
       //if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
-      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) && cl_padMult[2]==7 ){
+      //if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) && cl_padMult[2]==7 ){
+        
          anode->Draw("colz");
          axis1->Draw();
          C1->Update();
-         cout<<"phi: "<<  phi_deg<<endl;
+         cout<<"track number: "<<i<<endl;
+         cout<<"phi (deg):  "<<  phi_deg<<endl;
+         
+         if(cl_y_mm[5]>cl_y_mm[0]){
+            cout<<"phi (deg) bis:  "<< atan((cl_y_mm[5]-cl_y_mm[0])/84.8)*180/3.1415  <<endl;
+         }else{
+            cout<<"phi (deg) bis:  "<< atan((cl_y_mm[0]-cl_y_mm[5])/84.8)*180/3.1415  <<endl;
+         }
+         
+         cout<<"SiC (deg):  "<<  sic_fired<<endl;
+         for(int l=0; l<5; l++){
+            cout<<cl_y_mm[l]-cl_y_mm[0]<<"   \t";
+         }
+         cout<<"\n";
+         
          cout<<"entry "<<i<<endl;
+         cout<<"entry Merged "<<entryMF<<endl;
          cout<<"press any key to continue, q to quit, s to save a plot"<<endl;
          cin>>anykey;
          if(anykey=='q')return ; // Per uscire dal programma
-      }     
+      //}     
       anode->Reset();   
         
     }

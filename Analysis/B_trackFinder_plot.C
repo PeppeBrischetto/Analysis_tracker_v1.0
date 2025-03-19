@@ -77,11 +77,11 @@ void B_trackFinder_plot(int run)
    char fileIn[50];
    
    if(run<10){
-      sprintf(fileIn, "../Merged_data/run_00%i/merg_00%i.root", run, run);
+      sprintf(fileIn, "../Merged_data_Br/run_00%i/merg_00%i.root", run, run);
    }else if(run <100){
-      sprintf(fileIn, "../Merged_data/run_0%i/merg_0%i.root", run, run);
+      sprintf(fileIn, "../Merged_data_Br/run_0%i/merg_0%i.root", run, run);
    }else{
-      sprintf(fileIn, "../Merged_data/run_%i/merg_%i.root", run, run);
+      sprintf(fileIn, "../Merged_data_Br/run_%i/merg_%i.root", run, run);
    }   
    
    TFile *fin = new TFile(fileIn);
