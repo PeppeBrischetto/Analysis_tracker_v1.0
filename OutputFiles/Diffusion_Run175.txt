@@ -1,0 +1,16 @@
+///////////////////////////////////////////////////////////////////////
+//                                                                   //
+//  This file contain the average values of the cl_padMult for each  //
+//  Row of the gas tracker: it can be used to compare the diffusion  //
+//  width (obtained by multiplying the average cl_padMult times 5.0) //
+//  in order to understand the diffusion mechanism in a microscopic  //
+//  picture.                                                         //
+//                                                                   //
+///////////////////////////////////////////////////////////////////////
+
+Reference Run: 175;
+
+<M0>	<M1>	<M2>	<M3>	<M4>
+5.61755	3.98215	2.95839	4.14468	4.9264	
+<E0>	<E1>	<E2>	<E3>	<E4>
+0.557413	0.557413	0.557413	0.557413	0.557413	

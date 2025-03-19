@@ -17,7 +17,7 @@ const Int_t nPads = 60;
 const Int_t minPad = 0;
 const Int_t maxPad = 59;
 
-const TString OutputFile = "../../OutputFiles/Run38.txt";
+const TString OutputFile = "../OutputFiles/Diffusion_Run188.txt";
 
 
 void C_plot_ChargeSINGLE(int run)
@@ -44,7 +44,7 @@ void C_plot_ChargeSINGLE(int run)
    TH1F *histo_c[5];
    for(int i=0; i<5; i++){
       sprintf(histoname,"Charge Distrib. - row%i",i);
-      histo_c[i]=new TH1F("","",60,0,59);
+      histo_c[i]=new TH1F("","",60,-0.5,59.5);
       histo_c[i]->GetXaxis()->SetTitle("Pad number");
       histo_c[i]->GetYaxis()->SetTitle("");
       histo_c[i]->SetLineColor(kRed);
@@ -52,7 +52,7 @@ void C_plot_ChargeSINGLE(int run)
    TH1F *histoStat[5];
    for(int i=0; i<5; i++){
       sprintf(histoname,"Charge Distrib. - row%i",i);
-      histoStat[i]=new TH1F("","",60,0,59);
+      histoStat[i]=new TH1F("","",60,-0.5,59.5);
       histoStat[i]->GetXaxis()->SetTitle("Pad number");
       histoStat[i]->GetYaxis()->SetTitle("");
       histoStat[i]->SetLineColor(kRed);
@@ -106,7 +106,7 @@ void C_plot_ChargeSINGLE(int run)
        for(Int_t j=0; j<5; j++){
           Double_t charge[60] = {0.};
           for(Int_t k=0; k<cl_padMult[j]; k++){
-             histo_c[j]->SetBinContent(a_pads_fired[j][k],pads_charge[j][k]);
+             histo_c[j]->SetBinContent(pads_fired[j][k],pads_charge[j][k]);
           }
        
        
@@ -134,8 +134,8 @@ void C_plot_ChargeSINGLE(int run)
        histo_c[4]->Draw("histo");
 
        
-       sprintf(histoname,"../../Pictures_Analysis/Run38/pict/ChargeDistrib%d.png",i);
-       c->SaveAs(histoname);
+       //sprintf(histoname,"../../Pictures_Analysis/Run188/pict/ChargeDistrib%d.png",i);
+       //c->SaveAs(histoname);
        
        //cin>> pippo;      
        for(Int_t j=0; j<5; j++){
