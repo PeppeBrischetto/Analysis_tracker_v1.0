@@ -29,7 +29,7 @@ void C_plot_multiplicity_CUT(int run)
    TH1F *histo_li[5];
    for(int i=0; i<5; i++){
       sprintf(histoname,"Charge Distrib. - row%i",i);
-      histo_li[i]=new TH1F("","",60,-0.5,59.5);
+      histo_li[i]=new TH1F("","",30,-0.5,29.5);
       histo_li[i]->GetXaxis()->SetTitle("Pad number");
       histo_li[i]->GetYaxis()->SetTitle("Charge (a.u.)");
       histo_li[i]->SetLineColor(kBlue);
@@ -41,7 +41,7 @@ void C_plot_multiplicity_CUT(int run)
    TH1F *histo_he[5];
    for(int i=0; i<5; i++){
       sprintf(histoname,"Charge Distrib. - row%i",i);
-      histo_he[i]=new TH1F("","",60,-0.5,59.5);
+      histo_he[i]=new TH1F("","",30,-0.5,29.5);
       histo_he[i]->GetXaxis()->SetTitle("Pad number");
       histo_he[i]->GetYaxis()->SetTitle("Charge (a.u.)");
       histo_he[i]->SetLineColor(kRed);
@@ -52,10 +52,14 @@ void C_plot_multiplicity_CUT(int run)
    
    TH1F *histo_theta_li=new TH1F("","",500,-5,80);
    TH1F *histo_theta_he=new TH1F("","",500,-5,80);   
+ 
+   TH1F *histo_DE_li=new TH1F("","",500,0,1e6);
+   TH1F *histo_DE_he=new TH1F("","",500,0,1e6);   
    
    TCanvas *mult = new TCanvas("mult");
    TCanvas *phi = new TCanvas("phi");
    TCanvas *theta = new TCanvas("theta");
+   TCanvas *DE = new TCanvas("DE");
    
 //#################################################################################################
 // OpenFile
@@ -105,6 +109,7 @@ void C_plot_multiplicity_CUT(int run)
        if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
           histo_phi_li->Fill(phi_deg);
           histo_theta_li->Fill(theta_deg);
+          histo_DE_li->Fill(cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]);
           for(int j=0; j<5; j++){
              histo_li[j]->Fill(cl_padMult[j]);
              
@@ -115,6 +120,7 @@ void C_plot_multiplicity_CUT(int run)
        if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
           histo_phi_he->Fill(phi_deg);
           histo_theta_he->Fill(theta_deg);
+          histo_DE_he->Fill(cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]);
           for (Int_t j = 0; j < 5; j++) {
              histo_he[j]->Fill(cl_padMult[j]);
           }
@@ -127,15 +133,24 @@ void C_plot_multiplicity_CUT(int run)
    histo_li[3]->Draw();
    histo_he[3]->SetLineColor(kGreen);
    histo_he[3]->Draw("Same");
+   histo_li[3]->GetXaxis()->SetTitle("multiplicity");
    phi->cd();
    histo_phi_li->Draw();
    histo_phi_li->SetLineColor(kRed);
+   histo_phi_li->GetXaxis()->SetTitle("phi (deg)");
    histo_phi_he->Draw("same");
    histo_phi_he->SetLineColor(kGreen);
    theta->cd();
    histo_theta_li->Draw();
    histo_theta_li->SetLineColor(kRed);
+   histo_theta_li->GetXaxis()->SetTitle("theta (deg)");
    histo_theta_he->Draw("same");
-   histo_theta_he->SetLineColor(kGreen);   
+   histo_theta_he->SetLineColor(kGreen);
+   DE->cd();
+   histo_DE_li->Draw();
+   histo_DE_li->SetLineColor(kRed);
+   histo_DE_li->GetXaxis()->SetTitle("charge");
+   histo_DE_he->Draw("same");
+   histo_DE_he->SetLineColor(kGreen);      
 }
    
