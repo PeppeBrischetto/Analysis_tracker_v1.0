@@ -18,10 +18,11 @@
 *     b. before launch C_multDistrib.C, verify all the points of the TCutG for    *
 *        the PID performed (i.e., go in the dir. "Tracks_Br", open the root file  *
 *        of the tracks for the reference run, execute:                            *
-*                       "Data_R->Draw(cl_x_mm[1]:cl_x_mm[0]"                     *
-*        and, if not, adjust the points of the TCutG);                             *
+*                       "Data_R->Draw(cl_x_mm[1]:cl_x_mm[0]"                      *
+*        and, if not, adjust the points of the TCutG);                            *
 *                                                                                 *
-*  At the end, C_multDistrib.C will return two picture about the multiplicity    *
-*  distributions for each row (.png and .eps to preserve the resolution in zoom). *
+*  At the end, C_multDistrib.C will return two picture about the multiplicity     *
+*  distributions for each row (.png and .eps, the latter to preserve the          *
+*  resolution during zoomIN/OUT).                                                 *
 *                                                                                 *
 ***********************************************************************************
