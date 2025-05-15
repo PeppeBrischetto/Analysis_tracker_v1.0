@@ -21,7 +21,7 @@
 *                       "Data_R->Draw(cl_x_mm[1]:cl_x_mm[0]"                     *
 *        and, if not, adjust the points of the TCutG);                             *
 *                                                                                 *
-*  At the end, C_multDistrib.C will returns two picture about the multiplicity    *
+*  At the end, C_multDistrib.C will return two picture about the multiplicity    *
 *  distributions for each row (.png and .eps to preserve the resolution in zoom). *
 *                                                                                 *
 ***********************************************************************************
