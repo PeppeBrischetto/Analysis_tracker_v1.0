@@ -33,6 +33,8 @@ Merged_data	One file for each run, all the data form different digitizers are me
 
 Analysis	Analysis Macros that can be considered working properly and are 
 
+Analysis_BR     Analysis directory for IRRAD4 experiment
+
 Analysis_Temp	Analysis directory where are te
 
 Info		General information files
