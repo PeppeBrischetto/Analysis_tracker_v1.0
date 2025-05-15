@@ -211,7 +211,7 @@ void C_trackFinder_plot(int run)
       }    
           
       //if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
-      //if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) && cl_padMult[2]==7 ){
+      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) && cl_padMult[2]==3 ){
         
          anode->Draw("colz");
          axis1->Draw();
@@ -219,12 +219,7 @@ void C_trackFinder_plot(int run)
          cout<<"track number: "<<i<<endl;
          cout<<"phi (deg):  "<<  phi_deg<<endl;
          
-         if(cl_y_mm[5]>cl_y_mm[0]){
-            cout<<"phi (deg) bis:  "<< atan((cl_y_mm[5]-cl_y_mm[0])/84.8)*180/3.1415  <<endl;
-         }else{
-            cout<<"phi (deg) bis:  "<< atan((cl_y_mm[0]-cl_y_mm[5])/84.8)*180/3.1415  <<endl;
-         }
-         
+
          cout<<"SiC (deg):  "<<  sic_fired<<endl;
          for(int l=0; l<5; l++){
             cout<<cl_y_mm[l]-cl_y_mm[0]<<"   \t";
@@ -236,7 +231,7 @@ void C_trackFinder_plot(int run)
          cout<<"press any key to continue, q to quit, s to save a plot"<<endl;
          cin>>anykey;
          if(anykey=='q')return ; // Per uscire dal programma
-      //}     
+      }     
       anode->Reset();   
         
     }
