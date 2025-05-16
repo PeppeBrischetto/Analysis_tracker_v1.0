@@ -35,23 +35,23 @@ void C_plot_theta_v2(int run)
    TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
    
    // all tracksq
-   TH1F *histoTheta=new TH1F("","",400,-30,90);
+   TH1F *histoTheta=new TH1F("","",400,-90,10);
    histoTheta->SetStats(0);
    histoTheta->GetXaxis()->SetTitle("charge");
    histoTheta->GetYaxis()->SetTitle("counts");
 
    // histo with selected tracks 
-   TH1F *histoThetaS=new TH1F("","",1000,-30,90);
+   TH1F *histoThetaS=new TH1F("","",1000,-90,10);
    histoThetaS->SetStats(0);
    histoThetaS->GetXaxis()->SetTitle("charge");
    histoThetaS->GetYaxis()->SetTitle("counts");
    
    // histo with rejected tracks 
-   TH1F *histoThetaD1=new TH1F("","",1000,-30,90);
+   TH1F *histoThetaD1=new TH1F("","",1000,-90,10);
    histoThetaD1->SetStats(0);
    histoThetaD1->GetXaxis()->SetTitle("charge");
    histoThetaD1->GetYaxis()->SetTitle("counts");
-   TH1F *histoThetaD2=new TH1F("","",1000,-30,90);
+   TH1F *histoThetaD2=new TH1F("","",1000,-90,10);
    histoThetaD2->SetStats(0);
    histoThetaD2->GetXaxis()->SetTitle("charge");
    histoThetaD2->GetYaxis()->SetTitle("counts");
@@ -70,7 +70,7 @@ void C_plot_theta_v2(int run)
       for (int j=0; j<cl_padMult[4]; j++) {
                    
          //cout<<a_pads_fired[4][j]<<"\t";
-         if ((a_pads_fired[4][j] == 1) || (a_pads_fired[4][j] == 2) || (a_pads_fired[4][j] == 58) || (a_pads_fired[4][j] == 57)){
+         if ((pads_fired[4][j] == 1) || (pads_fired[4][j] == 2) || (pads_fired[4][j] == 58) || (pads_fired[4][j] == 57)){
             qualityFlag=1;
          }
       }   

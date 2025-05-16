@@ -52,7 +52,8 @@ void openTrackFile(int runnum ){
    }else if(runnum <100){
       sprintf(filename, "../Tracks_Br/tracks_run0%i.root", runnum);
    }else{
-      sprintf(filename, "../Tracks_Br/tracks_run%i.root", runnum);
+      //sprintf(filename, "../Tracks_Br/tracks_run%i.root", runnum);
+      sprintf(filename, "../Tracks/tracks_run%i.root", runnum);
    } 
 
    f=new TFile(filename,"READ");

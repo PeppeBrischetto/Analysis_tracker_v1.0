@@ -27,6 +27,9 @@ void C_plot_theta(int run)
 //#################################################################################################
 // GRAPHICS
 
+   int a=0;
+     int b=0;
+
    TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
    
    // all tracks
@@ -45,6 +48,7 @@ void C_plot_theta(int run)
       
       if(cl_x_rms[0] < 2.5 && cl_x_rms[1] < 2.5 && cl_x_rms[3] < 2.5 && cl_x_rms[4] < 2.5){
         histoTheta->Fill(-theta_deg);
+        a++;
       }
       
       
@@ -54,18 +58,20 @@ void C_plot_theta(int run)
         
       if(energySic>2000 && cl_x_rms[0] < 2.5 && cl_x_rms[1] < 2.5 && cl_x_rms[3] < 2.5 && cl_x_rms[4] < 2.5){
          h_theta_rms->Fill(-theta_deg);
+         b++;
          //sicCounts++;
       }
     
-
       
-        
    }
    
    histoTheta->SetLineColor(kBlack);
    histoTheta->Draw();
    h_theta_rms->SetLineColor(kRed);
    h_theta_rms->Draw("same");
+   
+   
+   cout<<a<<"  "<<b<<"  "<<(double)a/b<<endl;
 }  
    
    

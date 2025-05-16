@@ -11,7 +11,7 @@
 
 #include "../Include/openfiles.h"
 
-void C_plot_tracks_Theta(int run){
+void C_plot_tracks_Theta_V1(int run){
 
 //###################################################################
 //    VARIABLES
@@ -24,6 +24,34 @@ void C_plot_tracks_Theta(int run){
 //#################################################################################################
 //OpenFile
    openTrackFile(run);
+
+//#################################################################################################
+// Graphyical cut definition
+
+   TCutG *cutGli = new TCutG("cutGli",8);
+   cutGli->SetVarX("cl_x_mm[0]");
+   cutGli->SetVarY("cl_x_mm[1]");
+   cutGli->SetPoint(0,13,65);
+   cutGli->SetPoint(1,9,42);
+   cutGli->SetPoint(2,10,39);
+   cutGli->SetPoint(3,25,50);
+   cutGli->SetPoint(4,54,94);
+   cutGli->SetPoint(5,69,126);
+   cutGli->SetPoint(6,36,142);
+   cutGli->SetPoint(7,13,65);
+   cutGli->SetPoint(8,13,65);
+   
+   TCutG *cutGa = new TCutG("cutGa",8);
+   cutGa->SetVarX("cl_x_mm[0]");
+   cutGa->SetVarY("cl_x_mm[1]");
+   cutGa->SetPoint(0,17,40);
+   cutGa->SetPoint(1,8,28);
+   cutGa->SetPoint(2,8,9);
+   cutGa->SetPoint(3,39,30);
+   cutGa->SetPoint(4,182,193);
+   cutGa->SetPoint(5,154,214);
+   cutGa->SetPoint(6,55,85);
+   cutGa->SetPoint(7,17,40);
 
 //#########################################################
 // GRAPHICS
@@ -63,70 +91,25 @@ void C_plot_tracks_Theta(int run){
    line2->SetLineColor(kViolet);
    
    
-   for(int i=0; i<100;i++){
+   for(int i=0; i<entries;i++){
       tree->GetEntry(i);
       //for(int j=0; j<5; j++){cout<<cl_x[j]<<"  "; }
       cout<<"theta| "<<theta_deg<<endl;
       cout<<"phi|   "<<phi_deg<<endl;
       cout<<endl;
-      //line->SetParameter(0,interceptT);
-      //line->SetParameter(1,slopeT);
-      //line->Draw	("SAME");
-      qualityFlag=0;
-      totalCharge=0;
-      
-      // reject tracks with first or last pad of the last row hit
-      for (int j=0; j<cl_padMult[4]; j++) {
-                   
-         cout<<pads_fired[4][j]<<"\t";
-         if ((pads_fired[4][j] == 1) || (pads_fired[4][j] == 2) || (pads_fired[4][j] == 58) || (pads_fired[4][j] == 57)){
-            qualityFlag=1;
-         }
-      }   
-      cout<<endl;
-     
-      // selection on PadMultiplicity
-      //for(int k=0; k<5; k++){
-      //   cout<<cl_padMult[k]<<"\t";
-      //   if(cl_padMult[k]<4)qualityFlag=1;         
-      //}
-     
-      // selection on total charge on the last row, make the average of the first 4 row ad if the charge of the last 
-      // row is smaller or larger of 50% of the average of the first row the track is removed
-      cout<<"Charge: ";
-      for(int k=0; k<4; k++){
-         cout<<cl_charge[k]<<"\t";
-         totalCharge=totalCharge+cl_charge[k];
-      }
-      if(abs(totalCharge/4-cl_charge[4])>(totalCharge/8)) qualityFlag=1;
-      //cout<<"\n"<<"# "<<totalCharge/4<<"\t"<<cl_charge[4]<<"\t"<<abs(totalCharge/4-cl_charge[4])<<"\t"<<totalCharge/40<<endl;
-      //   if(cl_padMult[k]<4)qualityFlag=1;         
-    
-     
-      for(int k=0; k<5; k++){
-         cout<<cl_padMult[k]<<"\t";
-         //if(cl_padMult[k]<4)qualityFlag=1;         
-      }
-      cout<<endl;
-      for(int k=0; k<5; k++){
-         cout<<cl_charge[k]<<"\t";
-         //if(cl_padMult[k]<4)qualityFlag=1;         
-      }
-       
-      cout<<" | "<<qualityFlag<<endl;
-           
-      if(qualityFlag==0){   
+                 
+      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){   
          runningLine=new TF1("line","[0]+([1]*x)",-100,300);
          runningLine->SetParameter(0,-interceptT/slopeT);
          runningLine->SetParameter(1,1./slopeT);
          runningLine->Draw("same");
-         runningLine->SetLineColor(kGreen+1);
+         runningLine->SetLineColor(kRed);
       }else{
          runningLine2=new TF1("line","[0]+([1]*x)",-100,300);
          runningLine2->SetParameter(0,-interceptT/slopeT);
          runningLine2->SetParameter(1,1./slopeT);
          runningLine2->Draw("same");
-         runningLine2->SetLineColor(kRed);
+         runningLine2->SetLineColor(kGreen+1);
       }
       
       line->SetParameter(0,-interceptT/slopeT);

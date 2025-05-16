@@ -28,19 +28,26 @@ void C_plot_multiplicity_CUT(int run)
    // all charg distributions
    TH1F *histo_li[5];
    for(int i=0; i<5; i++){
-      sprintf(histoname,"Charge Distrib. - row%i",i);
+      sprintf(histoname,"Mult - row%i",i);
       histo_li[i]=new TH1F("","",30,-0.5,29.5);
       histo_li[i]->GetXaxis()->SetTitle("Pad number");
       histo_li[i]->GetYaxis()->SetTitle("Charge (a.u.)");
       histo_li[i]->SetLineColor(kBlue);
    }
-
+   TH1F *histo_li_SiC[5];
+   for(int i=0; i<5; i++){
+      sprintf(histoname,"Mult - row%i",i);
+      histo_li_SiC[i]=new TH1F("","",30,-0.5,29.5);
+      histo_li_SiC[i]->GetXaxis()->SetTitle("Pad number");
+      histo_li_SiC[i]->GetYaxis()->SetTitle("Charge (a.u.)");
+      histo_li_SiC[i]->SetLineColor(kBlue);
+   }
 
 
    
    TH1F *histo_he[5];
    for(int i=0; i<5; i++){
-      sprintf(histoname,"Charge Distrib. - row%i",i);
+      sprintf(histoname,"Mult - row%i",i);
       histo_he[i]=new TH1F("","",30,-0.5,29.5);
       histo_he[i]->GetXaxis()->SetTitle("Pad number");
       histo_he[i]->GetYaxis()->SetTitle("Charge (a.u.)");
@@ -110,9 +117,10 @@ void C_plot_multiplicity_CUT(int run)
           histo_phi_li->Fill(phi_deg);
           histo_theta_li->Fill(theta_deg);
           histo_DE_li->Fill(cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]);
+         
           for(int j=0; j<5; j++){
              histo_li[j]->Fill(cl_padMult[j]);
-             
+              if(sic_fired){histo_li_SiC[j]->Fill(cl_padMult[j]);}
           }
           
        }
@@ -134,6 +142,8 @@ void C_plot_multiplicity_CUT(int run)
    histo_he[3]->SetLineColor(kGreen);
    histo_he[3]->Draw("Same");
    histo_li[3]->GetXaxis()->SetTitle("multiplicity");
+   histo_li_SiC[3]->SetLineColor(kViolet);
+   histo_li_SiC[3]->Draw("same");
    phi->cd();
    histo_phi_li->Draw();
    histo_phi_li->SetLineColor(kRed);
