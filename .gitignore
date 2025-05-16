@@ -16,9 +16,7 @@ Domenico/
 
 #Image files
 Analysis/Images
-*.pdf
-*.eps
-*.png
+
 
 #ROOT file in Analysis_Temp directory
 Analysis_Temp/*.root
