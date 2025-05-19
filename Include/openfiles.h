@@ -53,7 +53,7 @@ void openTrackFile(int runnum ){
       sprintf(filename, "../Tracks_Br/tracks_run0%i.root", runnum);
    }else{
       //sprintf(filename, "../Tracks_Br/tracks_run%i.root", runnum);
-      sprintf(filename, "../Tracks/tracks_run%i.root", runnum);
+      sprintf(filename, "../Tracks_Br/tracks_run%i.root", runnum);
    } 
 
    f=new TFile(filename,"READ");

@@ -21,8 +21,8 @@
 using namespace std;
 using namespace TMath;
 
-const TString CutFileA = "TCutG/alpha_tcut_run445.root";
-const TString CutFileLi = "TCutG/li_tcut_run445.root";
+const TString CutFileA = "TCutG/alpha_tcut_run79.root";
+const TString CutFileC = "TCutG/c_tcut_run79.root";
 const Int_t NRows = 5;
 
 void C_multDistrib(int run){
@@ -76,14 +76,15 @@ void C_multDistrib(int run){
    }
    
    TLegend *l = new TLegend(0.55,0.4,0.9,0.66);
-   l->AddEntry(histo_Mhe[0],"Multiplicity distribution - #alpha","lp");
-   l->AddEntry(histo_Mli[0],"Multiplicity distribution - ^{7}Li","lp");
+   //l->AddEntry(histo_Mhe[0],"Multiplicity distribution - #alpha","lp");
+   l->AddEntry(histo_Mli[0],"Multiplicity distribution - ^{12}C","lp");
+   l->SetFillStyle(0);
    
-   TText* r0 = new TText(21,4451,"Row0");
-   TText* r1 = new TText(21,4451,"Row1");
-   TText* r2 = new TText(21,4451,"Row2");
-   TText* r3 = new TText(21,4451,"Row3");
-   TText* r4 = new TText(21,4451,"Row4");
+   TText* r0 = new TText(21,44510,"Row0");
+   TText* r1 = new TText(21,44510,"Row1");
+   TText* r2 = new TText(21,44510,"Row2");
+   TText* r3 = new TText(21,44510,"Row3");
+   TText* r4 = new TText(21,44510,"Row4");
 
 //#################################################################################################
 
@@ -97,24 +98,24 @@ void C_multDistrib(int run){
    TCutG *cutGa = new TCutG("cutGa",5);
    cutGa->SetVarX("cl_x_mm[0]");
    cutGa->SetVarY("cl_x_mm[1]");
-   cutGa->SetPoint(0,17,10);
-   cutGa->SetPoint(1,171,196);
-   cutGa->SetPoint(2,149,208);
-   cutGa->SetPoint(3,5,23);
-   cutGa->SetPoint(4,17,10);
-   cutGa->SaveAs(CutFileA);
-   TCutG *cutGli = new TCutG("cutGli",5);
-   cutGli->SetVarX("cl_x_mm[0]");
-   cutGli->SetVarY("cl_x_mm[1]");
-   cutGli->SetPoint(0,15,33);
-   cutGli->SetPoint(1,79,130);
-   cutGli->SetPoint(2,36,141);
-   cutGli->SetPoint(3,5,47);
-   cutGli->SetPoint(4,15,33);
-   cutGli->SaveAs(CutFileLi);
+   cutGa->SetPoint(0,200,18);
+   cutGa->SetPoint(1,194,208);
+   cutGa->SetPoint(2,177,214);
+   cutGa->SetPoint(3,230,29);
+   cutGa->SetPoint(4,250,18);
+   //cutGa->SaveAs(CutFileA);
+   TCutG *cutGc = new TCutG("cutGc",5);
+   cutGc->SetVarX("cl_x_mm[0]");
+   cutGc->SetVarY("cl_x_mm[1]");
+   cutGc->SetPoint(0,17,32);
+   cutGc->SetPoint(1,96,133);
+   cutGc->SetPoint(2,61,141);
+   cutGc->SetPoint(3,5,45);
+   cutGc->SetPoint(4,17,32);
+   cutGc->SaveAs(CutFileC);
    
    TFile *cutFilea = TFile::Open(CutFileA);
-   TFile *cutFileli = TFile::Open(CutFileLi);
+   TFile *cutFileC = TFile::Open(CutFileC);
 
 //#################################################################################################
 
@@ -134,7 +135,7 @@ void C_multDistrib(int run){
            histo_Mhe[j]->Fill(cl_padMult[j]);
         }
       }else
-      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      if(cutGc->IsInside(cl_x_mm[0], cl_x_mm[1])){
         li+=1;
         for(Int_t j=0; j<NRows; j++){
            histo_Mli[j]->Fill(cl_padMult[j]);
@@ -142,7 +143,7 @@ void C_multDistrib(int run){
       }
    }
    
-   cout << "Events he: " << he << "  Events li: " << li << endl; 
+   cout << "Events he: " << he << "  Events c: " << li << endl; 
    
 // Visualization block
    TCanvas *c0 = new TCanvas();
@@ -150,35 +151,35 @@ void C_multDistrib(int run){
    c0->cd(1);
    gPad->SetLogy();
    histo_Mli[0]->Draw("histo");
-   histo_Mhe[0]->Draw("histo same");
+   //histo_Mhe[0]->Draw("histo same");
    r0->Draw("same");
    l->Draw("same");
    c0->cd(2);   
    gPad->SetLogy();
    histo_Mli[1]->Draw("histo");
-   histo_Mhe[1]->Draw("histo same");
+   //histo_Mhe[1]->Draw("histo same");
    l->Draw("same");
    r1->Draw("same");
    c0->cd(3);
    gPad->SetLogy();
    histo_Mli[2]->Draw("histo");
-   histo_Mhe[2]->Draw("histo same");
+   //histo_Mhe[2]->Draw("histo same");
    l->Draw("same");
    r2->Draw("same");
    c0->cd(4);
    gPad->SetLogy();
    histo_Mli[3]->Draw("histo");
-   histo_Mhe[3]->Draw("histo same");
+   //histo_Mhe[3]->Draw("histo same");
    r3->Draw("same");
    l->Draw("same");
    c0->cd(5);
    gPad->SetLogy();
    histo_Mli[4]->Draw("histo");
-   histo_Mhe[4]->Draw("histo same");
+   //histo_Mhe[4]->Draw("histo same");
    l->Draw("same"); 
    r4->Draw("same");
-   sprintf(title,"../Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution - Run445.eps");
-   sprintf(title1,"../Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution - Run445.png");
+   sprintf(title,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution - Run79.eps");
+   sprintf(title1,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution - Run79.png");
    c0->SaveAs(title);
    c0->SaveAs(title1);
 
