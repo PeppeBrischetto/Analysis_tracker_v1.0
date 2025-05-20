@@ -211,7 +211,7 @@ void C_trackFinder_plot(int run)
       }    
           
       //if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
-      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) && cl_padMult[2]==3 ){
+      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) && cl_padMult[0]==3 ){
         
          anode->Draw("colz");
          axis1->Draw();

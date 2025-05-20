@@ -481,7 +481,8 @@ void converter_solaris_tracker (const char *data_file_name_0, const UShort_t Boa
       // else write on an array all the entries with the same coarse time and order them with quicksort function.
       if( array_Coarse_Time[k]!= array_Coarse_Time[k-1]){
          if(k==1){ //the entry has a coarse time different with that of the previous entry.
-            Single_Coarse_Time_int =  (ULong64_t)(array_Coarse_Time[k-1]*us_to_ps); // 2024-03-20 Check!
+            Single_Coarse_Time_int =  (ULong64_t)(array_Coarse_Time[k-1]); // 2025-05-16 Domenico T.  The coarse time is left in unit of 8 nsec
+            //Single_Coarse_Time_int =  (ULong64_t)(array_Coarse_Time[k-1]*us_to_ps); // 2024-03-20 Check!
             //Single_Coarse_Time_int =  (ULong64_t)(array_Coarse_Time[k-1]*ns_to_ps); // 2024-03-20 Check!            
             Single_Board = array_Board[k-1];
             Single_Channel = array_Channel[k-1];
@@ -515,7 +516,8 @@ void converter_solaris_tracker (const char *data_file_name_0, const UShort_t Boa
             quicksort(array_Fine_Time_int, array_Coarse_Time, array_Board, array_Channel, array_Charge, array_Time_ps, array_Flags, array_Charge_cal, array_Pads, 0, k-1);
     
             for(int h=0; h<k; h++){
-               Single_Coarse_Time_int = (ULong64_t)(array_Coarse_Time[h]*us_to_ps);
+               Single_Coarse_Time_int = (ULong64_t)(array_Coarse_Time[h]); // Domenico T. see previous comment
+               //Single_Coarse_Time_int = (ULong64_t)(array_Coarse_Time[h]*us_to_ps);
                Single_Board = array_Board[h];
                Single_Channel = array_Channel[h];
                Single_Charge = array_Charge[h];
