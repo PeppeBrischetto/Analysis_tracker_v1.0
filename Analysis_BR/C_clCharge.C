@@ -1,6 +1,6 @@
 //################################################################################################################
-//#   plot of charge multiplicity for each row
-//#   before use this macro, be sure you have got the TCut cl_x[1]:cl_x[0] (is necessary, for runs Li + alpha).
+//#   plot of cluster charge distribution for each row
+//#   before use this macro, be sure you have got the TCut cl_x[1]:cl_x[0].
 //#   have a look to the file "README_dir.txt" for detailed information
 //#
 //################################################################################################################
@@ -21,11 +21,11 @@
 using namespace std;
 using namespace TMath;
 
-const TString CutFileA = "TCutG/alpha_tcut_run79.root";
-const TString CutFileC = "TCutG/c_tcut_run79.root";
+const TString CutFileA = "TCutG/alpha_tcut_run299.root";
+const TString CutFileLi = "TCutG/li_tcut_run299.root";
 const Int_t NRows = 5;
 
-void C_multDistrib(int run){
+void C_clCharge(int run){
 
 //#################################################################################################
 // Required variables
@@ -45,46 +45,45 @@ void C_multDistrib(int run){
    // multiplicity distribution array, one for each row
    TH1D *histo_Mli[5];
    for(int i=0; i<5; i++){
-      sprintf(histoname,"Multiplicity distrib. - row%i",i);
-      histo_Mli[i]=new TH1D("","",30,-0.5,29.5);
+      sprintf(histoname,"Cluster charge distrib. - row%i",i);
+      histo_Mli[i]=new TH1D("","",100,0,3.E+5);
       histo_Mli[i]->GetXaxis()->SetTitleSize(0.06);
       histo_Mli[i]->GetYaxis()->SetTitleSize(0.06);
       histo_Mli[i]->GetXaxis()->SetTitleOffset(0.7);
-      histo_Mli[i]->GetYaxis()->SetTitleOffset(0.60);
+      histo_Mli[i]->GetYaxis()->SetTitleOffset(0.90);
       histo_Mli[i]->GetXaxis()->SetLabelSize(0.05);
       histo_Mli[i]->GetYaxis()->SetLabelSize(0.05);
-      histo_Mli[i]->GetXaxis()->SetTitle("Multiplicity");
-      histo_Mli[i]->GetYaxis()->SetTitle("Charge (a.u.)");
+      histo_Mli[i]->GetXaxis()->SetTitle("Charge (a.u.)");
+      histo_Mli[i]->GetYaxis()->SetTitle("Counts");
       histo_Mli[i]->SetLineColor(kYellow+2);
-      histo_Mli[i]->GetYaxis()->SetRangeUser(1,1500000);
+      histo_Mli[i]->GetYaxis()->SetRangeUser(1,1.E+6);
    }
    
    TH1D *histo_Mhe[5];
    for(int i=0; i<5; i++){
-      sprintf(histoname,"Multiplicity distrib. - row%i",i);
-      histo_Mhe[i]=new TH1D("","",30,-0.5,29.5);
+      sprintf(histoname,"Cluster charge distrib. - row%i",i);
+      histo_Mhe[i]=new TH1D("","",100,0,3.E+5);
       histo_Mhe[i]->GetYaxis()->SetTitleSize(0.06);
       histo_Mhe[i]->GetXaxis()->SetTitleOffset(0.7);
-      histo_Mhe[i]->GetYaxis()->SetTitleOffset(0.60);
+      histo_Mhe[i]->GetYaxis()->SetTitleOffset(0.90);
       histo_Mhe[i]->GetXaxis()->SetLabelSize(0.05);
       histo_Mhe[i]->GetYaxis()->SetLabelSize(0.05);
-      histo_Mhe[i]->GetXaxis()->SetTitle("Multiplicity");
-      histo_Mhe[i]->GetXaxis()->SetTitle("Multiplicity");
-      histo_Mhe[i]->GetYaxis()->SetTitle("Charge (a.u.)");
+      histo_Mhe[i]->GetXaxis()->SetTitle("Charge (a.u.)");
+      histo_Mhe[i]->GetYaxis()->SetTitle("Counts");
       histo_Mhe[i]->SetLineColor(kGreen+2);
-      histo_Mhe[i]->GetYaxis()->SetRangeUser(1,1500000);
+      histo_Mhe[i]->GetYaxis()->SetRangeUser(1,1.E+6);
    }
    
-   TLegend *l = new TLegend(0.55,0.4,0.9,0.66);
-   //l->AddEntry(histo_Mhe[0],"Multiplicity distribution - #alpha","lp");
-   l->AddEntry(histo_Mli[0],"Multiplicity distribution - ^{12}C","lp");
+   TLegend *l = new TLegend(0.1,0.8,0.6,0.9);
+   l->AddEntry(histo_Mhe[0],"Cluster charge distribution - #alpha","lp");
+   l->AddEntry(histo_Mli[0],"Cluster charge distribution - ^{7}Li","lp");
    l->SetFillStyle(0);
    
-   TText* r0 = new TText(21,44510,"Row0");
-   TText* r1 = new TText(21,44510,"Row1");
-   TText* r2 = new TText(21,44510,"Row2");
-   TText* r3 = new TText(21,44510,"Row3");
-   TText* r4 = new TText(21,44510,"Row4");
+   TText* r0 = new TText(2E5,44510,"Row0");
+   TText* r1 = new TText(2E5,44510,"Row1");
+   TText* r2 = new TText(2E5,44510,"Row2");
+   TText* r3 = new TText(2E5,44510,"Row3");
+   TText* r4 = new TText(2E5,44510,"Row4");
 
 //#################################################################################################
 
@@ -95,28 +94,11 @@ void C_multDistrib(int run){
    openTrackFile(run);
    tree->Print();
    
-   TCutG *cutGa = new TCutG("cutGa",5);
-   cutGa->SetVarX("cl_x_mm[0]");
-   cutGa->SetVarY("cl_x_mm[1]");
-   cutGa->SetPoint(0,200,18);
-   cutGa->SetPoint(1,194,208);
-   cutGa->SetPoint(2,177,214);
-   cutGa->SetPoint(3,230,29);
-   cutGa->SetPoint(4,250,18);
-   //cutGa->SaveAs(CutFileA);
-   TCutG *cutGc = new TCutG("cutGc",5);
-   cutGc->SetVarX("cl_x_mm[0]");
-   cutGc->SetVarY("cl_x_mm[1]");
-   cutGc->SetPoint(0,17,32);
-   cutGc->SetPoint(1,96,133);
-   cutGc->SetPoint(2,61,141);
-   cutGc->SetPoint(3,5,45);
-   cutGc->SetPoint(4,17,32);
-   cutGc->SaveAs(CutFileC);
+   TFile *cutFileLi = new TFile(CutFileLi,"READ");
+   TCutG *cutGli = (TCutG*)cutFileLi->Get("cutGli");
+   TFile *cutFileA = new TFile(CutFileA,"READ");
+   TCutG *cutGa = (TCutG*)cutFileA->Get("cutGa");
    
-   TFile *cutFilea = TFile::Open(CutFileA);
-   TFile *cutFileC = TFile::Open(CutFileC);
-
 //#################################################################################################
 
 //  Loop to read multiplicity from Track_File and get the mutliplicity distribution
@@ -132,15 +114,19 @@ void C_multDistrib(int run){
       if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
         he+=1;
         for(Int_t j=0; j<NRows; j++){
-           histo_Mhe[j]->Fill(cl_padMult[j]);
+           histo_Mhe[j]->Fill(cl_charge[j]);
         }
       }else
-      if(cutGc->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
+        //cout << "Sono dentro il taglio!" << endl;
         li+=1;
         for(Int_t j=0; j<NRows; j++){
-           histo_Mli[j]->Fill(cl_padMult[j]);
+           histo_Mli[j]->Fill(cl_charge[j]);
         }
       }
+      /*else{
+        cout << "Sono fuori dal taglo!" << endl;
+      }*/
    }
    
    cout << "Events he: " << he << "  Events c: " << li << endl; 
@@ -151,35 +137,35 @@ void C_multDistrib(int run){
    c0->cd(1);
    gPad->SetLogy();
    histo_Mli[0]->Draw("histo");
-   //histo_Mhe[0]->Draw("histo same");
+   histo_Mhe[0]->Draw("histo same");
    r0->Draw("same");
    l->Draw("same");
    c0->cd(2);   
    gPad->SetLogy();
    histo_Mli[1]->Draw("histo");
-   //histo_Mhe[1]->Draw("histo same");
+   histo_Mhe[1]->Draw("histo same");
    l->Draw("same");
    r1->Draw("same");
    c0->cd(3);
    gPad->SetLogy();
    histo_Mli[2]->Draw("histo");
-   //histo_Mhe[2]->Draw("histo same");
+   histo_Mhe[2]->Draw("histo same");
    l->Draw("same");
    r2->Draw("same");
    c0->cd(4);
    gPad->SetLogy();
    histo_Mli[3]->Draw("histo");
-   //histo_Mhe[3]->Draw("histo same");
+   histo_Mhe[3]->Draw("histo same");
    r3->Draw("same");
    l->Draw("same");
    c0->cd(5);
    gPad->SetLogy();
    histo_Mli[4]->Draw("histo");
-   //histo_Mhe[4]->Draw("histo same");
+   histo_Mhe[4]->Draw("histo same");
    l->Draw("same"); 
    r4->Draw("same");
-   sprintf(title,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution - Run79.eps");
-   sprintf(title1,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution - Run79.png");
+   sprintf(title,"Pictures_Analysis/Cluster_charge/Cluster_charge_distribution_Run299.eps");
+   sprintf(title1,"Pictures_Analysis/Cluster_charge/Cluster_charge_distribution_Run299.png");
    c0->SaveAs(title);
    c0->SaveAs(title1);
 
