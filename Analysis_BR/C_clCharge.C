@@ -1,6 +1,6 @@
 //################################################################################################################
 //#   plot of cluster charge distribution for each row
-//#   before use this macro, be sure you have got the TCut cl_x[1]:cl_x[0].
+//#   before use this macro, be sure you have got the TCut cl_x[1]:cl_x[0] (is necessary, for runs 7Li + alpha as well as for 12C, to delete uncorrelated events).
 //#   have a look to the file "README_dir.txt" for detailed information
 //#
 //################################################################################################################
