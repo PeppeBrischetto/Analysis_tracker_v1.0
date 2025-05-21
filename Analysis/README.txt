@@ -58,7 +58,7 @@ C_plot_phi.C			plot phi spectra
 
 C_plot_spectrumClusterCharge.C
 
-C_plot_TCvsPhi.C		plot the charge of a cluste of a given row vs the phi
+C_plot_TCvsPhi.C		plot the charge of a cluster of a given row vs the phi
 
 C_plot_theta.C			plot theta spectra 
 
