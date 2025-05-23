@@ -21,8 +21,8 @@
 using namespace std;
 using namespace TMath;
 
-const TString CutFileA = "TCutG/alpha_tcut_run175.root";
-const TString CutFileC = "TCutG/c_tcut_run175.root";
+const TString CutFileA = "TCutG/alpha_tcut_run215.root";
+const TString CutFileC = "TCutG/li_tcut_run215.root";
 const Int_t NRows = 5;
 
 void C_multDistrib_v2(int run){
@@ -56,8 +56,8 @@ void C_multDistrib_v2(int run){
       histo_Mli[i]->GetYaxis()->SetLabelSize(0.05);
       histo_Mli[i]->GetXaxis()->SetTitle("Multiplicity");
       histo_Mli[i]->GetYaxis()->SetTitle("Charge (a.u.)");
-      histo_Mli[i]->SetLineColor(kMagenta+2);
-      histo_Mli[i]->GetYaxis()->SetRangeUser(1,1500000);
+      histo_Mli[i]->SetLineColor(kYellow+2);
+      histo_Mli[i]->GetYaxis()->SetRangeUser(1,15000000);
    }
    
    TH1D *histo_Mhe[5];
@@ -73,23 +73,23 @@ void C_multDistrib_v2(int run){
       histo_Mhe[i]->GetXaxis()->SetTitle("Multiplicity");
       histo_Mhe[i]->GetYaxis()->SetTitle("Charge (a.u.)");
       histo_Mhe[i]->SetLineColor(kGreen+2);
-      histo_Mhe[i]->GetYaxis()->SetRangeUser(1,1500000);
+      histo_Mhe[i]->GetYaxis()->SetRangeUser(1,15000000);
    }
    // TH1D for theta
-   TH1D *h_theta = new TH1D("h_theta","",1000,50,80);
+   TH1D *h_theta = new TH1D("h_theta","",1000,0,80);
    h_theta->GetXaxis()->SetTitle("#vartheta (deg)");
    h_theta->GetYaxis()->SetTitle("Counts");
-   h_theta->GetXaxis()->SetRangeUser(60,70);
+   h_theta->GetXaxis()->SetRangeUser(0,70);
    h_theta->GetXaxis()->SetTitleOffset(0.7);
    h_theta->GetYaxis()->SetTitleOffset(0.60);
    h_theta->GetXaxis()->SetLabelSize(0.05);
    h_theta->GetYaxis()->SetLabelSize(0.05);
    h_theta->GetXaxis()->SetTitleSize(0.06);
    h_theta->GetYaxis()->SetTitleSize(0.06);
-   TH1D *h_theta_sic = new TH1D("h_theta_sic","",1000,50,80); 
+   TH1D *h_theta_sic = new TH1D("h_theta_sic","",1000,0,80); 
    h_theta_sic->GetXaxis()->SetTitle("#vartheta (deg)");
    h_theta_sic->GetYaxis()->SetTitle("Counts");
-   h_theta_sic->GetXaxis()->SetRangeUser(60,70);
+   h_theta_sic->GetXaxis()->SetRangeUser(0,70);
    h_theta_sic->SetLineColor(kRed);
    h_theta_sic->GetXaxis()->SetTitleOffset(0.7);
    h_theta_sic->GetYaxis()->SetTitleOffset(0.60);
@@ -98,12 +98,12 @@ void C_multDistrib_v2(int run){
    h_theta_sic->GetXaxis()->SetTitleSize(0.06);
    h_theta_sic->GetYaxis()->SetTitleSize(0.06);
    
-   TLegend *l = new TLegend(0.1,0.8,0.6,0.9);
-   //l->AddEntry(histo_Mhe[0],"Multiplicity distribution - #alpha","lp");
-   l->AddEntry(histo_Mli[0],"Multiplicity distribution - ^{12}C","lp");
+   TLegend *l = new TLegend(0.1,0.7,0.6,0.9);
+   l->AddEntry(histo_Mhe[0],"Multiplicity distribution - #alpha","lp");
+   l->AddEntry(histo_Mli[0],"Multiplicity distribution - ^{7}Li","lp");
    l->SetFillStyle(0);
    
-   TLegend *l1 = new TLegend(0.58,0.55,0.9,0.75);
+   TLegend *l1 = new TLegend(0.1,0.55,0.6,0.75);
    l1->AddEntry(h_theta,"#vartheta distribution - All evts","lp");
    l1->AddEntry(h_theta_sic,"#vartheta distribution - E_{SiC}>2000 a.u.","lp");
    l1->SetFillStyle(0);
@@ -126,21 +126,21 @@ void C_multDistrib_v2(int run){
    TCutG *cutGa = new TCutG("cutGa",5);
    cutGa->SetVarX("cl_x_mm[0]");
    cutGa->SetVarY("cl_x_mm[1]");
-   cutGa->SetPoint(0,200,28);
-   cutGa->SetPoint(1,280,20);
-   cutGa->SetPoint(2,1880,203);
-   cutGa->SetPoint(3,1700,211);
-   cutGa->SetPoint(4,200,28);
+   cutGa->SetPoint(0,7,25);
+   cutGa->SetPoint(1,21,13);
+   cutGa->SetPoint(2,134,162);
+   cutGa->SetPoint(3,117,167);
+   cutGa->SetPoint(4,7,25);
    //cutGa->SaveAs(CutFileA);
-   TCutG *cutGc = new TCutG("cutGc",5);
-   cutGc->SetVarX("cl_x_mm[0]");
-   cutGc->SetVarY("cl_x_mm[1]");
-   cutGc->SetPoint(0,6,41);
-   cutGc->SetPoint(1,18,36);
-   cutGc->SetPoint(2,78,129);
-   cutGc->SetPoint(3,55,139);
-   cutGc->SetPoint(4,6,41);
-   //cutGc->SaveAs(CutFileC);
+   TCutG *cutGli = new TCutG("cutGli",5);
+   cutGli->SetVarX("cl_x_mm[0]");
+   cutGli->SetVarY("cl_x_mm[1]");
+   cutGli->SetPoint(0,18,40);
+   cutGli->SetPoint(1,75,124);
+   cutGli->SetPoint(2,48,133);
+   cutGli->SetPoint(3,3,47);
+   cutGli->SetPoint(4,18,40);
+   //cutGli->SaveAs(CutFileC);
    
    TFile *cutFilea = TFile::Open(CutFileA);
    TFile *cutFileC = TFile::Open(CutFileC);
@@ -157,21 +157,21 @@ void C_multDistrib_v2(int run){
              histo_Mhe[j]->Reset();
           }*/
       
-      /*if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
         he+=1;
         for(Int_t j=0; j<NRows; j++){
            histo_Mhe[j]->Fill(cl_padMult[j]);
         }
-      }else*/
-      if(cutGc->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      }else
+      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
         li+=1;
         for(Int_t j=0; j<NRows; j++){
            histo_Mli[j]->Fill(cl_padMult[j]);
-           vartheta=theta*180/Pi();
-           h_theta->Fill(vartheta);
-           if(energySic>2000){
-             h_theta_sic->Fill(vartheta);
-           }
+        }
+        vartheta=theta*180/Pi();
+        h_theta->Fill(vartheta);
+        if(energySic>2000){
+          h_theta_sic->Fill(vartheta);
         }
       }
    }
@@ -184,31 +184,31 @@ void C_multDistrib_v2(int run){
    c0->cd(1);
    gPad->SetLogy();
    histo_Mli[0]->Draw("histo");
-   histo_Mhe[0]->Draw("histo same");
+   histo_Mhe[0]->Draw("histo && same");
    r0->Draw("same");
    l->Draw("same");
    c0->cd(2);   
    gPad->SetLogy();
    histo_Mli[1]->Draw("histo");
-   histo_Mhe[1]->Draw("histo same");
+   histo_Mhe[1]->Draw("histo && same");
    l->Draw("same");
    r1->Draw("same");
    c0->cd(3);
    gPad->SetLogy();
    histo_Mli[2]->Draw("histo");
-   histo_Mhe[2]->Draw("histo same");
+   histo_Mhe[2]->Draw("histo && same");
    l->Draw("same");
    r2->Draw("same");
    c0->cd(4);
    gPad->SetLogy();
    histo_Mli[3]->Draw("histo");
-   histo_Mhe[3]->Draw("histo same");
+   histo_Mhe[3]->Draw("histo && same");
    r3->Draw("same");
    l->Draw("same");
    c0->cd(5);
    gPad->SetLogy();
    histo_Mli[4]->Draw("histo");
-   histo_Mhe[4]->Draw("histo same");
+   histo_Mhe[4]->Draw("histo && same");
    l->Draw("same"); 
    r4->Draw("same");
    c0->cd(6);
@@ -216,9 +216,11 @@ void C_multDistrib_v2(int run){
    h_theta->Draw();
    h_theta_sic->Draw("same");
    l1->Draw("same");
-   sprintf(title,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution_theta_Run175.eps");
-   sprintf(title1,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution_theta_Run175.png");
+   sprintf(title,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution_theta_Run215.eps");
+   sprintf(title1,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution_theta_Run215.png");
    c0->SaveAs(title);
    c0->SaveAs(title1);
+   
+   h_theta_sic->Fit("gaus","","",60,70);
 
 }
