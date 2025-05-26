@@ -47,7 +47,7 @@ void C_multDistrib_v2(int run){
    TH1D *histo_Mli[5];
    for(int i=0; i<5; i++){
       sprintf(histoname,"Multiplicity distrib. - row%i",i);
-      histo_Mli[i]=new TH1D("","",30,-0.5,29.5);
+      histo_Mli[i]=new TH1D("","",61,-0.5,60.5);
       histo_Mli[i]->GetXaxis()->SetTitleSize(0.06);
       histo_Mli[i]->GetYaxis()->SetTitleSize(0.06);
       histo_Mli[i]->GetXaxis()->SetTitleOffset(0.7);
@@ -63,7 +63,7 @@ void C_multDistrib_v2(int run){
    TH1D *histo_Mhe[5];
    for(int i=0; i<5; i++){
       sprintf(histoname,"Multiplicity distrib. - row%i",i);
-      histo_Mhe[i]=new TH1D("","",30,-0.5,29.5);
+      histo_Mhe[i]=new TH1D("","",61,-0.5,60.5);
       histo_Mhe[i]->GetYaxis()->SetTitleSize(0.06);
       histo_Mhe[i]->GetXaxis()->SetTitleOffset(0.7);
       histo_Mhe[i]->GetYaxis()->SetTitleOffset(0.60);
@@ -99,7 +99,7 @@ void C_multDistrib_v2(int run){
    h_theta_sic->GetXaxis()->SetTitleSize(0.06);
    h_theta_sic->GetYaxis()->SetTitleSize(0.06);
    
-   TLegend *l = new TLegend(0.1,0.7,0.6,0.9);
+   TLegend *l = new TLegend(0.1,0.7,0.65,0.9);
    //l->AddEntry(histo_Mhe[0],"Multiplicity distribution - #alpha","lp");
    l->AddEntry(histo_Mli[0],"Multiplicity distribution - ^{16}O","lp");
    l->SetFillStyle(0);
@@ -219,8 +219,8 @@ void C_multDistrib_v2(int run){
    l1->Draw("same");
    sprintf(title,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution_theta_Run174.eps");
    sprintf(title1,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution_theta_Run174.png");
-   c0->SaveAs(title);
-   c0->SaveAs(title1);
+   //c0->SaveAs(title);
+   //c0->SaveAs(title1);
    
    h_theta_sic->Fit("gaus","","",50,60);
 
