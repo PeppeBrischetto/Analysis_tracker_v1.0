@@ -47,7 +47,7 @@ void C_multDistrib_v2(int run){
    TH1D *histo_Mli[5];
    for(int i=0; i<5; i++){
       sprintf(histoname,"Multiplicity distrib. - row%i",i);
-      histo_Mli[i]=new TH1D("","",30,-0.5,29.5);
+      histo_Mli[i]=new TH1D("","",60,-0.5,59.5);
       histo_Mli[i]->GetXaxis()->SetTitleSize(0.06);
       histo_Mli[i]->GetYaxis()->SetTitleSize(0.06);
       histo_Mli[i]->GetXaxis()->SetTitleOffset(0.7);
@@ -57,7 +57,23 @@ void C_multDistrib_v2(int run){
       histo_Mli[i]->GetXaxis()->SetTitle("Multiplicity");
       histo_Mli[i]->GetYaxis()->SetTitle("Charge (a.u.)");
       histo_Mli[i]->SetLineColor(kCyan+2);
-      histo_Mli[i]->GetYaxis()->SetRangeUser(1,15000000);
+      histo_Mli[i]->GetYaxis()->SetRangeUser(1,1500000);
+   }
+
+   TH1D *histo_MliSiC[5];
+   for(int i=0; i<5; i++){
+      sprintf(histoname,"Multiplicity distrib. - row%i SiC",i);
+      histo_MliSiC[i]=new TH1D("","",60,-0.5,59.5);
+      histo_MliSiC[i]->GetXaxis()->SetTitleSize(0.06);
+      histo_MliSiC[i]->GetYaxis()->SetTitleSize(0.06);
+      histo_MliSiC[i]->GetXaxis()->SetTitleOffset(0.7);
+      histo_MliSiC[i]->GetYaxis()->SetTitleOffset(0.60);
+      histo_MliSiC[i]->GetXaxis()->SetLabelSize(0.05);
+      histo_MliSiC[i]->GetYaxis()->SetLabelSize(0.05);
+      histo_MliSiC[i]->GetXaxis()->SetTitle("Multiplicity");
+      histo_MliSiC[i]->GetYaxis()->SetTitle("Charge (a.u.)");
+      histo_MliSiC[i]->SetLineColor(kRed+2);
+      histo_MliSiC[i]->GetYaxis()->SetRangeUser(1,1500000);
    }
    
    TH1D *histo_Mhe[5];
@@ -73,7 +89,7 @@ void C_multDistrib_v2(int run){
       histo_Mhe[i]->GetXaxis()->SetTitle("Multiplicity");
       histo_Mhe[i]->GetYaxis()->SetTitle("Charge (a.u.)");
       histo_Mhe[i]->SetLineColor(kGreen+2);
-      histo_Mhe[i]->GetYaxis()->SetRangeUser(1,15000000);
+      histo_Mhe[i]->GetYaxis()->SetRangeUser(1,1500000);
    }
    // TH1D for theta
    TH1D *h_theta = new TH1D("h_theta","",1000,0,80);
@@ -173,6 +189,9 @@ void C_multDistrib_v2(int run){
         h_theta->Fill(vartheta);
         if(energySic>2000){
           h_theta_sic->Fill(vartheta);
+          for(Int_t j=0; j<NRows; j++){
+            histo_MliSiC[j]->Fill(cl_padMult[j]);
+          }
         }
       }
    }
@@ -185,30 +204,36 @@ void C_multDistrib_v2(int run){
    c0->cd(1);
    gPad->SetLogy();
    histo_Mli[0]->Draw("histo");
+   histo_MliSiC[0]->Draw("same");
    //histo_Mhe[0]->Draw("histo && same");
+   
    r0->Draw("same");
    l->Draw("same");
    c0->cd(2);   
    gPad->SetLogy();
    histo_Mli[1]->Draw("histo");
+   histo_MliSiC[1]->Draw("same");
    //histo_Mhe[1]->Draw("histo && same");
    l->Draw("same");
    r1->Draw("same");
    c0->cd(3);
    gPad->SetLogy();
    histo_Mli[2]->Draw("histo");
+   histo_MliSiC[2]->Draw("same");
    //histo_Mhe[2]->Draw("histo && same");
    l->Draw("same");
    r2->Draw("same");
    c0->cd(4);
    gPad->SetLogy();
    histo_Mli[3]->Draw("histo");
+   histo_MliSiC[3]->Draw("same");
    //histo_Mhe[3]->Draw("histo && same");
    r3->Draw("same");
    l->Draw("same");
    c0->cd(5);
    gPad->SetLogy();
    histo_Mli[4]->Draw("histo");
+   histo_MliSiC[4]->Draw("same");
    //histo_Mhe[4]->Draw("histo && same");
    l->Draw("same"); 
    r4->Draw("same");
@@ -217,8 +242,8 @@ void C_multDistrib_v2(int run){
    h_theta->Draw();
    h_theta_sic->Draw("same");
    l1->Draw("same");
-   sprintf(title,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution_theta_Run174.eps");
-   sprintf(title1,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution_theta_Run174.png");
+   //sprintf(title,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution_theta_Run174.eps");
+   //sprintf(title1,"Pictures_Analysis/Multiplicity_distrib/Multiplicity distribution_theta_Run174.png");
    c0->SaveAs(title);
    c0->SaveAs(title1);
    
