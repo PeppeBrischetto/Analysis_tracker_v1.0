@@ -113,7 +113,7 @@ void C_trackFinder_plot(int run)
    /*TCanvas *C21=new TCanvas("c21","distr1",50,860,900,400);
    C21->SetFillColor(kWhite);
 
-   /*TCanvas *C22=new TCanvas("c22","distr2",100,900,900,400);
+   TCanvas *C22=new TCanvas("c22","distr2",100,900,900,400);
    C22->SetFillColor(kWhite);
 
    TCanvas *C23=new TCanvas("c23","distr3",150,940,900,400);
@@ -171,7 +171,7 @@ void C_trackFinder_plot(int run)
 ////////////////////////////////////////////////////////////////////
 // Opening the GCut files FOR RUN 332
 
-   TCutG *cutGli = new TCutG("cutGli",8);
+  /* TCutG *cutGli = new TCutG("cutGli",8);
    cutGli->SetVarX("cl_x_mm[0]");
    cutGli->SetVarY("cl_x_mm[1]");
    cutGli->SetPoint(0,13,65);
@@ -200,18 +200,27 @@ void C_trackFinder_plot(int run)
 ////////////////////////////////////////////////////////////////////
 // Opening the files
 
-   //cout<<"Board Channel (pad) Charge (Charge_cal) Timestamp Flags"<<endl;
+   cout<<"Board Channel (pad) Charge (Charge_cal) Timestamp Flags"<<endl;
    for(int i=0;i <entries; i++){
       tree->GetEntry(i);   
- 
+      cout<<"entry "<<i<<" "<<endl;
+      for(int j=0; j<5; j++){  cout<<cl_padMult[j]<<" ";}
+      cout<<endl;
+  
+     // Alcuni eventi sono scritti male e hanno un numero di molteplicità enorme che manda in crash la macro!
+     if(cl_padMult[0]<61 && cl_padMult[1]<61 &&cl_padMult[2]<61 && cl_padMult[3]<61 && cl_padMult[4]<61){
       for(int j=0; j<5; j++){
          for(int h=0; h<cl_padMult[j]; h++){
            anode->Fill(pads_fired[j][h],j,pad_charge[j][h]); //flag[0]=1;
-         }      
+           //cout<<pad_charge[j][h]<<" ";
+         }  
+         //cout<<endl;
       }    
-          
+      //cout<<endl;
+     }
       //if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
-      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) && cl_padMult[0]==3 ){
+      //if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) && cl_padMult[0]==3 ){
+      if(cl_padMult[1]==30){
         
          anode->Draw("colz");
          axis1->Draw();
@@ -221,9 +230,9 @@ void C_trackFinder_plot(int run)
          
 
          cout<<"SiC (deg):  "<<  sic_fired<<endl;
-         for(int l=0; l<5; l++){
-            cout<<cl_y_mm[l]-cl_y_mm[0]<<"   \t";
-         }
+         //for(int l=0; l<5; l++){
+         //   cout<<cl_y_mm[l]-cl_y_mm[0]<<"   \t";
+         //}
          cout<<"\n";
          
          cout<<"entry "<<i<<endl;
@@ -231,7 +240,8 @@ void C_trackFinder_plot(int run)
          cout<<"press any key to continue, q to quit, s to save a plot"<<endl;
          cin>>anykey;
          if(anykey=='q')return ; // Per uscire dal programma
-      }     
+      }
+           
       anode->Reset();   
         
     }

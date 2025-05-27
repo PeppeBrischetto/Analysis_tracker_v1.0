@@ -36,6 +36,7 @@ void C_plotTheta(int run){
    Double_t theta2 = 0;
    Double_t delta_theta = 0;
    TH1D *h_theta = new TH1D("h_theta","",1000,50,80);
+   TH1D *h_thetaSiC = new TH1D("h_thetaSic","",1000,50,80);
    h_theta->GetXaxis()->SetTitle("#vartheta (deg)");
    h_theta->GetYaxis()->SetTitle("Counts");
    h_theta->SetLineColor(kBlue);
@@ -53,12 +54,15 @@ void C_plotTheta(int run){
       vartheta=theta*180/Pi();
       //cout << "theta: " << vartheta << endl;                             // control line: print vartheta(deg)
       h_theta->Fill(vartheta);
+      if(sic_charge>2000){
+         h_thetaSiC->Fill(vartheta);
+      }
    }
    
    // h_theta gaussian fit
    TF1 *g = new TF1("g","gaus",50,80);
    g->SetParameters(1,1,1);
-   /*h_theta->Fit(g,"+","",50,80);
+   h_theta->Fit(g,"+","",50,80);
    mean_theta=g->GetParameter(1);
    max = g->Eval(mean_theta);
    theta1 = g->GetX(max/2,0,mean_theta);
@@ -67,11 +71,13 @@ void C_plotTheta(int run){
    cout << "mean_theta: " << mean_theta << "	max: " << max << "	theta1: " << theta1 << "	theta2: " << theta2 << "	delta_theta: " << delta_theta << endl;                             // control line: print max in theta distribution
    TF1 *fwhm = new TF1("fwhm","[0]",50,80);
    fwhm->FixParameter(0,max/2); 
-   fwhm->SetLineColor(kGreen+2);*/
+   fwhm->SetLineColor(kGreen+2);//*/
    
 //###00#############################################################################################################
 // Visualization block
-   TCanvas *c = new TCanvas();
+   TCanvas *c = new TCanvas("c","c");
    h_theta->Draw();
+   h_thetaSiC->SetLineColor(kRed);
+   h_thetaSiC->Draw("same");
    //fwhm->Draw("same");
 }
