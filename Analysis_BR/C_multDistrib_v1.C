@@ -25,7 +25,7 @@ const TString CutFileA = "TCutG/alpha_tcut_run174.root";
 const TString CutFileC = "TCutG/c_tcut_run174.root";
 const Int_t NRows = 5;
 
-void C_multDistrib_v2(int run){
+void C_multDistrib_v1(int run){
 
 //#################################################################################################
 // Required variables
