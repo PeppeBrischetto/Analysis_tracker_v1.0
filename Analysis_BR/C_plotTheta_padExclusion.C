@@ -66,12 +66,12 @@ void C_plotTheta_padExclusion(int run){
       }
       index0 = cl_padMult[0];
       index4=cl_padMult[4];
-      if(sic_charge>2000 && pads_fired[0][index0]>2 && pads_fired[4][index4]<58){
+      if(sic_charge>2000 && pads_fired[0][index0]>4 && pads_fired[4][index4]<56){
         h_theta_padExc->Fill(theta_deg);
       }
    }
    // h_theta gaussian fit
-   TF1 *g = new TF1("g","gaus",50,80);
+   /*TF1 *g = new TF1("g","gaus",50,80);
    g->SetParameters(1,1,1);
    h_theta->Fit(g,"","",50,80);
    mean_theta=g->GetParameter(1);
@@ -82,14 +82,18 @@ void C_plotTheta_padExclusion(int run){
    cout << "mean_theta: " << mean_theta << "	max: " << max << "	theta1: " << theta1 << "	theta2: " << theta2 << "	delta_theta: " << delta_theta << "	index: " << index0 << endl;                            
    TF1 *fwhm = new TF1("fwhm","[0]",50,80);
    fwhm->FixParameter(0,max/2); 
-   fwhm->SetLineColor(kGreen+2);
+   fwhm->SetLineColor(kGreen+2);*/
    
 //###00#############################################################################################################
 // Visualization block
+   TLegend *l = new TLegend(0.1,0.75,0.45,0.9);
+   l->AddEntry(h_theta,"All evts","f");
+   l->AddEntry(h_thetaSiC,"E_{SiC}>2000 a.u.","f");
+   l->AddEntry(h_theta_padExc,"Pad #in [4;56]","f");
    TCanvas *c = new TCanvas("c","c");
    h_theta->Draw();
    h_thetaSiC->Draw("same");
    h_theta_padExc->Draw("same");
-   //fwhm->Draw("same");
+   l->Draw("same");
    
 }

@@ -29,6 +29,8 @@ void C_plotTheta_vs_mult(int run){
 // Required variables
    char histoname[200];
    char title[100];
+   Int_t index0 = 0;
+   Int_t index4 = 0;
    Double_t vartheta = 0;
    Double_t mean_theta = 0;
    Double_t max = 0;
@@ -39,7 +41,7 @@ void C_plotTheta_vs_mult(int run){
    for(Int_t j=0; j<5; j++){
       sprintf(histoname,"Charge Distrib. - row%d",j);
       sprintf(title,"Pad mult.%d",j);
-      h_theta[j]=new TH2D("h_theta","",1000,50,75,20,-0.5,20.5);
+      h_theta[j]=new TH2D("h_theta","",1000,40,75,16,-0.5,15.5);
       h_theta[j]->GetXaxis()->SetTitle("#vartheta (deg)");
       h_theta[j]->GetYaxis()->SetTitle(title);
       h_theta[j]->SetFillColor(kBlue);
@@ -48,10 +50,20 @@ void C_plotTheta_vs_mult(int run){
    for(Int_t j=0; j<5; j++){
       sprintf(histoname,"Charge Distrib. - row%d",j);
       sprintf(title,"Pad mult.%d",j);
-      h_thetaSiC[j]=new TH2D("h_theta","",1000,50,75,20,-0.5,20.5);
+      h_thetaSiC[j]=new TH2D("h_theta","",1000,40,75,16,-0.5,15.5);
       h_thetaSiC[j]->GetXaxis()->SetTitle("#vartheta (deg)");
       h_thetaSiC[j]->GetYaxis()->SetTitle(title);
       h_thetaSiC[j]->SetFillColor(kRed);
+   } 
+   
+   TH2D *h_theta_padExc[5];
+   for(Int_t j=0; j<5; j++){
+      sprintf(histoname,"Charge Distrib. - row%d",j);
+      sprintf(title,"Pad mult.%d",j);
+      h_theta_padExc[j]=new TH2D("h_theta","",1000,40,75,16,-0.5,15.5);
+      h_theta_padExc[j]->GetXaxis()->SetTitle("#vartheta (deg)");
+      h_theta_padExc[j]->GetYaxis()->SetTitle(title);
+      h_theta_padExc[j]->SetFillColor(kGreen+2);
    } 
    
    
@@ -75,25 +87,47 @@ void C_plotTheta_vs_mult(int run){
            h_thetaSiC[r]->Fill(theta_deg,cl_padMult[r]);
         }
       }
+      index0 = cl_padMult[0];
+      index4=cl_padMult[4];
+      if(sic_charge>2000 && pads_fired[0][index0]>6 && pads_fired[4][index4]<52){
+        for(Int_t r=0; r<NRows; r++){
+           h_theta_padExc[r]->Fill(theta_deg,cl_padMult[r]);
+        }
+      }
    }
    
 //###00#############################################################################################################
 // Visualization block
+   
+   TLegend *l = new TLegend(0.1,0.75,0.45,0.9);
+   l->AddEntry(h_theta[0],"All evts","f");
+   l->AddEntry(h_thetaSiC[0],"E_{SiC}>2000 a.u.","f");
+   l->AddEntry(h_theta_padExc[0],"Pad #in [4;56]","f");
    TCanvas *c = new TCanvas("c","c");
-   c->Divide(3,3);
+   c->Divide(3,2);
    c->cd(1);
    h_theta[0]->Draw("box");
    h_thetaSiC[0]->Draw("box && same");
+   h_theta_padExc[0]->Draw("box && same");
+   l->Draw("same");
    c->cd(2);
    h_theta[1]->Draw("box");
    h_thetaSiC[1]->Draw("box && same");
+   h_theta_padExc[1]->Draw("box && same");
+   l->Draw("same");
    c->cd(3);
    h_theta[2]->Draw("box");
    h_thetaSiC[2]->Draw("box && same");
+   h_theta_padExc[2]->Draw("box && same");
+   l->Draw("same");
    c->cd(4);
    h_theta[3]->Draw("box");
    h_thetaSiC[3]->Draw("box && same");
+   l->Draw("same");
+   h_theta_padExc[3]->Draw("box && same");
    c->cd(5);
    h_theta[4]->Draw("box");
    h_thetaSiC[4]->Draw("box && same");
+   h_theta_padExc[4]->Draw("box && same");
+   l->Draw("same");
 }
