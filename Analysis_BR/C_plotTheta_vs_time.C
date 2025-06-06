@@ -25,12 +25,15 @@ using namespace TMath;
 const TString CutFileA = "TCutG/alpha_tcut_run79.root";
 const TString CutFileC = "TCutG/c_tcut_run79.root";
 const Int_t NRows = 5;
+const Int_t NEvts = 1000000000;
+const Double_t rate = 1600.;                                                // Rate in Run175 expressed in Hz
 
-void C_plotTheta(int run){
+void C_plotTheta_vs_time(int run){
 
 //################################################################################################################
 // Required variables
    char key;
+   Int_t npoint = 0;
    Double_t vartheta = 0;
    Double_t discr = 0.;
    Double_t mean_theta = 0.;
@@ -38,6 +41,8 @@ void C_plotTheta(int run){
    Double_t theta1 = 0.;
    Double_t theta2 = 0.;
    Double_t delta_theta = 0.;
+   Int_t time = 0;
+   Double_t pulse = 0;
    TH1D *h_theta = new TH1D("h_theta","",500,55,75);
    TH1D *h_thetaSiC = new TH1D("h_thetaSic","",1000,50,80);
    h_theta->GetXaxis()->SetTitle("#vartheta (deg)");
@@ -47,6 +52,16 @@ void C_plotTheta(int run){
    TF1 *g = new TF1("g","gaus",50,80);
    g->SetParameters(1,1,1);
    TCanvas *c = new TCanvas("c","c");
+   TCanvas *c1 = new TCanvas("c1","c1");
+   TGraph *thetaTime = new TGraph();
+   thetaTime->GetXaxis()->SetTitle("Evt (#)");
+   thetaTime->GetYaxis()->SetTitle("Pulse (0 - 1)");
+   thetaTime->SetMarkerColor(kBlue);
+   thetaTime->GetXaxis()->SetRangeUser(0,1E4);
+   thetaTime->SetLineWidth(1);
+   thetaTime->SetMarkerSize(1.2);
+   thetaTime->SetMarkerStyle(20);
+   thetaTime->SetLineColor(kBlue);
    
 //################################################################################################################
 // OpenFiles
@@ -65,8 +80,10 @@ void C_plotTheta(int run){
          h_thetaSiC->Fill(theta_deg);
       }
       h_theta->Fit("g","N","",55,70);
-      mean_theta=g->GetParameter(1);
+      mean_theta = g->GetParameter(1);
+      discr = g->GetParameter(2);
       cout << "mean_theta: " << mean_theta << endl;
+      c->cd();
       h_theta->Draw();
       h_thetaSiC->SetLineColor(kRed); 
       h_thetaSiC->Draw("same");
@@ -78,17 +95,29 @@ void C_plotTheta(int run){
          case 'e': break;
       }*/
       c->Update();
-      discr = mean_theta-vartheta;
-      if(i>2 && Abs(mean_theta-vartheta)>4){
+      if(i>2 && Abs(mean_theta-vartheta)>2.35*discr){
          cout << "Discrepancy reached "<< discr << " - Evt. " << i << endl;
          cout << "Press 'q' to quit, 'c' to continue: " << key;
          cin >> key;
+         time = i/rate;
+         pulse = 1;
+         thetaTime->SetPoint(i,i,pulse);
          switch(key){
             case 'q': return;
             case 'c': continue;
          }
+         npoint++;
+         c1->cd();
+         thetaTime->Draw();
+      }else{
+         time = i/rate;
+         pulse = 0;
+         thetaTime->SetPoint(i,i,pulse);
       }
       vartheta = mean_theta = 0.;
+      npoint++;
+      c1->cd();
+      thetaTime->Draw();
    }
    // h_theta gaussian fit
    /*TF1 *g = new TF1("g","gaus",50,80);
@@ -111,4 +140,6 @@ void C_plotTheta(int run){
    h_thetaSiC->SetLineColor(kRed);
    h_thetaSiC->Draw("same");*/
    //fwhm->Draw("same");
+   
+   c1->Update();
 }
