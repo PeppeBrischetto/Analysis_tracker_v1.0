@@ -80,12 +80,12 @@ void C_plot_theta_v6(int run)
    }
 //#################################################################################################
 // Data LOOP
-   for(int i=0; i<entries;i++){
-      tree->GetEntry(i);
+   for(int j=0; j<entries; j++){
+      tree->GetEntry(j);
       // Fill the histo
       
       
-      histoTheta->Fill(theta_deg);
+      histoTheta->Fill(theta13_deg);
       
       for(int i=2; i<20; i++){
          if(cl_padMult[3]==i && cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) ){
