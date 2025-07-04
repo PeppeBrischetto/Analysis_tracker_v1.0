@@ -92,7 +92,7 @@ void C_plot_mult_theta(int run)
       histoTheta->Fill(theta_deg);
       
       for(int i=0; i<20; i++){
-         if(cl_padMult[4]==i/* && cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])*/ ){
+         if(cl_padMult[3]==i && cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) ){
             h_theta_M[i]->Fill(theta_deg);
          }
       }        
@@ -121,6 +121,7 @@ void C_plot_mult_theta(int run)
      sprintf(histoname,"Mult: %i",i);
      TText *t = new TText(70.,0.,histoname);
      h_theta_M[i]->Draw("same");
+     h_theta_M[i]->Fit("gaus","","+",55,75);
      t->Draw("SAME");
    }
    C2a->cd();
