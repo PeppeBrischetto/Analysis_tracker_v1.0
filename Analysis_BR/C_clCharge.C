@@ -32,6 +32,7 @@ void C_clCharge(int run){
 
    // counting variables
    Int_t he,li=0;
+   Double_t integrale = 0;
    
    // filling variable for TH1D
    char filling_li[200];
@@ -111,7 +112,7 @@ void C_clCharge(int run){
              histo_Mhe[j]->Reset();
           }*/
       
-      if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      /*if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
         he+=1;
         for(Int_t j=0; j<NRows; j++){
            histo_Mhe[j]->Fill(cl_charge[j]);
@@ -127,9 +128,14 @@ void C_clCharge(int run){
       /*else{
         cout << "Sono fuori dal taglo!" << endl;
       }*/
+      
+      for(Int_t s=0; s<11; s++){
+         integrale += cl_charge[s];
+      }
    }
    
-   cout << "Events he: " << he << "  Events c: " << li << endl; 
+   //cout << "Events he: " << he << "  Events c: " << li << endl; 
+   cout << "Integrale: " << integrale << endl;
    
 // Visualization block
    TCanvas *c0 = new TCanvas();
@@ -166,7 +172,7 @@ void C_clCharge(int run){
    r4->Draw("same");
    sprintf(title,"Pictures_Analysis/Cluster_charge/Cluster_charge_distribution_Run299.eps");
    sprintf(title1,"Pictures_Analysis/Cluster_charge/Cluster_charge_distribution_Run299.png");
-   c0->SaveAs(title);
-   c0->SaveAs(title1);
+   //c0->SaveAs(title);
+   //c0->SaveAs(title1);
 
 }
