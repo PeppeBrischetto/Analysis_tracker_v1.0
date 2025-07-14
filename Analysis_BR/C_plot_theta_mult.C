@@ -1,22 +1,23 @@
-//###################################################################################################
-//#   plot theta spectra specific for run 332 shows the problem present at high multiplicity of the tracks
-//#   Specific for Li
+//###########################################################################################################
+//#   Plot row multiplicty as a function of theta in [a,b], where a,b are extremes for multiplicity search.
+//#   If GraphicalCuts are needed, please be sure they are properly set before launch the macro
+//#  (and rightly take them into account in the selection inside hte for-cycle).
 //#
 //#   required as argument the run number
 //#
-//###################################################################################################
-//#   created march 2025 by D. Torresi
+//###########################################################################################################
+//#   created july 2025 by A. Pitronaci
 //#######################################
 //#   
 //# 
-//###################################################################################################
+//###########################################################################################################
 
 #include "../Include/openfiles.h"
 
 void C_plot_theta_mult(int run)
 {
 
-//###################################################################
+//###########################################################################################################
 //    VARIABLES
   
    int flagA=0;
@@ -24,35 +25,35 @@ void C_plot_theta_mult(int run)
    char titleCanv[100];
    Double_t x[5] = {0.};
    Double_t y[5] = {0.};
-//#################################################################################################
+//###########################################################################################################
 //OpenFile
    openTrackFile(run);
 
-//#################################################################################################
+//###########################################################################################################
 // Graphyical cut definition
 
    TCutG *cutGli = new TCutG("cutGli",5);
    cutGli->SetVarX("cl_x_mm[0]");
    cutGli->SetVarY("cl_x_mm[1]");
-   cutGli->SetPoint(0,5,44);
-   cutGli->SetPoint(1,16.71,36.46);
-   cutGli->SetPoint(2,94.6,141.95);
-   cutGli->SetPoint(3,70.46,153.71);
-   cutGli->SetPoint(5,5,44);
+   cutGli->SetPoint(0,30,39);
+   cutGli->SetPoint(1,129,171);
+   cutGli->SetPoint(2,99,176);
+   cutGli->SetPoint(3,22,53);
+   cutGli->SetPoint(4,30,39);
    
-   TCutG *cutGa = new TCutG("cutGa",4);
+   TCutG *cutGa = new TCutG("cutGa",5);
    cutGa->SetVarX("cl_x_mm[0]");
    cutGa->SetVarY("cl_x_mm[1]");
-   cutGa->SetPoint(0,6.47,26.12);
-   cutGa->SetPoint(1,20.37,16.14);
-   cutGa->SetPoint(2,141.03,166.9);
-   cutGa->SetPoint(3,119.46,175.09);
-   cutGa->SetPoint(5,6.47,26.12);
+   cutGa->SetPoint(0,29,17);
+   cutGa->SetPoint(1,187,201);
+   cutGa->SetPoint(2,168,208);
+   cutGa->SetPoint(3,17,24);
+   cutGa->SetPoint(4,29,17);
 
 //#################################################################################################
 // GRAPHICS
 
-   TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
+   TCanvas *C1=new TCanvas("c1","c1",350,160,1350,1400);   
    TCanvas *C2=new TCanvas("c2","c2",350,160,1350,1400);
    TCanvas *C3=new TCanvas("c3","c3",450,360,800,600);  
    
@@ -65,10 +66,11 @@ void C_plot_theta_mult(int run)
       h_mult[i]->GetXaxis()->SetTitleSize(0.05);
       h_mult[i]->GetXaxis()->SetLabelSize(0.05);
       h_mult[i]->GetXaxis()->SetTitleOffset(.9);
-      h_mult[i]->GetYaxis()->SetTitle("Counts");
+      h_mult[i]->GetYaxis()->SetTitle("counts");
       h_mult[i]->GetYaxis()->SetTitleSize(0.05);
       h_mult[i]->GetYaxis()->SetLabelSize(0.05);
-      h_mult[i]->GetYaxis()->SetTitleOffset(1.);
+      h_mult[i]->GetYaxis()->SetTitleOffset(1.1);
+      h_mult[i]->SetLineColor(kGreen+2);
    }
    
    TH1F *h_theta_T[6];
@@ -79,10 +81,10 @@ void C_plot_theta_mult(int run)
       h_theta_T[i]->GetXaxis()->SetTitleSize(0.05);
       h_theta_T[i]->GetXaxis()->SetLabelSize(0.05);
       h_theta_T[i]->GetXaxis()->SetTitleOffset(.9);
-      h_theta_T[i]->GetYaxis()->SetTitle("Counts");
+      h_theta_T[i]->GetYaxis()->SetTitle("counts");
       h_theta_T[i]->GetYaxis()->SetTitleSize(0.05);
       h_theta_T[i]->GetYaxis()->SetLabelSize(0.05);
-      h_theta_T[i]->GetYaxis()->SetTitleOffset(1.);
+      h_theta_T[i]->GetYaxis()->SetTitleOffset(1.1);
       h_theta_T[i]->SetLineColor(kGreen+2);
       //h_theta_T[i]->GetXaxis()->SetRangeUser(55,75);
    }
@@ -95,7 +97,7 @@ void C_plot_theta_mult(int run)
       
       for(Int_t r=0; r<6; r++){
          Double_t t=52+(r*3);
-         if(theta_deg>=t && theta_deg<t+3){
+         if(theta_deg>=t && theta_deg<t+3 && cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
             h_theta_T[r]->Fill(theta_deg);
             h_mult[r]->Fill(cl_padMult[0]);
          }
@@ -117,12 +119,12 @@ void C_plot_theta_mult(int run)
    }   
    
    C1->Divide(3,2);
-   for(Int_t s=0; s<5; s++){
+   for(Int_t s=0; s<6; s++){
       C1->cd(s+1);
-      h_mult[s]->SetLineColor(kGreen+s);
-      h_mult[s]->Fit("gaus","","+",-0.5,59.5);
+      //h_mult[s]->Fit("gaus","","+",-0.5,59.5);
       h_mult[s]->Draw();
    }
+   C1->SaveAs("../Pictures/run278/7Li/mult_vs_theta/row0/Mult_row0.png");
    
    C2->cd();
    C2->Divide(3,2);
@@ -131,23 +133,18 @@ void C_plot_theta_mult(int run)
      Int_t s = t+3;
      C2->cd(i+1);
      sprintf(histoname,"#vartheta #in [%d;%d]",t,s);
-     TLatex*text = new TLatex(35.,0.,histoname);
+     Double_t h = 0.5*h_theta_T[i]->GetMaximum();
+     TLatex*text = new TLatex(35.,h,histoname);
      h_theta_T[i]->Draw("same");
      //h_theta_T[i]->Fit("gaus","","+",t,s);
      text->Draw("SAME");
    }
+   C2->SaveAs("../Pictures/run278/7Li/mult_vs_theta/row0/theta_row0.png");
    
    C3->cd();
    gr1->SetMarkerStyle(22);
    gr1->SetMarkerSize(1);
    gr1->Draw("AP");
-   
+   C3->SaveAs("../Pictures/run278/7Li/mult_vs_theta/row0/MultVsTheta_row0.png");
    
 }  
-   
-   
-
-
-
-
-
