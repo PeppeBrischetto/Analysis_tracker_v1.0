@@ -54,7 +54,6 @@ void C_plot_theta_mult(int run)
 
    TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
    TCanvas *C2=new TCanvas("c2","c2",350,160,1350,1400);
-   TCanvas *C2a=new TCanvas("c2a","c2a",550,260,800,1400);      
    TCanvas *C3=new TCanvas("c3","c3",450,360,800,600);  
    
    // all tracks
@@ -75,7 +74,7 @@ void C_plot_theta_mult(int run)
    TH1F *h_theta_T[6];
    for(int i=0; i<6; i++){
       sprintf(histoname,"mult %i",i);
-      h_theta_T[i]=new TH1F("","",100,40,80);
+      h_theta_T[i]=new TH1F("","",1000,30,80);
       h_theta_T[i]->GetXaxis()->SetTitle("#vartheta (deg)");
       h_theta_T[i]->GetXaxis()->SetTitleSize(0.05);
       h_theta_T[i]->GetXaxis()->SetLabelSize(0.05);
@@ -84,14 +83,8 @@ void C_plot_theta_mult(int run)
       h_theta_T[i]->GetYaxis()->SetTitleSize(0.05);
       h_theta_T[i]->GetYaxis()->SetLabelSize(0.05);
       h_theta_T[i]->GetYaxis()->SetTitleOffset(1.);
-      if(i==5){
-        h_theta_T[i]->SetLineColor(kYellow+1);
-      }else if(i>=10){
-                        h_theta_T[i]->SetLineColor(3*i);
-                     }else{
-                               h_theta_T[i]->SetLineColor(i);
-                          }
-      h_theta_T[i]->GetXaxis()->SetRangeUser(55,75);
+      h_theta_T[i]->SetLineColor(kGreen+2);
+      //h_theta_T[i]->GetXaxis()->SetRangeUser(55,75);
    }
 
 //#################################################################################################
@@ -101,8 +94,8 @@ void C_plot_theta_mult(int run)
       // Fill the histo
       
       for(Int_t r=0; r<6; r++){
-         Double_t t=52+(r*5);
-         if(theta_deg>=t && theta_deg<t+5){
+         Double_t t=52+(r*3);
+         if(theta_deg>=t && theta_deg<t+3){
             h_theta_T[r]->Fill(theta_deg);
             h_mult[r]->Fill(cl_padMult[0]);
          }
@@ -115,8 +108,8 @@ void C_plot_theta_mult(int run)
    }
    
    TGraph *gr1=new TGraph(5,x,y);
-   gr1->GetXaxis()->SetTitle("multiplicity");
-   gr1->GetYaxis()->SetTitle("theta");  
+   gr1->GetXaxis()->SetTitle("#vartheta (deg)");
+   gr1->GetYaxis()->SetTitle("Multiplicity");  
    
    
    for(int i=0; i<6; i++){
@@ -133,14 +126,15 @@ void C_plot_theta_mult(int run)
    
    C2->cd();
    C2->Divide(3,2);
-   h_theta_T[0]->Draw("same");
-   for(int i=0; i<16; i++){
+   for(int i=0; i<6; i++){
+     Int_t t=52+(i*3);
+     Int_t s = t+3;
      C2->cd(i+1);
-     sprintf(histoname,"Mult: %i",i);
-     TText *t = new TText(70.,0.,histoname);
+     sprintf(histoname,"#vartheta #in [%d;%d]",t,s);
+     TLatex*text = new TLatex(35.,0.,histoname);
      h_theta_T[i]->Draw("same");
-     h_theta_T[i]->Fit("gaus","","+",55,75);
-     t->Draw("SAME");
+     //h_theta_T[i]->Fit("gaus","","+",t,s);
+     text->Draw("SAME");
    }
    
    C3->cd();
