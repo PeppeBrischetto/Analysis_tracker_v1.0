@@ -13,7 +13,7 @@
 
 #include "../Include/openfiles.h"
 
-void C_plot_theta_v6(int run)
+void C_plot_theta_v6a(int run)
 {
 
 //###################################################################
@@ -80,20 +80,19 @@ void C_plot_theta_v6(int run)
    }
 //#################################################################################################
 // Data LOOP
-<<<<<<< HEAD
+
    for(int k=0; k<entries;k++){
       tree->GetEntry(k);
-=======
+
    for(int j=0; j<entries; j++){
       tree->GetEntry(j);
->>>>>>> 8acff956f7f5c59c6a7484e03e62705604b7c7a2
       // Fill the histo
       
       
       histoTheta->Fill(theta13_deg);
       
       for(int i=2; i<20; i++){
-         if(cl_padMult[0]==i ){ //&& cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) ){
+         if(cl_padMult[0]==i && cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) ){
             h_theta_M[i-2]->Fill(theta13_deg);
          }
       }        
@@ -133,7 +132,7 @@ void C_plot_theta_v6(int run)
    gr1->SetMarkerSize(1);
    gr1->Draw("AP");
    
-   
+   }
 }  
    
    
