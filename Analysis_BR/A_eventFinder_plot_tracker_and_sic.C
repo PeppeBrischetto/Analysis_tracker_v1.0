@@ -19,6 +19,9 @@ int A_eventFinder_plot_tracker_and_sic(int run)
 {
 
    // Dichiarazione variabili
+   Double_t x[5] = {0.};
+   Double_t tot_charge[5] = {0.};
+   Double_t z[5] = {0.};
 
   
    // window the define the event, opened with the first hit
@@ -127,6 +130,8 @@ int A_eventFinder_plot_tracker_and_sic(int run)
    anodeTime->GetYaxis()->SetNdivisions(-11); 		// setta il numero di divisioni per la grid
    anodeTime->GetYaxis()->SetLabelSize(0);		// rimuovi il label di questo asse
    
+   TGraph *linear_regr = new TGraph();
+   
    //crea un nuovo asse per il numero di row
    TGaxis *axis1 = new TGaxis(-0.5,-0.75,-0.5,4.75,-0.75,4.75,10,"+");
    axis1->SetLabelOffset(-0.025);
@@ -172,6 +177,11 @@ int A_eventFinder_plot_tracker_and_sic(int run)
    
    cout<<"Board Channel (pad) Energy (Energy_cal) Timestamp Flags"<<endl;
    for(int i=0;i <entriesTracker; i++){
+      
+      Double_t x[5] = {0.};
+      Double_t tot_charge[5] = {0.};
+      Double_t z[5] = {0.};
+      
       treeTracker->GetEntry(i);
       
 
@@ -182,7 +192,13 @@ int A_eventFinder_plot_tracker_and_sic(int run)
            anode->Fill(pad,0.1,Charge); flag[0]=1;
            anodeTime->Fill(pad,0.1,Timestamp-timeinit +10);
            hrow[0]->Fill(pad,Charge);
+           z[0] = 0.;
+           x[0] += (pad*Charge);
+           tot_charge[0] += Charge;
+           //cout << "z: " << z[0] << "   x: " << x[0] << endl; 
         }
+        x[0] = x[0]/tot_charge[0];
+        //cout << "z: " << z[0] << "   x: " << x[0] << endl; 
         if(Row==7 && Charge>thresh && Fstrip==0){ //&& Charge>thresh){
            for(int g=0;g<62;g++){anode->Fill(g,1.5,Charge);}
            for(int g=0;g<62;g++){anodeTime->Fill(g,1.5,(Timestamp-timeinit +10)/10);}
@@ -193,7 +209,11 @@ int A_eventFinder_plot_tracker_and_sic(int run)
            anode->Fill(pad,1,Charge); flag[1]=1;
            anodeTime->Fill(pad,1,Timestamp-timeinit +10);
            hrow[1]->Fill(pad,Charge);
+           z[1] = 1;
+           x[1] += (pad*Charge);
+           tot_charge[1] += Charge;
         }
+        x[1] = x[1]/tot_charge[1];
         if(Row==10 && Charge>thresh && Fstrip==0){
            for(int g=0;g<62;g++){anode->Fill(g,4.5,Charge);}
            for(int g=0;g<62;g++){anodeTime->Fill(g,4.5,(Timestamp-timeinit +10)/10);}
@@ -207,13 +227,20 @@ int A_eventFinder_plot_tracker_and_sic(int run)
            anode->Fill(pad,2,Charge); flag[2]=1;
            anodeTime->Fill(pad,2,Timestamp-timeinit +10);
            hrow[2]->Fill(pad,Charge);
+           z[2] = 2;
+           x[2] += (pad*Charge);
+           tot_charge[2] += Charge;
         }
+        x[2] = x[2]/tot_charge[2];
         if(Row==3 && Charge>thresh){
         //if(Section==12 && Charge>thresh){
            anode->Fill(pad,3,Charge); flag[3]=1;
            anodeTime->Fill(pad,3,Timestamp-timeinit +10);
            hrow[3]->Fill(pad,Charge);
+           z[3] += (pad*Charge);
+           tot_charge[3] += Charge;
   	}
+  	x[3] = x[3]/tot_charge[3];
         if(Row==8 && Charge>thresh && Fstrip==0){
            for(int g=0;g<62;g++){anode->Fill(g,2.5,Charge);}
            for(int g=0;g<62;g++){anodeTime->Fill(g,2.5,(Timestamp-timeinit +10)/10);}
@@ -223,7 +250,11 @@ int A_eventFinder_plot_tracker_and_sic(int run)
            anode->Fill(pad,4,Charge); flag[4]=1;
            anodeTime->Fill(pad,4,Timestamp-timeinit +10);
            hrow[4]->Fill(pad,Charge);
+           z[4] = 4;
+           x[4] += (pad*Charge);
+           tot_charge[4] += Charge;
         }
+        x[4] = x[4]/tot_charge[4];
         if(Row==5 && Charge>thresh && Fstrip==0){
            for(int g=0;g<62;g++){anode->Fill(g,-0.5,Charge);}
            for(int g=0;g<62;g++){anodeTime->Fill(g,-0.5,(Timestamp-timeinit +10)/10);}
@@ -235,10 +266,12 @@ int A_eventFinder_plot_tracker_and_sic(int run)
         
         TimestampPre = Timestamp;
         
+        
       }else{
         if(flag[0]+flag[1]+flag[2]+flag[3]+flag[4]>2){
            C1->cd(0);
            anode->Draw("colz");
+           linear_regr->Draw("lp same");
            //C1->Update();      
            //pad1->GetFrame()->SetFillColor(kGray);  
            axis1->Draw();
@@ -362,7 +395,17 @@ int A_eventFinder_plot_tracker_and_sic(int run)
 
           
       } 
-        
+      linear_regr->AddPoint(x[0],z[0]);
+      linear_regr->AddPoint(x[1],z[1]);
+      linear_regr->AddPoint(x[2],z[2]);
+      linear_regr->AddPoint(x[3],z[3]);
+      linear_regr->AddPoint(x[4],z[4]);
+      cout << "x0: " << x[0] << "   z0: " << z[0] << endl;
+      cout << "x1: " << x[1] << "   z1: " << z[1] << endl;
+      cout << "x2: " << x[2] << "   z2: " << z[2] << endl;
+      cout << "x3: " << x[3] << "   z3: " << z[3] << endl;
+      cout << "x4: " << x[4] << "   z4: " << z[4] << endl;
    }
-      
+   
+    
 }
