@@ -3,9 +3,9 @@
 //#   the runID is required
 //#
 //################################################################################################################
-//#   creatd July 2025 by A. Pitronaci 
+//#   Created July 2025 by A. Pitronaci 
 //################################################################################################################
-//#   updated:
+//#   Updated:
 //################################################################################################################
 
 #include <iostream>
@@ -30,72 +30,102 @@ void trackControl(int run){
 //################################################################################################################
 // Variables
    char tasto[10]; 
+   char titolofile[100];
    Double_t thetaDeg = 0.;
-   Double_t z[5] = {18.6,39.8,61.0,82.2,103.4};
-   /* 2D-histogram to map the anode */
-   TH2D *anode=new TH2D("anode","anode",60,-0.5,59.5,11,-0.5,10.5);
+   Double_t z[5] = {18.6, 39.8, 61.0, 82.2, 103.4};
+
+   TH2D *anode = new TH2D("anode", "anode", 60, -0.5, 59.5, 11, -0.5, 10.5);
    anode->SetStats(kFALSE);
    anode->GetXaxis()->SetTitle("pad");
    anode->GetYaxis()->SetTitle("row");
-   anode->GetYaxis()->SetNdivisions(-11); 		// setta il numero di divisioni per la grid
+   anode->GetYaxis()->SetNdivisions(-11);
    anode->GetYaxis()->SetLabelSize(0);
    
+   ofstream outputfile;
+   TGraph *retta = new TGraph(5);
+   retta->SetMarkerStyle(20);
+   retta->SetLineWidth(0);
+   retta->GetXaxis()->SetTitle("x (mm)");
+   retta->GetYaxis()->SetTitle("z (mm)");
    
 //################################################################################################################
 // OpenFiles
    openTrackFile(run);
    tree->Print();
    
-//################################################################################################################
+   sprintf(titolofile,"pTracks_run%d_4He.txt",run);
+   outputfile.open(titolofile);
+   outputfile << "************ Run " << run << "_4He ************" << endl; 
+
+//###########################################################################################################
+// Graphyical cut definition
+
+   TCutG *cutGli = new TCutG("cutGli",5);
+   cutGli->SetVarX("cl_x_mm[0]");
+   cutGli->SetVarY("cl_x_mm[1]");
+   cutGli->SetPoint(0,30,40);
+   cutGli->SetPoint(1,134,167);
+   cutGli->SetPoint(2,113,180);
+   cutGli->SetPoint(3,22,54);
+   cutGli->SetPoint(4,30,39);
+   
+   TCutG *cutGa = new TCutG("cutGa",5);
+   cutGa->SetVarX("cl_x_mm[0]");
+   cutGa->SetVarY("cl_x_mm[1]");
+   cutGa->SetPoint(0,23,12);
+   cutGa->SetPoint(1,192,206);
+   cutGa->SetPoint(2,172,216);
+   cutGa->SetPoint(3,13,26);
+   cutGa->SetPoint(4,23,12);
+
+//#################################################################################################
 // Data loop
-   for(Int_t i=6; i<7; i++){
+   for(Int_t i = 0; i < entries; i++){
+   
       Double_t theta_fit = 0.;
       Double_t pad[NRows][100] = {0.};
       Double_t charge[NRows][100] = {0.};
       Double_t x[NRows] = {0.};
+      Double_t x_mm[NStrips] = {0.};
       Double_t y[NRows] = {0.};
-      Double_t totalCharge[NRows];
-      
-      TCanvas *c = new TCanvas("c");
-      TCanvas *c1 = new TCanvas("c1");
-    
+      Double_t totalCharge[NRows] = {0.};
+
       tree->GetEntry(i);
-      cout << "Evt: " << i << "   sic_fired: " << sic_fired << "   sic_charge: " << sic_charge << endl;
-      for(Int_t row=0; row<NRows; row++){
-         cout << "   Row: " << row << endl;
-         for(Int_t p=0; p<cl_padMult[row]; p++){
+      retta->Set(0);
+
+      TF1* f = new TF1(Form("f_%d", i), "[0] + [1]*x", 0, 300);
+      f->SetParameters(0, 0);
+
+      if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      for(Int_t row = 0; row < NRows; row++){
+         for(Int_t p = 0; p < cl_padMult[row]; p++){
             pad[row][p] = pads_fired[row][p];
             charge[row][p] = pad_charge[row][p];
             totalCharge[row] += charge[row][p];
-            cout << "      Pads: " << pad[row][p] << "    Charge: " << charge[row][p] << endl;
-            anode->Fill(pad[row][p],2*(row)+1,charge[row][p]);
-            x[row] += (5*pad[row][p]*charge[row][p]);
+            anode->Fill(pad[row][p], 2 * row + 1, charge[row][p]);
+            x_mm[p] = 2.5 + (5 * pad[row][p]);
+            x[row] += (x_mm[p] * charge[row][p]);
          }
-         x[row] = x[row]/(totalCharge[row]);
-         cout << "      x[" << row << "]: " << x[row] << "   y[" << row << "]: " << cl_y_mm[row] << endl;
-         
+         x[row] = x[row] / (totalCharge[row]);
+         retta->AddPoint(x[row], z[row]);
       }
-      
-      TF1 *f = new TF1("f","[0] + [1]*x",0,300);
-      f->SetParameters(0,0);
-      TGraph *retta = new TGraph(5,x,z);
-      retta->SetMarkerStyle(20);
-      retta->SetLineWidth(0);
-      retta->GetXaxis()->SetTitle("x (mm)");
-      retta->GetYaxis()->SetTitle("z (mm)");
-      retta->Fit(f,"","+",0,300);
-      theta_fit = 90-ATan(f->GetParameter(1))*180/Pi();
-      
-      c->cd();
-      anode->Draw("COLZ");
-      c1->cd();
-      retta->Draw();
-      thetaDeg = ATan((x[4]-x[0])/84.8)*180/Pi();
-      cout << "   theta: " << thetaDeg << "°   theta_fit: " << theta_fit << "   thetaTrack_Br: " << theta_deg << endl;
-      cout << "***************************************************************\n";
-      
-      
+
+      retta->Fit(f, "", "+", 0, 300);
+      theta_fit = 90 - ((ATan(f->GetParameter(1))) * 180 / Pi());
+      thetaDeg = ATan((x[4] - x[0]) / 84.8) * 180 / Pi();
+
+      Double_t discr = Abs(theta_fit - theta_deg);
+      if(discr > 0.5){
+         cout << "Find strange event: Evt: " << i << "   sic_fired: " << sic_fired << "   sic_charge: " << sic_charge << endl;
+         outputfile << "  Evt: " << i << "   theta_fit: " << theta_fit << "   theta_deg: " << theta_deg << endl;
+      } else {
+         //cout << "Track control: positive!" << endl;
+      }
+
+      anode->Reset("ICES");
    }
-   
-   
+
+   }
+
+   outputfile << "*****************************************************" << endl;
 }

@@ -1,0 +1,30 @@
+************ Run 38************
+  Evt: 240   theta_fit: 58.4606   theta_deg: 56.5095
+  Evt: 241   theta_fit: 155.383   theta_deg: -24.5969
+  Evt: 960   theta_fit: 50.5426   theta_deg: 49.8594
+  Evt: 1136   theta_fit: 144.262   theta_deg: -35.5788
+  Evt: 1160   theta_fit: 65.1024   theta_deg: 62.1489
+  Evt: 1249   theta_fit: 165.318   theta_deg: -14.466
+  Evt: 3689   theta_fit: 55.4095   theta_deg: 54.8753
+  Evt: 4340   theta_fit: 52.4433   theta_deg: 50.4002
+  Evt: 4638   theta_fit: 53.1455   theta_deg: 52.5255
+  Evt: 5721   theta_fit: 51.9002   theta_deg: 51.2425
+  Evt: 6308   theta_fit: 132.001   theta_deg: -47.7828
+  Evt: 6590   theta_fit: 157.912   theta_deg: -21.9831
+  Evt: 6786   theta_fit: 166.718   theta_deg: -13.1153
+  Evt: 7034   theta_fit: 166.501   theta_deg: -13.4941
+  Evt: 7520   theta_fit: 160.69   theta_deg: -19.3079
+  Evt: 8126   theta_fit: 119.393   theta_deg: -17.5652
+  Evt: 10106   theta_fit: 52.3575   theta_deg: 51.7459
+  Evt: 10414   theta_fit: 156.88   theta_deg: -23.084
+  Evt: 14962   theta_fit: 145.077   theta_deg: -34.9185
+  Evt: 15340   theta_fit: 156.806   theta_deg: -23.1443
+  Evt: 15703   theta_fit: 141.985   theta_deg: -37.9529
+  Evt: 16644   theta_fit: 55.4318   theta_deg: 54.6171
+  Evt: 17906   theta_fit: 53.1483   theta_deg: 52.4078
+  Evt: 18909   theta_fit: 53.5625   theta_deg: 52.8974
+  Evt: 19473   theta_fit: 51.4916   theta_deg: 50.1898
+  Evt: 19539   theta_fit: 50.6566   theta_deg: 50.1369
+  Evt: 20962   theta_fit: 161.54   theta_deg: -18.4305
+  Evt: 21213   theta_fit: 175.658   theta_deg: -4.00809
+*****************************************************
