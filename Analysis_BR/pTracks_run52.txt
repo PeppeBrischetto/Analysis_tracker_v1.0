@@ -1,43 +1,81 @@
-************ Run 52************
-  Evt: 13   theta_fit: 157.908   theta_deg: -22.0617
+************ Run 52_4He - theta-discrepancies > 0°.2 ***********
   Evt: 166   theta_fit: 15.7534   theta_deg: 12.3224
+  Evt: 254   theta_fit: 54.3741   theta_deg: 53.9892
+  Evt: 271   theta_fit: 56.4596   theta_deg: 56.2159
   Evt: 381   theta_fit: 7.41367   theta_deg: 0.306127
-  Evt: 382   theta_fit: 173.476   theta_deg: -5.9168
+  Evt: 382   theta_fit: 173.476   theta_deg: 174.083
   Evt: 394   theta_fit: 3.14932   theta_deg: 1.00227
-  Evt: 479   theta_fit: 169.632   theta_deg: -10.3339
-  Evt: 674   theta_fit: 162.583   theta_deg: -17.3586
+  Evt: 436   theta_fit: 8.60077   theta_deg: 8.14899
+  Evt: 525   theta_fit: 52.8644   theta_deg: 52.6179
+  Evt: 611   theta_fit: 50.8756   theta_deg: 50.6348
+  Evt: 647   theta_fit: 49.1542   theta_deg: 48.8803
   Evt: 723   theta_fit: 13.9571   theta_deg: 12.2249
-  Evt: 845   theta_fit: 173.715   theta_deg: -4.46083
-  Evt: 1402   theta_fit: 136.036   theta_deg: -43.9553
-  Evt: 1641   theta_fit: 170.871   theta_deg: -9.01213
-  Evt: 1917   theta_fit: 163.192   theta_deg: -16.7425
-  Evt: 2318   theta_fit: 148.934   theta_deg: -31.0651
-  Evt: 2339   theta_fit: 174.498   theta_deg: -0.397911
-  Evt: 2771   theta_fit: 173.649   theta_deg: -5.7027
-  Evt: 2803   theta_fit: 176.845   theta_deg: -2.7744
+  Evt: 791   theta_fit: 51.2453   theta_deg: 51.0398
+  Evt: 845   theta_fit: 173.715   theta_deg: 175.539
+  Evt: 1035   theta_fit: 48.8332   theta_deg: 48.5055
+  Evt: 1221   theta_fit: 53.5724   theta_deg: 53.3567
+  Evt: 1232   theta_fit: 51.4231   theta_deg: 51.0938
+  Evt: 1256   theta_fit: 52.7005   theta_deg: 52.4738
+  Evt: 1348   theta_fit: 1.79736   theta_deg: 1.42956
+  Evt: 1392   theta_fit: 54.5688   theta_deg: 54.3401
+  Evt: 1418   theta_fit: 50.896   theta_deg: 50.6859
+  Evt: 1442   theta_fit: 53.3862   theta_deg: 53.1345
+  Evt: 1595   theta_fit: 53.7794   theta_deg: 53.5755
+  Evt: 1728   theta_fit: 44.9938   theta_deg: 44.7239
+  Evt: 1738   theta_fit: 52.4076   theta_deg: 52.1532
+  Evt: 1914   theta_fit: 52.6112   theta_deg: 52.3493
+  Evt: 1971   theta_fit: 52.2397   theta_deg: 52.0361
+  Evt: 1994   theta_fit: 54.6279   theta_deg: 54.2155
+  Evt: 2339   theta_fit: 174.498   theta_deg: 179.602
+  Evt: 2420   theta_fit: 51.2254   theta_deg: 50.9762
+  Evt: 2641   theta_fit: 55.645   theta_deg: 55.4253
+  Evt: 2649   theta_fit: 55.9334   theta_deg: 55.5374
+  Evt: 2709   theta_fit: 52.5362   theta_deg: 52.2705
+  Evt: 2770   theta_fit: 52.8547   theta_deg: 52.6234
+  Evt: 2771   theta_fit: 173.649   theta_deg: 174.297
+  Evt: 2789   theta_fit: 52.601   theta_deg: 52.2576
+  Evt: 2803   theta_fit: 176.845   theta_deg: 177.226
   Evt: 2857   theta_fit: 52.3318   theta_deg: 51.7725
-  Evt: 2899   theta_fit: 162.044   theta_deg: -17.9358
-  Evt: 3001   theta_fit: 168.774   theta_deg: -10.6556
+  Evt: 3001   theta_fit: 168.774   theta_deg: 169.344
   Evt: 3182   theta_fit: 10.5546   theta_deg: 9.52185
+  Evt: 3202   theta_fit: 47.3007   theta_deg: 47.0074
   Evt: 3390   theta_fit: 60.4185   theta_deg: 59.9129
+  Evt: 3509   theta_fit: 52.8928   theta_deg: 52.6686
+  Evt: 3519   theta_fit: 54.2563   theta_deg: 53.9751
+  Evt: 3526   theta_fit: 52.7928   theta_deg: 52.5131
   Evt: 3532   theta_fit: 8.55883   theta_deg: 7.98435
-  Evt: 3679   theta_fit: 177.824   theta_deg: -1.73287
-  Evt: 3781   theta_fit: 158.172   theta_deg: -21.7643
-  Evt: 3790   theta_fit: 166.594   theta_deg: -13.111
-  Evt: 3896   theta_fit: 154.114   theta_deg: -25.795
-  Evt: 4047   theta_fit: 171.115   theta_deg: -8.73107
-  Evt: 4164   theta_fit: 157.43   theta_deg: -22.5185
+  Evt: 3679   theta_fit: 177.824   theta_deg: 178.267
+  Evt: 3697   theta_fit: 54.7005   theta_deg: 54.4384
+  Evt: 3721   theta_fit: 52.8608   theta_deg: 52.6533
+  Evt: 3790   theta_fit: 166.594   theta_deg: 166.889
+  Evt: 3864   theta_fit: 51.4903   theta_deg: 51.1208
+  Evt: 3959   theta_fit: 53.7776   theta_deg: 53.4428
+  Evt: 3990   theta_fit: 54.1049   theta_deg: 53.8166
+  Evt: 4031   theta_fit: 52.9377   theta_deg: 52.7359
+  Evt: 4095   theta_fit: 53.0914   theta_deg: 52.7062
+  Evt: 4188   theta_fit: 54.9544   theta_deg: 54.7182
+  Evt: 4567   theta_fit: 53.8727   theta_deg: 53.6434
   Evt: 4756   theta_fit: 13.9492   theta_deg: 11.2328
+  Evt: 4834   theta_fit: 48.6566   theta_deg: 48.411
   Evt: 5104   theta_fit: 4.8144   theta_deg: 4.11662
+  Evt: 5108   theta_fit: 4.86746   theta_deg: 4.43141
   Evt: 5149   theta_fit: 3.48727   theta_deg: 2.78639
+  Evt: 5261   theta_fit: 50.0542   theta_deg: 49.788
+  Evt: 5330   theta_fit: 49.7614   theta_deg: 49.4431
+  Evt: 5575   theta_fit: 51.119   theta_deg: 50.7705
+  Evt: 5664   theta_fit: 50.7446   theta_deg: 50.5128
+  Evt: 5689   theta_fit: 51.1929   theta_deg: 50.9801
+  Evt: 5741   theta_fit: 51.1072   theta_deg: 50.8336
+  Evt: 5839   theta_fit: 53.833   theta_deg: 53.5191
   Evt: 5864   theta_fit: 56.3136   theta_deg: 55.7589
+  Evt: 5888   theta_fit: 53.7142   theta_deg: 53.4357
+  Evt: 6074   theta_fit: 56.6276   theta_deg: 56.416
+  Evt: 6243   theta_fit: 53.9822   theta_deg: 53.7063
+  Evt: 6256   theta_fit: 52.9771   theta_deg: 52.7523
   Evt: 6359   theta_fit: 4.5941   theta_deg: 0.750044
-  Evt: 6477   theta_fit: 174.052   theta_deg: -5.75899
+  Evt: 6377   theta_fit: 54.627   theta_deg: 54.3638
+  Evt: 6500   theta_fit: 53.5159   theta_deg: 53.1276
   Evt: 6742   theta_fit: 5.91522   theta_deg: 5.21822
-  Evt: 6922   theta_fit: 140.403   theta_deg: -39.2478
-  Evt: 7009   theta_fit: 135.08   theta_deg: -44.8833
-  Evt: 7134   theta_fit: 160.2   theta_deg: -19.7422
-  Evt: 7451   theta_fit: 160.689   theta_deg: -19.1382
-  Evt: 7452   theta_fit: 158.114   theta_deg: -21.8435
-  Evt: 7609   theta_fit: 163.735   theta_deg: -16.2284
-*****************************************************
+  Evt: 6922   theta_fit: 140.403   theta_deg: 140.752
+  Evt: 7572   theta_fit: 52.6521   theta_deg: 52.4036
+*************************** entries: 7723 *****************************

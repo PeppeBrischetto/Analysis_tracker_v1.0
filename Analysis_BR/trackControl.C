@@ -53,9 +53,9 @@ void trackControl(int run){
    openTrackFile(run);
    tree->Print();
    
-   sprintf(titolofile,"pTracks_run%d_4He.txt",run);
+   sprintf(titolofile,"pTracks_run%d.txt",run);
    outputfile.open(titolofile);
-   outputfile << "************ Run " << run << "_4He ************" << endl; 
+   outputfile << "************ Run " << run << "_4He - theta-discrepancies > 0°.2 ***********" << endl; 
 
 //###########################################################################################################
 // Graphyical cut definition
@@ -96,7 +96,7 @@ void trackControl(int run){
       TF1* f = new TF1(Form("f_%d", i), "[0] + [1]*x", 0, 300);
       f->SetParameters(0, 0);
 
-      if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      //if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
       for(Int_t row = 0; row < NRows; row++){
          for(Int_t p = 0; p < cl_padMult[row]; p++){
             pad[row][p] = pads_fired[row][p];
@@ -114,18 +114,27 @@ void trackControl(int run){
       theta_fit = 90 - ((ATan(f->GetParameter(1))) * 180 / Pi());
       thetaDeg = ATan((x[4] - x[0]) / 84.8) * 180 / Pi();
 
-      Double_t discr = Abs(theta_fit - theta_deg);
-      if(discr > 0.5){
-         cout << "Find strange event: Evt: " << i << "   sic_fired: " << sic_fired << "   sic_charge: " << sic_charge << endl;
-         outputfile << "  Evt: " << i << "   theta_fit: " << theta_fit << "   theta_deg: " << theta_deg << endl;
-      } else {
-         //cout << "Track control: positive!" << endl;
-      }
+      if(theta_deg>0){
+        Double_t discr = Abs(theta_fit - theta_deg);
+        if(discr>0.2){
+           cout << "Find strange event: Evt: " << i << "   sic_fired: " << sic_fired << "   sic_charge: " << sic_charge << endl;
+           outputfile << "  Evt: " << i << "   theta_fit: " << theta_fit << "   theta_deg: " << theta_deg << endl;
+          } else {
+           //cout << "Track control: positive!" << endl;
+          }
+     } else{
+        Double_t discropp = Abs(theta_fit-(180+theta_deg));
+        if(discropp>0.2){
+           cout << "Find strange event: Evt: " << i << "   sic_fired: " << sic_fired << "   sic_charge: " << sic_charge << endl;
+           outputfile << "  Evt: " << i << "   theta_fit: " << theta_fit << "   theta_deg: " << 180+theta_deg << endl;
+          } else {
+           //cout << "Track control: positive!" << endl;
+          }
+        }
+      //} // TCut parenthesis
 
       anode->Reset("ICES");
    }
 
-   }
-
-   outputfile << "*****************************************************" << endl;
+   outputfile << "*************************** entries: " << entries << " *****************************" << endl;
 }
