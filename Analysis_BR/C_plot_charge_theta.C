@@ -23,6 +23,8 @@ void C_plot_charge_theta(int run)
    int flagA=0;
    char histoname[100];
    char titleCanv[100];
+   Double_t charge_err[5] = {0.};
+   Int_t evtCounter = 0;
 //###################################################################################################
 //OpenFile
    openTrackFile(run);
@@ -33,20 +35,20 @@ void C_plot_charge_theta(int run)
    TCutG *cutGli = new TCutG("cutGli",5);
    cutGli->SetVarX("cl_x_mm[0]");
    cutGli->SetVarY("cl_x_mm[1]");
-   cutGli->SetPoint(0,30,39);
-   cutGli->SetPoint(1,129,171);
-   cutGli->SetPoint(2,99,176);
-   cutGli->SetPoint(3,22,53);
-   cutGli->SetPoint(4,30,39);
+   cutGli->SetPoint(0,30,40);
+   cutGli->SetPoint(1,134,167);
+   cutGli->SetPoint(2,116,180);
+   cutGli->SetPoint(3,21,51);
+   cutGli->SetPoint(4,30,40);
    
    TCutG *cutGa = new TCutG("cutGa",5);
    cutGa->SetVarX("cl_x_mm[0]");
    cutGa->SetVarY("cl_x_mm[1]");
-   cutGa->SetPoint(0,29,17);
-   cutGa->SetPoint(1,187,201);
-   cutGa->SetPoint(2,168,208);
-   cutGa->SetPoint(3,17,24);
-   cutGa->SetPoint(4,29,17);
+   cutGa->SetPoint(0,27,14);
+   cutGa->SetPoint(1,195,206);
+   cutGa->SetPoint(2,174,216);
+   cutGa->SetPoint(3,15,25);
+   cutGa->SetPoint(4,27,14);
    
 //###################################################################################################
 // GRAPHICS
@@ -54,18 +56,19 @@ void C_plot_charge_theta(int run)
    TCanvas *C1=new TCanvas("c1","c1",250,160,800,600);   
    TCanvas *C2=new TCanvas("c2","c2",350,160,1350,1400);
    TCanvas *C2a=new TCanvas("c2a","c2a",350,160,1350,1400);      
-   TCanvas *C3=new TCanvas("c3","c3",450,360,800,600);  
+   TCanvas *C3=new TCanvas("c3","c3",450,360,1100,600);  
    
    // all tracks
-   TH1F *histoCharge=new TH1F("","",1000,-10,90);
+   TH1F *histoCharge=new TH1F("","",250,0,1e5);
    histoCharge->SetStats(0);
    histoCharge->GetXaxis()->SetTitle("charge");
    histoCharge->GetYaxis()->SetTitle("counts");
+   histoCharge->SetNdivisions(7);
    
    TH1F *h_charge_M[30];
    for(int i=0; i<30; i++){
       sprintf(histoname,"mult %i",i);
-      h_charge_M[i]=new TH1F("","",1000,10,80);
+      h_charge_M[i]=new TH1F("","",250,0,1e5);
       h_charge_M[i]->GetXaxis()->SetTitle("charge");
       h_charge_M[i]->GetXaxis()->SetTitleSize(0.05);
       h_charge_M[i]->GetXaxis()->SetLabelSize(0.05);
@@ -74,6 +77,7 @@ void C_plot_charge_theta(int run)
       h_charge_M[i]->GetYaxis()->SetTitleSize(0.05);
       h_charge_M[i]->GetYaxis()->SetLabelSize(0.05);
       h_charge_M[i]->GetYaxis()->SetTitleOffset(1.);
+      h_charge_M[i]->SetNdivisions(7);
       if(i==5){
         h_charge_M[i]->SetLineColor(kYellow+1);
       }else if(i>=10){
@@ -90,29 +94,54 @@ void C_plot_charge_theta(int run)
       tree->GetEntry(j);
       // Fill the histo
       
-      histoCharge->Fill(cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]);
+      histoCharge->Fill(cl_charge[4]/*+cl_charge[1]+cl_charge[3]+cl_charge[3]+cl_charge[4]*/);
       
       for(int i=0; i<30; i++){
-         if(cl_padMult[1]==i /*&& cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])*/ ){
-            h_charge_M[i]->Fill(cl_charge[0]);
+         if(cl_padMult[4]==i && cutGa->IsInside(cl_x_mm[0], cl_x_mm[1]) ){
+            evtCounter += 1;
+            h_charge_M[i]->Fill(cl_charge[4]);
          }
       }        
    }
    
    
-   TGraph *gr1=new TGraph();
-   gr1->GetXaxis()->SetTitle("multiplicity");
-   gr1->GetYaxis()->SetTitle("charge");  
+   TGraphErrors *gr1=new TGraphErrors();
+   gr1->GetXaxis()->SetTitle("pad multiplicity");
+   gr1->GetYaxis()->SetTitle("charge (Ch)");
+   gr1->SetMarkerColor(kGreen+2);
+   gr1->SetMarkerStyle(53);
+   gr1->SetMarkerSize(1);
+   TGraphErrors *gr1_ls=new TGraphErrors();                                     // TGraph for low-statistics 
+   gr1_ls->GetXaxis()->SetTitle("pad multiplicity");
+   gr1_ls->GetYaxis()->SetTitle("charge (Ch)");  
+   gr1_ls->SetMarkerStyle(53);
+   gr1_ls->SetMarkerSize(1);
+   gr1_ls->SetMarkerColor(kRed);
+   gr1_ls->SetLineWidth(0);
+   TLegend *l = new TLegend(0.6,0.2,0.9,0.3);
+   l->AddEntry(gr1,"statistics > 0.1 #times total","p");
+   l->AddEntry(gr1_ls,"statistics < 0.1 #times total","p");
    
    for(int i=0; i<30; i++){
-     gr1->SetPoint(i, i, h_charge_M[i]->GetMean());
+      Double_t numEvts = 0;
+      numEvts = h_charge_M[i]->GetEntries();
+      charge_err[i] = h_charge_M[i]->GetStdDevError();
+     
+     if(numEvts/evtCounter<0.1){
+        gr1_ls->SetPoint(i, i, h_charge_M[i]->GetMean());
+        gr1_ls->SetPointError(i,0.,charge_err[i]);
+     }else{
+              gr1->SetPoint(i, i, h_charge_M[i]->GetMean());
+              gr1->SetPointError(i, 0.,charge_err[i]);
+           }
+         
      cout<<i<<"  "<<h_charge_M[i]->GetMean()<<endl;
-   }   
+   }  
    
    C1->cd();
-   histoCharge->SetLineColor(kBlack);
+   //histoCharge->SetLineColor(kBlack);
    histoCharge->Draw();
-   //C1->SaveAs("../Pictures/run278/7Li/theta_vs_mult/theta.png");
+   C1->SaveAs("../Pictures/run299/4He/charge_vs_mult/charge_row4.png");
    
    C2->cd();
    C2->Divide(4,4);
@@ -124,7 +153,7 @@ void C_plot_charge_theta(int run)
      //h_charge_M[i]->Fit("gaus","","+",55,75);
      t->Draw("SAME");
    }
-   //C2->SaveAs("../Pictures/run278/7Li/theta_vs_mult/row0/theta_for_mult1.png");
+   C2->SaveAs("../Pictures/run299/4He/charge_vs_mult/row4/charge_for_mult1.png");
    
    C2a->cd();
    C2a->Divide(4,4);
@@ -135,13 +164,13 @@ void C_plot_charge_theta(int run)
      h_charge_M[i]->Draw();
      t->Draw("SAME");
    }  
-   //C2a->SaveAs("../Pictures/run278/7Li/theta_vs_mult/row0/theta_for_mult2.png");
+   C2a->SaveAs("../Pictures/run299/4He/charge_vs_mult/row4/charge_for_mult2.png");
    
    C3->cd();
-   gr1->SetMarkerStyle(22);
-   gr1->SetMarkerSize(1);
-   gr1->Draw("AP");
-   //C3->SaveAs("../Pictures/run278/7Li/theta_vs_mult/row0/ThetaVsMult_row0.png");
+   gr1_ls->Draw("AP");
+   gr1->Draw("P SAME");
+   l->Draw("SAME");
+   C3->SaveAs("../Pictures/run299/4He/charge_vs_mult/row4/ChargeVsMult_row4.png");
    
 }  
    

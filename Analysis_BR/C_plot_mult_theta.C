@@ -23,6 +23,9 @@ void C_plot_mult_theta(int run)
    int flagA=0;
    char histoname[100];
    char titleCanv[100];
+   Int_t stats[30] = {0};
+   Double_t theta_err[30] = {0.};
+   Int_t evtCounter = 0;
 //###################################################################################################
 //OpenFile
    openTrackFile(run);
@@ -33,20 +36,20 @@ void C_plot_mult_theta(int run)
    TCutG *cutGli = new TCutG("cutGli",5);
    cutGli->SetVarX("cl_x_mm[0]");
    cutGli->SetVarY("cl_x_mm[1]");
-   cutGli->SetPoint(0,30,39);
-   cutGli->SetPoint(1,129,171);
-   cutGli->SetPoint(2,99,176);
-   cutGli->SetPoint(3,22,53);
-   cutGli->SetPoint(4,30,39);
+   cutGli->SetPoint(0,29,40);
+   cutGli->SetPoint(1,137,171);
+   cutGli->SetPoint(2,114,179);
+   cutGli->SetPoint(3,21,48);
+   cutGli->SetPoint(4,29,40);
    
    TCutG *cutGa = new TCutG("cutGa",5);
    cutGa->SetVarX("cl_x_mm[0]");
    cutGa->SetVarY("cl_x_mm[1]");
-   cutGa->SetPoint(0,29,17);
-   cutGa->SetPoint(1,187,201);
-   cutGa->SetPoint(2,168,208);
-   cutGa->SetPoint(3,17,24);
-   cutGa->SetPoint(4,29,17);
+   cutGa->SetPoint(0,25,16);
+   cutGa->SetPoint(1,195,207);
+   cutGa->SetPoint(2,173,216);
+   cutGa->SetPoint(3,13,22);
+   cutGa->SetPoint(4,25,16);
    
 //###################################################################################################
 // GRAPHICS
@@ -93,26 +96,51 @@ void C_plot_mult_theta(int run)
       histoTheta->Fill(theta_deg);
       
       for(int i=0; i<30; i++){
-         if(cl_padMult[0]==i && cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) ){
+         if(cl_padMult[4]==i && cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) ){
+            evtCounter += 1;
             h_theta_M[i]->Fill(theta_deg);
          }
       }        
    }
    
+   TGraphErrors *gr1=new TGraphErrors();
+   gr1->GetXaxis()->SetTitle("pad multiplicity");
+   gr1->GetYaxis()->SetTitle("#vartheta (deg)");
+   gr1->SetMarkerColor(kGreen+2);
+   gr1->SetMarkerStyle(53);
+   gr1->SetMarkerSize(1);
+   TGraphErrors *gr1_ls=new TGraphErrors();                                     // TGraph for low-statistics 
+   gr1_ls->GetXaxis()->SetTitle("pad multiplicity");
+   gr1_ls->GetYaxis()->SetTitle("#vartheta (deg)");  
+   gr1_ls->SetMarkerStyle(53);
+   gr1_ls->SetMarkerSize(1);
+   gr1_ls->SetMarkerColor(kRed);
+   gr1_ls->SetLineWidth(0);
+   TLegend *l = new TLegend(0.6,0.2,0.9,0.3);
+   l->AddEntry(gr1,"statistics > 0.1 #times total","p");
+   l->AddEntry(gr1_ls,"statistics < 0.1 #times total","p");
    
-   TGraph *gr1=new TGraph();
-   gr1->GetXaxis()->SetTitle("multiplicity");
-   gr1->GetYaxis()->SetTitle("theta");  
    
    for(int i=0; i<30; i++){
-     gr1->SetPoint(i, i, h_theta_M[i]->GetMean());
+      Double_t numEvts = 0;
+      numEvts = h_theta_M[i]->GetEntries();
+      theta_err[i] = h_theta_M[i]->GetStdDevError();
+     
+     if(numEvts/evtCounter<0.1){
+        gr1_ls->SetPoint(i, i, h_theta_M[i]->GetMean());
+        gr1_ls->SetPointError(i,0.,theta_err[i]);
+     }else{
+              gr1->SetPoint(i, i, h_theta_M[i]->GetMean());
+              gr1->SetPointError(i, 0.,theta_err[i]);
+           }
+         
      cout<<i<<"  "<<h_theta_M[i]->GetMean()<<endl;
    }   
    
    C1->cd();
    histoTheta->SetLineColor(kBlack);
    histoTheta->Draw();
-   C1->SaveAs("../Pictures/run278/7Li/theta_vs_mult/theta.png");
+   C1->SaveAs("../Pictures/run299/7Li/theta_vs_mult/theta.png");
    
    C2->cd();
    C2->Divide(4,4);
@@ -124,7 +152,7 @@ void C_plot_mult_theta(int run)
      //h_theta_M[i]->Fit("gaus","","+",55,75);
      t->Draw("SAME");
    }
-   C2->SaveAs("../Pictures/run278/7Li/theta_vs_mult/row0/theta_for_mult1.png");
+   C2->SaveAs("../Pictures/run299/7Li/theta_vs_mult/row4/theta_for_mult1.png");
    
    C2a->cd();
    C2a->Divide(4,4);
@@ -135,13 +163,15 @@ void C_plot_mult_theta(int run)
      h_theta_M[i]->Draw();
      t->Draw("SAME");
    }  
-   C2a->SaveAs("../Pictures/run278/7Li/theta_vs_mult/row0/theta_for_mult2.png");
+   C2a->SaveAs("../Pictures/run299/7Li/theta_vs_mult/row4/theta_for_mult2.png");
    
    C3->cd();
-   gr1->SetMarkerStyle(22);
-   gr1->SetMarkerSize(1);
-   gr1->Draw("AP");
-   C3->SaveAs("../Pictures/run278/7Li/theta_vs_mult/row0/ThetaVsMult_row0.png");
+   //gr1->GetYaxis()->SetRangeUser(45.,70.);
+   //gr1_ls->GetYaxis()->SetRangeUser(45.,70.);
+   gr1_ls->Draw("AP");
+   gr1->Draw("P SAME");
+   l->Draw("SAME");
+   C3->SaveAs("../Pictures/run299/7Li/theta_vs_mult/row4/ThetaVsMult_row4.png");
    
 }  
    
