@@ -36,20 +36,20 @@ void C_plot_mult_theta(int run)
    TCutG *cutGli = new TCutG("cutGli",5);
    cutGli->SetVarX("cl_x_mm[0]");
    cutGli->SetVarY("cl_x_mm[1]");
-   cutGli->SetPoint(0,29,40);
-   cutGli->SetPoint(1,137,171);
-   cutGli->SetPoint(2,114,179);
-   cutGli->SetPoint(3,21,48);
-   cutGli->SetPoint(4,29,40);
+   cutGli->SetPoint(0,32,37);
+   cutGli->SetPoint(1,133,160);
+   cutGli->SetPoint(2,106,170);
+   cutGli->SetPoint(3,17,47);
+   cutGli->SetPoint(4,33,47);
    
    TCutG *cutGa = new TCutG("cutGa",5);
    cutGa->SetVarX("cl_x_mm[0]");
    cutGa->SetVarY("cl_x_mm[1]");
-   cutGa->SetPoint(0,25,16);
-   cutGa->SetPoint(1,195,207);
-   cutGa->SetPoint(2,173,216);
-   cutGa->SetPoint(3,13,22);
-   cutGa->SetPoint(4,25,16);
+   cutGa->SetPoint(0,28,18);
+   cutGa->SetPoint(1,186,203);
+   cutGa->SetPoint(2,170,210);
+   cutGa->SetPoint(3,17,26);
+   cutGa->SetPoint(4,28,18);
    
 //###################################################################################################
 // GRAPHICS
@@ -68,7 +68,7 @@ void C_plot_mult_theta(int run)
    TH1F *h_theta_M[30];
    for(int i=0; i<30; i++){
       sprintf(histoname,"mult %i",i);
-      h_theta_M[i]=new TH1F("","",1000,10,80);
+      h_theta_M[i]=new TH1F("","",1000,45,70);
       h_theta_M[i]->GetXaxis()->SetTitle("#vartheta (deg)");
       h_theta_M[i]->GetXaxis()->SetTitleSize(0.05);
       h_theta_M[i]->GetXaxis()->SetLabelSize(0.05);
@@ -96,7 +96,7 @@ void C_plot_mult_theta(int run)
       histoTheta->Fill(theta_deg);
       
       for(int i=0; i<30; i++){
-         if(cl_padMult[4]==i && cutGli->IsInside(cl_x_mm[0], cl_x_mm[1]) ){
+         if(cl_padMult[4]==i /*&& cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])*/ ){
             evtCounter += 1;
             h_theta_M[i]->Fill(theta_deg);
          }
@@ -117,8 +117,8 @@ void C_plot_mult_theta(int run)
    gr1_ls->SetMarkerColor(kRed);
    gr1_ls->SetLineWidth(0);
    TLegend *l = new TLegend(0.6,0.2,0.9,0.3);
-   l->AddEntry(gr1,"statistics > 0.1 #times total","p");
-   l->AddEntry(gr1_ls,"statistics < 0.1 #times total","p");
+   l->AddEntry(gr1,"statistics > 5 % of the total","p");
+   l->AddEntry(gr1_ls,"statistics < 5 % of the total","p");
    
    
    for(int i=0; i<30; i++){
@@ -140,30 +140,40 @@ void C_plot_mult_theta(int run)
    C1->cd();
    histoTheta->SetLineColor(kBlack);
    histoTheta->Draw();
-   //C1->SaveAs("../Pictures/run299/7Li/theta_vs_mult/theta.png");
+   C1->SaveAs("../Pictures/run41/theta_vs_mult/theta.png");
    
    C2->cd();
    C2->Divide(4,4);
    for(int i=0; i<16; i++){
      C2->cd(i+1);
+     Double_t h_pos = 0.5*h_theta_M[i]->GetMaximum();
+     if(h_pos==0){
+        h_pos=0.5;
+     }
      sprintf(histoname,"Mult: %i",i);
-     TText *t = new TText(70.,0.,histoname);
+     TText *t = new TText(50.,h_pos,histoname);
+     t->SetTextSize(0.07);
      h_theta_M[i]->Draw();
      //h_theta_M[i]->Fit("gaus","","+",55,75);
      t->Draw("SAME");
    }
-   //C2->SaveAs("../Pictures/run299/7Li/theta_vs_mult/row4/theta_for_mult1.png");
+   C2->SaveAs("../Pictures/run41/theta_vs_mult/row4/theta_for_mult1.png");
    
    C2a->cd();
    C2a->Divide(4,4);
    for(int i=16; i<30; i++){
      C2a->cd(i-15);
+     Double_t h_pos = 0.5*h_theta_M[i]->GetMaximum();
+     if(h_pos==0){
+        h_pos=0.5;
+     }
      sprintf(histoname,"Mult: %i",i);
-     TText *t = new TText(70.,0.,histoname);
+     TText *t = new TText(50.,h_pos,histoname);
+     t->SetTextSize(0.07);
      h_theta_M[i]->Draw();
      t->Draw("SAME");
    }  
-   //C2a->SaveAs("../Pictures/run299/7Li/theta_vs_mult/row4/theta_for_mult2.png");
+   C2a->SaveAs("../Pictures/run41/theta_vs_mult/row4/theta_for_mult2.png");
    
    C3->cd();
    //gr1->GetYaxis()->SetRangeUser(45.,70.);
@@ -171,7 +181,7 @@ void C_plot_mult_theta(int run)
    gr1_ls->Draw("AP");
    gr1->Draw("P SAME");
    l->Draw("SAME");
-   //C3->SaveAs("../Pictures/run299/7Li/theta_vs_mult/row4/ThetaVsMult_row4.png");
+   C3->SaveAs("../Pictures/run41/theta_vs_mult/row4/ThetaVsMult_row4.png");
    
 }  
    
