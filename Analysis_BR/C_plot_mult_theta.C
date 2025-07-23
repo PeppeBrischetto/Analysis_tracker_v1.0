@@ -126,7 +126,7 @@ void C_plot_mult_theta(int run)
       numEvts = h_theta_M[i]->GetEntries();
       theta_err[i] = h_theta_M[i]->GetStdDevError();
      
-     if(numEvts/evtCounter<0.1){
+     if(numEvts/evtCounter<0.05){
         gr1_ls->SetPoint(i, i, h_theta_M[i]->GetMean());
         gr1_ls->SetPointError(i,0.,theta_err[i]);
      }else{
@@ -140,7 +140,7 @@ void C_plot_mult_theta(int run)
    C1->cd();
    histoTheta->SetLineColor(kBlack);
    histoTheta->Draw();
-   C1->SaveAs("../Pictures/run299/7Li/theta_vs_mult/theta.png");
+   //C1->SaveAs("../Pictures/run299/7Li/theta_vs_mult/theta.png");
    
    C2->cd();
    C2->Divide(4,4);
@@ -152,7 +152,7 @@ void C_plot_mult_theta(int run)
      //h_theta_M[i]->Fit("gaus","","+",55,75);
      t->Draw("SAME");
    }
-   C2->SaveAs("../Pictures/run299/7Li/theta_vs_mult/row4/theta_for_mult1.png");
+   //C2->SaveAs("../Pictures/run299/7Li/theta_vs_mult/row4/theta_for_mult1.png");
    
    C2a->cd();
    C2a->Divide(4,4);
@@ -163,7 +163,7 @@ void C_plot_mult_theta(int run)
      h_theta_M[i]->Draw();
      t->Draw("SAME");
    }  
-   C2a->SaveAs("../Pictures/run299/7Li/theta_vs_mult/row4/theta_for_mult2.png");
+   //C2a->SaveAs("../Pictures/run299/7Li/theta_vs_mult/row4/theta_for_mult2.png");
    
    C3->cd();
    //gr1->GetYaxis()->SetRangeUser(45.,70.);
@@ -171,7 +171,7 @@ void C_plot_mult_theta(int run)
    gr1_ls->Draw("AP");
    gr1->Draw("P SAME");
    l->Draw("SAME");
-   C3->SaveAs("../Pictures/run299/7Li/theta_vs_mult/row4/ThetaVsMult_row4.png");
+   //C3->SaveAs("../Pictures/run299/7Li/theta_vs_mult/row4/ThetaVsMult_row4.png");
    
 }  
    
