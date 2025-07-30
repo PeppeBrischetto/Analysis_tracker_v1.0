@@ -14,7 +14,7 @@
 
 #include "../Include/openfiles.h"
 
-void C_plot_charge_theta(int run)
+void C_plot_charge_mult(int run)
 {
 
 //###################################################################################################

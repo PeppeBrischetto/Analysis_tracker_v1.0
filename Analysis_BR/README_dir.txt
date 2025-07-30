@@ -93,13 +93,42 @@
 *                                                                                 *
 *.................................................................................*
 *                                                                                 *
-*  5. C_plotTheta.C                                                               *
+*  5. C_plot_charge_mult.C                                                        *
+*  This macro allows th plot the charge as a funcion of the pad multiplicity. In  *
+*  particular, starting from the reconstructed tracks during the offline analysis,*
+*  the events are collected in groups of pad-multiplicity from 0 to 30 for each   *
+*  the pad-segemnted row 0,1,2,3,4: the outputs are the charge-distribution and   *
+*  the average behabiour of the charge as a function of the pad-multiplicity and  *
+*  for each row. It takes as input the runID.                                     *
+*                                                                                 *
+*.................................................................................*
+*                                                                                 *
+*  6. C_plot_mult_theta.C                                                         *
+*  This macro allows th plot the horizontal angle theta as a funcion of the pad   *
+*  multiplicity. In particular, starting from the reconstructed tracks during the *
+*  offline analysis, the events are collected in groups of pad-multiplicity from  *
+*  0 to 30 for each the pad-segemnted row 0,1,2,3,4: theta-distribution and the   *
+*  average behabiour of the charge as a function of the pad-multiplicity (and for *
+*  each row) are the main outputs. It takes as input the runID.                   *
+*                                                                                 *
+*.................................................................................*
+*                                                                                 *
+*  7. C_plotTheta.C                                                               *
 *  This macro allows to plot theta distributions for the reference run, starting  *
 *  from the reconstructed tracks during the offline analysis. It takes as input   *
 *  the runID.                                                                     *
-*.................................................................................*
 *                                                                                 *
-*  6. C_plotTheta_rangeTracks.C                                                   *
+*.................................................................................* 
+*                                                                                 *
+*  8. C_plotTheta_padExclusion.C                                                  *
+*  This macro allows to plot theta distributions for the reference run excluding  *
+*  a couple of pads, i.e. the initial ones on row 0 and the last ones on row 4.   *
+*  The starting data are the reconstructed tracks during the offline analysis.    *
+*  It takes as input the runID.                                                   *
+*                                                                                 *
+***********************************************************************************
+*                                                                                 *
+*  9. C_plotTheta_rangeTracks.C                                                   *
 *  This macro allows to plot theta distributions for the reference run, starting  *
 *  from the reconstructed tracks during the offline analysis. It takes as input   *
 *  the runID, returning the theta-distrib. according to the range of tracks that  *
