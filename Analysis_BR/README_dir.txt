@@ -135,3 +135,10 @@
 *  will be processed.                                                             *
 *                                                                                 *
 ***********************************************************************************
+*                                                                                 *
+*  10. pca_multiplicity.C                                                         *
+*  This macro allows to perform Principal Component Analysis for a given run.     *
+*  To launch this macro the runID is required. At the end, pca_histograms are     *
+*  returned to find correlations between the gas tracker rows.                    *
+*                                                                                 *
+***********************************************************************************

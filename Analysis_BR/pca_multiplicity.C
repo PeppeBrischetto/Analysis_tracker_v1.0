@@ -29,6 +29,7 @@ void pca_multiplicity(int run){
 //################################################################################################################
 // Variables
    Double_t pad_mult[NRows] = {0.};
+   Double_t charge_mult[NRows] = {0.};
    Double_t phi = 0.;
    Double_t theta = 0.;
    Double_t projx[5] = {0.};
@@ -52,8 +53,11 @@ void pca_multiplicity(int run){
       
       for(Int_t row=0; row<NRows; row++){
          pad_mult[row] = cl_padMult[row];
+         obj->AddRow(pad_mult);
+         charge_mult[row] = cl_charge[row];
+         obj->AddRow(charge_mult);
       }
-      obj->AddRow(pad_mult);
+      
    }
   
    obj->MakePrincipals();
@@ -82,7 +86,7 @@ void pca_multiplicity(int run){
    g_pca_inv->SetTitle("PCA inverse projections");
    g_pca_inv->SetMarkerStyle(20);
    
-   TH2D *h2 = new TH2D("h2","multiplicity vs PC",5,-2.5,2.5,5,-2.5,2.5);
+   TH2D *h2 = new TH2D("h2","multiplicity vs PC",5e1,-2.5e5,2.5e5,5e1,-2.5e5,2.5e5);
    h2->Fill(projx[0],projy[1]);
 //################################################################################################################
 // Visualization block
