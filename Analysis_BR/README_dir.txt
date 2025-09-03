@@ -142,3 +142,21 @@
 *  returned to find correlations between the gas tracker rows.                    *
 *                                                                                 *
 ***********************************************************************************
+*                                                                                 *
+*  11. trackControl.C                                                             *
+*  This macro allows to perform a control for all the track event understanding   *
+*  the discrepancies between thete_deg coming from the trackGenerator.C and the   *
+*  same angle obtained by a fit on the hit-map of the same event. If differences  *
+*  larger than 0.2° are observed, a .txt file is compiled reportinf the eventID,  *
+*  theta_fit and theta_deg.                                                       *
+*                                                                                 *
+***********************************************************************************
+*                                                                                 *
+*  12. trackControl_R.C                                                           *
+*  This macro allows to perform a control for all the track event, as before, but *
+*  in this case the Pearson coefficient is plotted. In particular, for each track *
+*  the Pearson correlation coefficient is evaluated and stored in a TH1D. At the  *
+*  end, if some pathological events are present, the P. correlation coefficient   *
+*  distribution will show a trend characterized by a skewness on the left part.   *
+*                                                                                 *
+***********************************************************************************

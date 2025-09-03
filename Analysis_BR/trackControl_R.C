@@ -1,7 +1,7 @@
 //################################################################################################################
-//#   This macro allows to perform a track-control on the tracker event
-//#   coming from the IRRAD4 experiment - trackGenerator.C
-//#
+//#   This macro allows to perform an additional control on the track events coming from the IRRAD4 experiment.
+//#   in particular, for each track, this macro extrapolate the (pad,row)-pairs, thus making a fit of them and 
+//#   plotting the R-coefficient (i.e. the Pearson correlation coefficient) in order to discern pathological events.
 //################################################################################################################
 //#   Created July 2025 by A. Pitronaci 
 //################################################################################################################
@@ -25,7 +25,7 @@ const Int_t NRows = 5;
 const Int_t NStrips = 11;
 const Int_t NPads = 60;
 
-void trackControl(int run){
+void trackControl_R(int run){
 
 //################################################################################################################
 // Variables
@@ -40,6 +40,11 @@ void trackControl(int run){
    anode->GetYaxis()->SetTitle("row");
    anode->GetYaxis()->SetNdivisions(-11);
    anode->GetYaxis()->SetLabelSize(0);
+   
+   TH1D *pearson = new TH1D("pearson","pearson",1000,0,1.5);
+   pearson->GetXaxis()->SetTitle("Pearson coefficient r");
+   pearson->GetYaxis()->SetTitle("Counts");
+   
    
    ofstream outputfile;
    TGraph *retta = new TGraph(5);
@@ -80,8 +85,7 @@ void trackControl(int run){
 
 //#################################################################################################
 // Data loop
-   for(Int_t i = 2; i < 3; i++){
-   
+   for(Int_t i = 0; i < entries; i++){
       Double_t theta_fit = 0.;
       Double_t pad[NRows][100] = {0.};
       Double_t charge[NRows][100] = {0.};
@@ -89,6 +93,7 @@ void trackControl(int run){
       Double_t x_mm[NStrips] = {0.};
       Double_t y[NRows] = {0.};
       Double_t totalCharge[NRows] = {0.};
+      Double_t r = 0.;
 
       tree->GetEntry(i);
       retta->Set(0);
@@ -108,40 +113,20 @@ void trackControl(int run){
          }
          x[row] = x[row] / (totalCharge[row]);
          retta->AddPoint(x[row], z[row]);
-         TCanvas *c = new TCanvas();
-         c->cd();
-         anode->Draw("COLZ");
-         TCanvas *c1 = new TCanvas();
-         c1->cd();
-         retta->Draw("SAME");
       }
-
-      retta->Fit(f, "", "+", 0, 300);
-      theta_fit = 90 - ((ATan(f->GetParameter(1))) * 180 / Pi());
-      thetaDeg = ATan((x[4] - x[0]) / 84.8) * 180 / Pi();
-
-      if(theta_deg>0){
-        Double_t discr = Abs(theta_fit - theta_deg);
-        if(discr>0.2){
-           cout << "Find strange event: Evt: " << i << "   sic_fired: " << sic_fired << "   sic_charge: " << sic_charge << endl;
-           outputfile << "  Evt: " << i << "   theta_fit: " << theta_fit << "   theta_deg: " << theta_deg << endl;
-          } else {
-           //cout << "Track control: positive!" << endl;
-          }
-     } else{
-        Double_t discropp = Abs(theta_fit-(180+theta_deg));
-        if(discropp>0.2){
-           cout << "Find strange event: Evt: " << i << "   sic_fired: " << sic_fired << "   sic_charge: " << sic_charge << endl;
-           outputfile << "  Evt: " << i << "   theta_fit: " << theta_fit << "   theta_deg: " << 180+theta_deg << endl;
-          } else {
-           //cout << "Track control: positive!" << endl;
-          }
-        }
-      //} // TCut parenthesis
-
+//      cout << "Pearson coefficient: " << anode->GetCorrelationFactor() << endl;
+      r=anode->GetCorrelationFactor();
+      pearson->Fill(r);
+      //retta->Fit(f, "", "+", 0, 300);
+      //theta_fit = 90 - ((ATan(f->GetParameter(1))) * 180 / Pi());
+      //thetaDeg = ATan((x[4] - x[0]) / 84.8) * 180 / Pi();
       
-      //anode->Reset("ICES");
+      anode->Reset("ICES");
    }
+   
+   TCanvas *c = new TCanvas();
+   c->cd();
+   pearson->Draw();
 
-   outputfile << "*************************** entries: " << entries << " *****************************" << endl;
+
 }
