@@ -104,11 +104,11 @@
 *.................................................................................*
 *                                                                                 *
 *  6. C_plot_mult_theta.C                                                         *
-*  This macro allows th plot the horizontal angle theta as a funcion of the pad   *
+*  This macro allows to plot the horizontal angle theta as a funcion of the pad   *
 *  multiplicity. In particular, starting from the reconstructed tracks during the *
 *  offline analysis, the events are collected in groups of pad-multiplicity from  *
-*  0 to 30 for each the pad-segemnted row 0,1,2,3,4: theta-distribution and the   *
-*  average behabiour of the charge as a function of the pad-multiplicity (and for *
+*  0 to 30 for each pad-segemnted row 0,1,2,3,4: theta-distribution and the       *
+*  average behaviour of the charge as a function of the pad-multiplicity (and for *
 *  each row) are the main outputs. It takes as input the runID.                   *
 *                                                                                 *
 *.................................................................................*
