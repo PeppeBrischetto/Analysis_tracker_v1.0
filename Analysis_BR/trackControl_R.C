@@ -41,7 +41,7 @@ void trackControl_R(int run){
    anode->GetYaxis()->SetNdivisions(-11);
    anode->GetYaxis()->SetLabelSize(0);
    
-   TH1D *pearson = new TH1D("pearson","pearson",1000,0,1.5);
+   TH1D *pearson = new TH1D("pearson","",1000,0.9,1.04);
    pearson->GetXaxis()->SetTitle("Pearson coefficient r");
    pearson->GetYaxis()->SetTitle("Counts");
    
@@ -58,9 +58,9 @@ void trackControl_R(int run){
    openTrackFile(run);
    tree->Print();
    
-   sprintf(titolofile,"pTracks_run%d_proof.txt",run);
+   sprintf(titolofile,"pearson_coefficient/r_coefficient_Tracks_run%d.txt",run);
    outputfile.open(titolofile);
-   outputfile << "************ Run " << run << "_4He - theta-discrepancies > 0°.2 ***********" << endl; 
+   outputfile << "************ Run " << run << "_7Li - pearson coefficient ***********" << endl; 
 
 //###########################################################################################################
 // Graphyical cut definition
@@ -101,7 +101,7 @@ void trackControl_R(int run){
       TF1* f = new TF1(Form("f_%d", i), "[0] + [1]*x", 0, 300);
       f->SetParameters(0, 0);
 
-      //if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
       for(Int_t row = 0; row < NRows; row++){
          for(Int_t p = 0; p < cl_padMult[row]; p++){
             pad[row][p] = pads_fired[row][p];
@@ -117,16 +117,26 @@ void trackControl_R(int run){
 //      cout << "Pearson coefficient: " << anode->GetCorrelationFactor() << endl;
       r=anode->GetCorrelationFactor();
       pearson->Fill(r);
-      //retta->Fit(f, "", "+", 0, 300);
-      //theta_fit = 90 - ((ATan(f->GetParameter(1))) * 180 / Pi());
-      //thetaDeg = ATan((x[4] - x[0]) / 84.8) * 180 / Pi();
+      
+      outputfile << "Evt. " << i << "   P.coefficient (R): " << r << endl;
+      }
+      
       
       anode->Reset("ICES");
    }
    
+   outputfile << "*************************** entries: " << entries << " *****************************" << endl;
+   
+   Int_t hpos = 0.5*pearson->GetMaximum();
+   char testo[100];
+   sprintf(testo,"Run %d - ^{7}Li tracks",run);
+   TLatex *t = new TLatex(1.,hpos,testo);
    TCanvas *c = new TCanvas();
    c->cd();
    pearson->Draw();
+   t->Draw("SAME");
+   sprintf(testo,"Pictures_Analysis/Perason_correlation_analysis/run%d_7Li.png",run);
+   c->SaveAs(testo);
 
 
 }

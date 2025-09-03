@@ -168,7 +168,7 @@ void C_plot_mult_theta(int run)
         h_pos=0.5;
      }
      sprintf(histoname,"Mult: %i",i);
-     TText *t = new TText(50.,h_pos,histoname);
+     TLatex *t = new TText(50.,h_pos,histoname);
      t->SetTextSize(0.07);
      h_theta_M[i]->Draw();
      t->Draw("SAME");
