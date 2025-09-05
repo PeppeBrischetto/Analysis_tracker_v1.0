@@ -1,0 +1,105 @@
+***********************************************************************
+*                                                                     *
+*                    TCug for the analyzied runs                      *
+*                                                                     *
+***********************************************************************
+
+   * RUN 215 *
+   TCutG *cutGli = new TCutG("cutGli",5);
+   cutGli->SetVarX("cl_x_mm[0]");
+   cutGli->SetVarY("cl_x_mm[1]");
+   cutGli->SetPoint(0,14.6,30.);
+   cutGli->SetPoint(1,88,128.6);
+   cutGli->SetPoint(2,58.6,140.6);
+   cutGli->SetPoint(3,6.4,57.);
+   cutGli->SetPoint(4,14.6,30.);
+   
+   TCutG *cutGa = new TCutG("cutGa",5);
+   cutGa->SetVarX("cl_x_mm[0]");
+   cutGa->SetVarY("cl_x_mm[1]");
+   cutGa->SetPoint(0,11.7,13.7);
+   cutGa->SetPoint(1,134.5,158.4);
+   cutGa->SetPoint(2,116.6,168.3);
+   cutGa->SetPoint(3,5.4,30.);
+   cutGa->SetPoint(4,11.7,13.7);
+   
+   * RUN 278
+   TCutG *cutGli = new TCutG("cutGli",5);
+   cutGli->SetVarX("cl_x_mm[0]");
+   cutGli->SetVarY("cl_x_mm[1]");
+   cutGli->SetPoint(0,32,37);
+   cutGli->SetPoint(1,133,160);
+   cutGli->SetPoint(2,106,170);
+   cutGli->SetPoint(3,17,47);
+   cutGli->SetPoint(4,33,47);
+   
+   TCutG *cutGa = new TCutG("cutGa",5);
+   cutGa->SetVarX("cl_x_mm[0]");
+   cutGa->SetVarY("cl_x_mm[1]");
+   cutGa->SetPoint(0,28,18);
+   cutGa->SetPoint(1,186,203);
+   cutGa->SetPoint(2,170,210);
+   cutGa->SetPoint(3,17,26);
+   cutGa->SetPoint(4,28,18);
+   
+   
+   * RUN 293
+   TCutG *cutGli = new TCutG("cutGli",5);
+   cutGli->SetVarX("cl_x_mm[0]");
+   cutGli->SetVarY("cl_x_mm[1]");
+   cutGli->SetPoint(0,33,41);
+   cutGli->SetPoint(1,133,160);
+   cutGli->SetPoint(2,106,170);
+   cutGli->SetPoint(3,17,47);
+   cutGli->SetPoint(4,33,41);
+   
+   TCutG *cutGa = new TCutG("cutGa",5);
+   cutGa->SetVarX("cl_x_mm[0]");
+   cutGa->SetVarY("cl_x_mm[1]");
+   cutGa->SetPoint(0,28,18);
+   cutGa->SetPoint(1,186,203);
+   cutGa->SetPoint(2,170,210);
+   cutGa->SetPoint(3,17,26);
+   cutGa->SetPoint(4,28,18);
+   
+   
+   * RUN 298
+   TCutG *cutGli = new TCutG("cutGli",5);
+   cutGli->SetVarX("cl_x_mm[0]");
+   cutGli->SetVarY("cl_x_mm[1]");
+   cutGli->SetPoint(0,33,41);
+   cutGli->SetPoint(1,135,165);
+   cutGli->SetPoint(2,115,176);
+   cutGli->SetPoint(3,20,53);
+   cutGli->SetPoint(4,33,41);
+   
+   TCutG *cutGa = new TCutG("cutGa",5);
+   cutGa->SetVarX("cl_x_mm[0]");
+   cutGa->SetVarY("cl_x_mm[1]");
+   cutGa->SetPoint(0,25,16);
+   cutGa->SetPoint(1,195,207);
+   cutGa->SetPoint(2,173,216);
+   cutGa->SetPoint(3,13,22);
+   cutGa->SetPoint(4,25,16);
+   
+   
+   * RUN 299
+   TCutG *cutGli = new TCutG("cutGli",5);
+   cutGli->SetVarX("cl_x_mm[0]");
+   cutGli->SetVarY("cl_x_mm[1]");
+   cutGli->SetPoint(0,29,40);
+   cutGli->SetPoint(1,137,171);
+   cutGli->SetPoint(2,114,179);
+   cutGli->SetPoint(3,21,48);
+   cutGli->SetPoint(4,29,40);
+   
+   TCutG *cutGa = new TCutG("cutGa",5);
+   cutGa->SetVarX("cl_x_mm[0]");
+   cutGa->SetVarY("cl_x_mm[1]");
+   cutGa->SetPoint(0,25,16);
+   cutGa->SetPoint(1,195,207);
+   cutGa->SetPoint(2,173,216);
+   cutGa->SetPoint(3,13,22);
+   cutGa->SetPoint(4,25,16);
+   
+   

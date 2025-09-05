@@ -1,7 +1,7 @@
 //################################################################################################################
 //#   This macro allows to perform an additional control on the track events coming from the IRRAD4 experiment.
-//#   in particular, for each track, this macro extrapolate the (pad,row)-pairs, thus making a fit of them and 
-//#   plotting the R-coefficient (i.e. the Pearson correlation coefficient) in order to discern pathological events.
+//#   in particular, for each track, this macro extrapolates the (pad,row)-pairs, thus makes a fit of them and 
+//#   plots the R-coefficient (i.e. the Pearson correlation coefficient) in order to discern pathological events.
 //################################################################################################################
 //#   Created July 2025 by A. Pitronaci 
 //################################################################################################################
@@ -41,7 +41,7 @@ void trackControl_R(int run){
    anode->GetYaxis()->SetNdivisions(-11);
    anode->GetYaxis()->SetLabelSize(0);
    
-   TH1D *pearson = new TH1D("pearson","",1000,0.9,1.04);
+   TH1D *pearson = new TH1D("pearson","",1000,0.92,1.04);
    pearson->GetXaxis()->SetTitle("Pearson coefficient r");
    pearson->GetYaxis()->SetTitle("Counts");
    
@@ -58,9 +58,9 @@ void trackControl_R(int run){
    openTrackFile(run);
    tree->Print();
    
-   sprintf(titolofile,"pearson_coefficient/r_coefficient_Tracks_run%d.txt",run);
+   sprintf(titolofile,"pearson_coefficient/r_coefficient_Tracks_run%d_4He.txt",run);
    outputfile.open(titolofile);
-   outputfile << "************ Run " << run << "_7Li - pearson coefficient ***********" << endl; 
+   outputfile << "************ Run " << run << "_4He - pearson coefficient ***********" << endl; 
 
 //###########################################################################################################
 // Graphyical cut definition
@@ -68,20 +68,20 @@ void trackControl_R(int run){
    TCutG *cutGli = new TCutG("cutGli",5);
    cutGli->SetVarX("cl_x_mm[0]");
    cutGli->SetVarY("cl_x_mm[1]");
-   cutGli->SetPoint(0,30,40);
-   cutGli->SetPoint(1,134,167);
-   cutGli->SetPoint(2,113,180);
-   cutGli->SetPoint(3,22,54);
-   cutGli->SetPoint(4,30,39);
+   cutGli->SetPoint(0,14.6,30.);
+   cutGli->SetPoint(1,88,128.6);
+   cutGli->SetPoint(2,58.6,140.6);
+   cutGli->SetPoint(3,6.4,57.);
+   cutGli->SetPoint(4,14.6,30.);
    
    TCutG *cutGa = new TCutG("cutGa",5);
    cutGa->SetVarX("cl_x_mm[0]");
    cutGa->SetVarY("cl_x_mm[1]");
-   cutGa->SetPoint(0,23,12);
-   cutGa->SetPoint(1,192,206);
-   cutGa->SetPoint(2,172,216);
-   cutGa->SetPoint(3,13,26);
-   cutGa->SetPoint(4,23,12);
+   cutGa->SetPoint(0,11.7,13.7);
+   cutGa->SetPoint(1,134.5,158.4);
+   cutGa->SetPoint(2,116.6,168.3);
+   cutGa->SetPoint(3,5.4,30.);
+   cutGa->SetPoint(4,11.7,13.7);
 
 //#################################################################################################
 // Data loop
@@ -101,7 +101,7 @@ void trackControl_R(int run){
       TF1* f = new TF1(Form("f_%d", i), "[0] + [1]*x", 0, 300);
       f->SetParameters(0, 0);
 
-      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
       for(Int_t row = 0; row < NRows; row++){
          for(Int_t p = 0; p < cl_padMult[row]; p++){
             pad[row][p] = pads_fired[row][p];
@@ -119,7 +119,7 @@ void trackControl_R(int run){
       pearson->Fill(r);
       
       outputfile << "Evt. " << i << "   P.coefficient (R): " << r << endl;
-      }
+      }                                                                      // TCutg parenthesis
       
       
       anode->Reset("ICES");
@@ -129,13 +129,13 @@ void trackControl_R(int run){
    
    Int_t hpos = 0.5*pearson->GetMaximum();
    char testo[100];
-   sprintf(testo,"Run %d - ^{7}Li tracks",run);
-   TLatex *t = new TLatex(1.,hpos,testo);
+   sprintf(testo,"Run %d - ^{4}He tracks",run);
+   TLatex *t = new TLatex(0.93,hpos,testo);
    TCanvas *c = new TCanvas();
    c->cd();
    pearson->Draw();
    t->Draw("SAME");
-   sprintf(testo,"Pictures_Analysis/Perason_correlation_analysis/run%d_7Li.png",run);
+   sprintf(testo,"Pictures_Analysis/Perason_correlation_analysis/run%d_4He.png",run);
    c->SaveAs(testo);
 
 

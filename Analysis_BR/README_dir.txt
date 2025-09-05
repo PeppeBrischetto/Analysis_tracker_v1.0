@@ -160,3 +160,13 @@
 *  distribution will show a trend characterized by a skewness on the left part.   *
 *                                                                                 *
 ***********************************************************************************
+*                                                                                 *
+*  13. trackQualityControl.C                                                      *
+*  This macro allows to perform a quality control of all the track events. Pretty *
+*  similar to the previous ones, here the chi^2 is plotted together with the      *
+*  discrepancie |x_{i} - f(z_{i})|, i=0,1,2,3,4, being x_{i} the charge distrib.  *
+*  width experimentally obtained and f(z_{i}) the same observable coming by the   *
+*  best-fit. A TH1D of these discrepancies is obtained together with that of the  *
+*  amplitudes sqrt{(x_{i} - f(z_{i}))^2}.                                         *
+*                                                                                 *
+***********************************************************************************
