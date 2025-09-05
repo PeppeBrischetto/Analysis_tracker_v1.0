@@ -48,7 +48,7 @@ void trackQualityControl(int run){
    for(int i=0; i<NRows; i++){
       sprintf(histoname,"discr %i",i);
       discr[i]=new TH1D("","",500,-20,20);
-      discr[i]->GetXaxis()->SetTitle("|x_{i} - f(z_{i})|");
+      discr[i]->GetXaxis()->SetTitle("|x_{i} - f(z_{i})| (mm)");
       discr[i]->GetXaxis()->SetTitleSize(0.05);
       discr[i]->GetXaxis()->SetLabelSize(0.05);
       discr[i]->GetXaxis()->SetTitleOffset(.9);
@@ -64,7 +64,7 @@ void trackQualityControl(int run){
    for(int i=0; i<NRows; i++){
       sprintf(histoname,"amplitude %i",i);
       amplitude[i]=new TH1D("","",500,-20,20);
-      amplitude[i]->GetXaxis()->SetTitle("#sqrt{(x_{i} - f(z_{i}))^{2}}");
+      amplitude[i]->GetXaxis()->SetTitle("#sqrt{(x_{i} - f(z_{i}))^{2}} (mm)");
       amplitude[i]->GetXaxis()->SetTitleSize(0.05);
       amplitude[i]->GetXaxis()->SetLabelSize(0.05);
       amplitude[i]->GetXaxis()->SetTitleOffset(.9);
