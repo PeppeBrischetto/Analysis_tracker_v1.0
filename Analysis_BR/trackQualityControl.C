@@ -132,7 +132,7 @@ void trackQualityControl(int run){
       TF1* f = new TF1(Form("f_%d", i), "[0] + [1]*x", 0, 300);
       f->SetParameters(0, 0);
 
-      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      //if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
       for(Int_t row = 0; row < NRows; row++){
          for(Int_t p = 0; p < cl_padMult[row]; p++){
             pad[row][p] = pads_fired[row][p];
@@ -153,7 +153,7 @@ void trackQualityControl(int run){
          chi_root[row] += f->GetChisquare();
       }
       
-      }                                                                      // TCutg parenthesis
+      //}                                                                      // TCutg parenthesis
       
       
       anode->Reset("ICES");
@@ -248,9 +248,9 @@ void trackQualityControl(int run){
    l1->Draw("SAME");
    
    char titolo0[100];
-   sprintf(titolo0,"Discrepancies_run%d_7Li.png",run);
+   sprintf(titolo0,"Discrepancies_run%d.png",run);
    char titolo1[100];
-   sprintf(titolo1,"Amplitudes_run%d_7Li.png",run);
+   sprintf(titolo1,"Amplitudes_run%d.png",run);
    c->SaveAs(titolo0);
    c1->SaveAs(titolo1);
 
