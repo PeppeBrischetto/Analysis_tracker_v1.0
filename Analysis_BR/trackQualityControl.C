@@ -98,20 +98,20 @@ void trackQualityControl(int run){
    TCutG *cutGli = new TCutG("cutGli",5);
    cutGli->SetVarX("cl_x_mm[0]");
    cutGli->SetVarY("cl_x_mm[1]");
-   cutGli->SetPoint(0,14.6,30.);
-   cutGli->SetPoint(1,88,128.6);
-   cutGli->SetPoint(2,58.6,140.6);
-   cutGli->SetPoint(3,6.4,57.);
-   cutGli->SetPoint(4,14.6,30.);
+   cutGli->SetPoint(0,33,41);
+   cutGli->SetPoint(1,135,165);
+   cutGli->SetPoint(2,115,176);
+   cutGli->SetPoint(3,20,53);
+   cutGli->SetPoint(4,33,41);
    
    TCutG *cutGa = new TCutG("cutGa",5);
    cutGa->SetVarX("cl_x_mm[0]");
    cutGa->SetVarY("cl_x_mm[1]");
-   cutGa->SetPoint(0,11.7,13.7);
-   cutGa->SetPoint(1,134.5,158.4);
-   cutGa->SetPoint(2,116.6,168.3);
-   cutGa->SetPoint(3,5.4,30.);
-   cutGa->SetPoint(4,11.7,13.7);
+   cutGa->SetPoint(0,25,16);
+   cutGa->SetPoint(1,195,207);
+   cutGa->SetPoint(2,173,216);
+   cutGa->SetPoint(3,13,22);
+   cutGa->SetPoint(4,25,16);
 
 //#################################################################################################
 // Data loop
@@ -132,7 +132,7 @@ void trackQualityControl(int run){
       TF1* f = new TF1(Form("f_%d", i), "[0] + [1]*x", 0, 300);
       f->SetParameters(0, 0);
 
-      //if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
       for(Int_t row = 0; row < NRows; row++){
          for(Int_t p = 0; p < cl_padMult[row]; p++){
             pad[row][p] = pads_fired[row][p];
@@ -153,7 +153,7 @@ void trackQualityControl(int run){
          chi_root[row] += f->GetChisquare();
       }
       
-      //}                                                                      // TCutg parenthesis
+      }                                                                      // TCutg parenthesis
       
       
       anode->Reset("ICES");
@@ -171,7 +171,7 @@ void trackQualityControl(int run){
    
 //   outputfile << "*************************** entries: " << entries << " *****************************" << endl;
    
-   TLegend* l = new TLegend(0.1,0.7,0.48,0.9);
+   TLegend* l = new TLegend(0.1,0.7,0.3,0.9);
    l->SetTextSize(0.035);
    l->AddEntry(discr[0], "x[row] - (f(z[row]))", "f");
    
@@ -179,7 +179,7 @@ void trackQualityControl(int run){
    l1->SetTextSize(0.035);
    l1->AddEntry(amplitude[0], "x[row] - (f(z[row]))", "f");
    
-   TCanvas *c = new TCanvas();
+   TCanvas *c = new TCanvas("c","c",1600,500);
    c->Divide(3,2);
    c->cd(1);
    discr[0]->Draw();
@@ -213,7 +213,7 @@ void trackQualityControl(int run){
    centre4->Draw("SAME");
    l->Draw("SAME");
    
-   TCanvas *c1 = new TCanvas();
+   TCanvas *c1 = new TCanvas("c1","c1",1600,500);
    c1->Divide(3,2);
    c1->cd(1);
    amplitude[0]->Draw();
@@ -247,16 +247,12 @@ void trackQualityControl(int run){
    centre14->Draw("SAME");
    l1->Draw("SAME");
    
-   /*Int_t hpos = 0.5*pearson->GetMaximum();
-   char testo[100];
-   sprintf(testo,"Run %d - ^{4}He tracks",run);
-   TLatex *t = new TLatex(0.93,hpos,testo);
-   TCanvas *c = new TCanvas();
-   c->cd();
-   pearson->Draw();
-   t->Draw("SAME");
-   sprintf(testo,"Pictures_Analysis/Perason_correlation_analysis/run%d_4He.png",run);
-   c->SaveAs(testo);*/
+   char titolo0[100];
+   sprintf(titolo0,"Discrepancies_run%d_7Li.png",run);
+   char titolo1[100];
+   sprintf(titolo1,"Amplitudes_run%d_7Li.png",run);
+   c->SaveAs(titolo0);
+   c1->SaveAs(titolo1);
 
 
 }
