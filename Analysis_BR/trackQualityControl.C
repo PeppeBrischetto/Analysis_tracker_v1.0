@@ -44,6 +44,30 @@ void trackQualityControl(int run){
    anode->GetYaxis()->SetNdivisions(-11);
    anode->GetYaxis()->SetLabelSize(0);
    
+   TH1D *h_chi[NRows];
+   for(int i=0; i<NRows; i++){
+      sprintf(histoname,"h_chi %i",i);
+      h_chi[i]=new TH1D("","",50,-0.01,8.);
+      h_chi[i]->GetXaxis()->SetTitle("#chi^{2}");
+      h_chi[i]->GetXaxis()->SetTitleSize(0.05);
+      h_chi[i]->GetXaxis()->SetLabelSize(0.05);
+      h_chi[i]->GetXaxis()->SetTitleOffset(.9);
+      h_chi[i]->GetYaxis()->SetTitle("Counts");
+      h_chi[i]->GetYaxis()->SetTitleSize(0.05);
+      h_chi[i]->GetYaxis()->SetLabelSize(0.05);
+      h_chi[i]->GetYaxis()->SetTitleOffset(1.);
+      //h_chi[i]->SetStats(0);
+      h_chi[i]->SetNdivisions(7);
+      //h_chi[i]->SetFillColor(i+1);
+      Double_t r = i+1;
+      if(r==5){
+         h_chi[i]->SetLineColor(kMagenta+2);
+      } else{
+                h_chi[i]->SetLineColor(r);
+      }
+      h_chi[i]->SetLineWidth(2);
+   }
+   
    TH1D *discr[NRows];
    for(int i=0; i<NRows; i++){
       sprintf(histoname,"discr %i",i);
@@ -132,7 +156,7 @@ void trackQualityControl(int run){
       TF1* f = new TF1(Form("f_%d", i), "[0] + [1]*x", 0, 300);
       f->SetParameters(0, 0);
 
-      //if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
       for(Int_t row = 0; row < NRows; row++){
          for(Int_t p = 0; p < cl_padMult[row]; p++){
             pad[row][p] = pads_fired[row][p];
@@ -142,6 +166,7 @@ void trackQualityControl(int run){
             x_mm[p] = 2.5 + (5 * pad[row][p]);
             x[row] += (x_mm[p] * charge[row][p]);
          }
+         Double_t my_Singlechi = 0.;
          x[row] = x[row] / (totalCharge[row]);
          retta->AddPoint(x[row], z[row]);
          retta->Fit(f,"","+",0,300);
@@ -149,19 +174,22 @@ void trackQualityControl(int run){
          discr[row]->Fill(scarto[row]);
          ampiezza[row] = sqrt(scarto[row]*scarto[row]);
          amplitude[row]->Fill(ampiezza[row]);
+         my_Singlechi = ((x[row] - (f->GetX(z[row])))*(x[row] - (f->GetX(z[row])))/(f->GetX(z[row])));
+         //h_chi[row]->Fill(my_Singlechi);
          my_chi[row] += ((x[row] - (f->GetX(z[row])))*(x[row] - (f->GetX(z[row])))/(f->GetX(z[row])));
-         chi_root[row] += f->GetChisquare();
+         chi_root[row] = f->GetChisquare();
+         h_chi[row]->Fill(chi_root[row]);
       }
       
-      //}                                                                      // TCutg parenthesis
+      }                                                                      // TCutg parenthesis
       
       
       anode->Reset("ICES");
    }
    
    for(Int_t row = 0; row < NRows; row++){
-      my_chi[row] = my_chi[row]/((entries-1)*(entries-1));
-      chi_root[row] = chi_root[row]/((entries-1)*(entries-1));
+      my_chi[row] = my_chi[row];
+      chi_root[row] = chi_root[row];
       cout << "*** ROW " << row << " ***" << endl;
       cout << "Manual chi-square: " << my_chi[row] << "    chi-square from root: " << chi_root[row] << endl;
    }
@@ -247,12 +275,56 @@ void trackQualityControl(int run){
    centre14->Draw("SAME");
    l1->Draw("SAME");
    
+   TCanvas *c2 = new TCanvas("c2");
+   TLegend* l_chi = new TLegend(0.1,0.6,0.3,0.9);
+   l_chi->SetTextSize(0.035);
+   for(Int_t j=0; j<NRows; j++){
+      char testo_h[50];
+      sprintf(testo_h,"#chi^{2}_{row%d}",j);
+      l_chi->AddEntry(h_chi[j],testo_h, "f");
+   }
+   c2->cd();
+   h_chi[1]->SetLineStyle(5);
+   h_chi[0]->Draw();
+   h_chi[1]->Draw("SAME");
+   h_chi[2]->Draw("SAME");
+   h_chi[3]->Draw("SAME");
+   h_chi[4]->Draw("SAME");
+   l_chi->Draw("SAME");
+   
+   TPad *zoomPad = new TPad("zoomPad", "Zoom", 0.35,0.35,0.95,0.95);
+   zoomPad->SetFillColor(0);
+   zoomPad->SetFrameFillStyle(0);
+   zoomPad->Draw();
+   zoomPad->cd();
+
+   TH1D *hZoom0 = (TH1D*)h_chi[0]->Clone("hZoom0");
+   hZoom0->GetXaxis()->SetRangeUser(0.1, 8);
+   hZoom0->GetYaxis()->SetRangeUser(0.,1400);
+   hZoom0->Draw();
+   TH1D *hZoom1 = (TH1D*)h_chi[1]->Clone("hZoom1");
+   hZoom1->GetXaxis()->SetRangeUser(0.1, 8); 
+   hZoom1->GetYaxis()->SetRangeUser(0.,1400);
+   hZoom1->Draw("SAME");
+   TH1D *hZoom2 = (TH1D*)h_chi[2]->Clone("hZoom2");
+   hZoom2->GetXaxis()->SetRangeUser(0.1, 8); 
+   hZoom2->GetYaxis()->SetRangeUser(0.,1400);
+   hZoom2->Draw("SAME");
+   TH1D *hZoom3 = (TH1D*)h_chi[3]->Clone("hZoom3");
+   hZoom3->GetXaxis()->SetRangeUser(0.1, 8); 
+   hZoom3->GetYaxis()->SetRangeUser(0.,1400);
+   hZoom3->Draw("SAME");
+   TH1D *hZoom4 = (TH1D*)h_chi[4]->Clone("hZoom4");
+   hZoom4->GetXaxis()->SetRangeUser(0.1, 8); 
+   hZoom4->GetYaxis()->SetRangeUser(0.,1400);
+   hZoom4->Draw("SAME");
+   
    char titolo0[100];
    sprintf(titolo0,"Discrepancies_run%d.png",run);
    char titolo1[100];
    sprintf(titolo1,"Amplitudes_run%d.png",run);
-   c->SaveAs(titolo0);
-   c1->SaveAs(titolo1);
+   //c->SaveAs(titolo0);
+   //c1->SaveAs(titolo1);
 
 
 }
