@@ -28,16 +28,22 @@ void gainSP(int run){
 //###########################################################################################################
 // Needed Variables
    
-   TH1D *charge = new TH1D("charge","",1000,0,50000);
+   TH1D *charge = new TH1D("charge","",250,0,1e7);
+   TF1 *f = new TF1("f","gaus",0,5e5);
+   f->SetParameters(0.,0.,0.);
    
    Double_t mean_charge = 0.;
    Double_t primaries = 0.;
-   Double_t w_gas = 0.;
+   Double_t w_gas = 23.4;
    Double_t solid_angle =0.;
    Double_t rate = 0.;
    Double_t t = 0.;
    Double_t gain = 0.;
-   Double_t dE = 0.;
+   Double_t dE = 3.801e6;
+   char titolofile[100];
+   Double_t v = 0.;
+   
+   ofstream outputfile;
    
      
 //###########################################################################################################
@@ -45,8 +51,8 @@ void gainSP(int run){
    openTrackFile(run);
    tree->Print();
    
-   //sprintf(titolofile,"pearson_coefficient/r_coefficient_Tracks_run%d_4He.txt",run);
-   //outputfile.open(titolofile);
+   sprintf(titolofile,"Gain/gainTHGEM.txt");
+   outputfile.open(titolofile,std::ios::app);
    //outputfile << "************ Run " << run << "_4He - pearson coefficient ***********" << endl; 
 
 //###########################################################################################################
@@ -74,16 +80,26 @@ void gainSP(int run){
 // Data loop
    
    for(Int_t i=0; i<entries; i++){
+      tree->GetEntry(i);
       Double_t tot_charge = 0.;
-      //if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
-      tot_charge = cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]+cl_charge[5]+cl_charge[6]+cl_charge[7]+cl_charge[8]+cl_charge[9]+cl_charge[10];
-      charge->Fill(tot_charge)
+      //if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      //tot_charge = cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]+cl_charge[5]+cl_charge[6]+cl_charge[7]+cl_charge[8]+cl_charge[9]+cl_charge[10];
+      charge->Fill(cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]+cl_charge[5]+cl_charge[6]+cl_charge[7]+cl_charge[8]+cl_charge[9]+cl_charge[10]);
       //}
    }
-   
-   mean_charge = tot_charge->Fit("gaus","R+");
-   primaries = (dE/w_gas);
-   gain=tot_charge/primaries;
+   charge->Fit("f","","",2.e4,2.e5);
+   mean_charge = ((f->GetParameter(1))*2*61e3)/(20*3.62);
+   primaries = dE/w_gas;
+   gain=mean_charge/primaries;
+   cout << "Mean charge: " << mean_charge << endl;
+   cout << "Primaries: " << primaries << endl;
    cout << "Gain: " << gain << endl;
-
+   
+   TCanvas *c = new TCanvas("c");
+   c->cd();
+   charge->Draw();
+   
+   cout << "Insert V_THGEM: " << endl;
+   cin >> v;
+   outputfile << v << "	" << gain << endl;
 }

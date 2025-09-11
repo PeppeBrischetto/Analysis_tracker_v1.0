@@ -25,7 +25,7 @@ const Int_t NRows = 5;
 const Int_t NStrips = 11;
 const Int_t NPads = 60;
 
-void trackQualityControl(int run){
+void chi(int run){
 
 //################################################################################################################
 // Variables
@@ -34,8 +34,9 @@ void trackQualityControl(int run){
    char histoname[100];
    Double_t thetaDeg = 0.;
    Double_t z[5] = {18.6, 39.8, 61.0, 82.2, 103.4};
-   Double_t chi_root[NRows] = {0.};
-   Double_t my_chi[NRows] = {0.};
+   Double_t chi_root = 0.;
+   Double_t my_chi = 0.;
+   Double_t my_chiRed = 0.;
 
    TH2D *anode = new TH2D("anode", "anode", 60, -0.5, 59.5, 11, -0.5, 10.5);
    anode->SetStats(kFALSE);
@@ -139,7 +140,11 @@ void trackQualityControl(int run){
 
 //#################################################################################################
 // Data loop
-   for(Int_t i = 0; i < entries; i++){
+   for(Int_t i = 0; i < 5; i++){
+      my_chi = 0.;
+      chi_root = 0.;
+      my_chiRed = 0.;
+      
       Double_t theta_fit = 0.;
       Double_t pad[NRows][100] = {0.};
       Double_t charge[NRows][100] = {0.};
@@ -169,7 +174,8 @@ void trackQualityControl(int run){
          Double_t my_Singlechi = 0.;
          x[row] = x[row] / (totalCharge[row]);
          retta->AddPoint(x[row], z[row]);
-         retta->Fit(f,"","+",0,300);
+         /*if(row==5){
+            retta->Fit(f,"","+",0,300);
          scarto[row] = x[row] - (f->GetX(z[row]));
          discr[row]->Fill(scarto[row]);
          ampiezza[row] = sqrt(scarto[row]*scarto[row]);
@@ -178,21 +184,38 @@ void trackQualityControl(int run){
          //h_chi[row]->Fill(my_Singlechi);
          my_chi[row] += ((x[row] - (f->GetX(z[row])))*(x[row] - (f->GetX(z[row])))/(f->GetX(z[row])));
          chi_root[row] = f->GetChisquare();
-         h_chi[row]->Fill(chi_root[row]);
+         h_chi[row]->Fill(chi_root[row]);*/
       }
       
-      //}                                                                      // TCutg parenthesis
+      TCanvas *c_retta = new TCanvas("c_retta");
+      char fit[100];
+      sprintf(fit,"f_%d",i);
+      c_retta->cd();
+      retta->Fit(fit,"","+",0,300);
+      retta->Draw();
       
+      
+      for(Int_t row=0; row<NRows; row++){
+         my_chi += (pow(z[row]-f->Eval(x[row]),2)/1);
+      }
+      
+      cout << "My chi: " << my_chi << endl;
+      //}                                                                      // TCutg parenthesis
+      cout << " *************************************** " << endl;
+      for(Int_t row=0; row<NRows; row++){
+         cout << "Event: " << i << endl;
+         printf("x%d= %1.4f and z%d= %1.4f\n ",i,x[row],i,z[row]);
+      }
       
       anode->Reset("ICES");
    }
    
-   for(Int_t row = 0; row < NRows; row++){
+  /* for(Int_t row = 0; row < NRows; row++){
       my_chi[row] = my_chi[row];
       chi_root[row] = chi_root[row];
       cout << "*** ROW " << row << " ***" << endl;
       cout << "Manual chi-square: " << my_chi[row] << "    chi-square from root: " << chi_root[row] << endl;
-   }
+   }*/
    
    cout << "Entries: " << entries << endl;
    
