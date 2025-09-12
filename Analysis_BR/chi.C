@@ -1,9 +1,10 @@
 //################################################################################################################
-//#   This macro allows to perform a quality control on the track events coming from the IRRAD4 experiment.
+//#   This macro allows to perform a chi^2 quality control on the track events coming from the IRRAD4 experiment.
 //#   In particular, for each track, this macro extrapolates the (pad,row)-pairs, thus makes a fit of them and 
-//#   plots the R-coefficient (i.e. the Pearson correlation coefficient) in order to discern pathological events.
+//#   plots the chi^2 in order to discern pathological events. Furthermore, the discrepancies and the amplitude 
+//#   histograms are plotted.
 //################################################################################################################
-//#   Created July 2025 by A. Pitronaci 
+//#   Created September 2025 by A. Pitronaci 
 //################################################################################################################
 //#   Updated:
 //################################################################################################################
@@ -37,6 +38,10 @@ void chi(int run){
    Double_t chi_root = 0.;
    Double_t my_chi = 0.;
    Double_t my_chiRed = 0.;
+   
+   Double_t theta_deg = 0.;
+   
+   char provv;
 
    TH2D *anode = new TH2D("anode", "anode", 60, -0.5, 59.5, 11, -0.5, 10.5);
    anode->SetStats(kFALSE);
@@ -73,7 +78,7 @@ void chi(int run){
    for(int i=0; i<NRows; i++){
       sprintf(histoname,"discr %i",i);
       discr[i]=new TH1D("","",500,-20,20);
-      discr[i]->GetXaxis()->SetTitle("|x_{i} - f(z_{i})| (mm)");
+      discr[i]->GetXaxis()->SetTitle("(x_{i} - f(z_{i})) (mm)");
       discr[i]->GetXaxis()->SetTitleSize(0.05);
       discr[i]->GetXaxis()->SetLabelSize(0.05);
       discr[i]->GetXaxis()->SetTitleOffset(.9);
@@ -103,6 +108,7 @@ void chi(int run){
    
    ofstream outputfile;
    TGraph *retta = new TGraph(5);
+   retta->SetTitle("(x_{i},z_{i})-pairs - track reconstruction");
    retta->SetMarkerStyle(20);
    retta->SetLineWidth(0);
    retta->GetXaxis()->SetTitle("x (mm)");
@@ -140,7 +146,7 @@ void chi(int run){
 
 //#################################################################################################
 // Data loop
-   for(Int_t i = 0; i < 5; i++){
+   for(Int_t i = 0; i < entries; i++){
       my_chi = 0.;
       chi_root = 0.;
       my_chiRed = 0.;
@@ -174,17 +180,7 @@ void chi(int run){
          Double_t my_Singlechi = 0.;
          x[row] = x[row] / (totalCharge[row]);
          retta->AddPoint(x[row], z[row]);
-         /*if(row==5){
-            retta->Fit(f,"","+",0,300);
-         scarto[row] = x[row] - (f->GetX(z[row]));
-         discr[row]->Fill(scarto[row]);
-         ampiezza[row] = sqrt(scarto[row]*scarto[row]);
-         amplitude[row]->Fill(ampiezza[row]);
-         my_Singlechi = ((x[row] - (f->GetX(z[row])))*(x[row] - (f->GetX(z[row])))/(f->GetX(z[row])));
-         //h_chi[row]->Fill(my_Singlechi);
-         my_chi[row] += ((x[row] - (f->GetX(z[row])))*(x[row] - (f->GetX(z[row])))/(f->GetX(z[row])));
-         chi_root[row] = f->GetChisquare();
-         h_chi[row]->Fill(chi_root[row]);*/
+         
       }
       
       TCanvas *c_retta = new TCanvas("c_retta");
@@ -195,19 +191,31 @@ void chi(int run){
       retta->Draw();
       
       
+      theta_deg = 90-(ATan(f->GetParameter(1))*180/Pi());
+      
       for(Int_t row=0; row<NRows; row++){
          my_chi += (pow(z[row]-f->Eval(x[row]),2)/1);
+         
+         scarto[row] = x[row] - (f->GetX(z[row]));
+         discr[row]->Fill(scarto[row]);
+         ampiezza[row] = sqrt(scarto[row]*scarto[row]);
+         amplitude[row]->Fill(ampiezza[row]);
       }
       
       cout << "My chi: " << my_chi << endl;
       //}                                                                      // TCutg parenthesis
       cout << " *************************************** " << endl;
+      cout << "Event: " << i << endl;
       for(Int_t row=0; row<NRows; row++){
-         cout << "Event: " << i << endl;
          printf("x%d= %1.4f and z%d= %1.4f\n ",i,x[row],i,z[row]);
       }
       
+      cout << "Theta (deg): " << theta_deg << endl;
       anode->Reset("ICES");
+      
+   //cin >> provv;
+      
+      
    }
    
   /* for(Int_t row = 0; row < NRows; row++){
@@ -223,30 +231,29 @@ void chi(int run){
 //   outputfile << "*************************** entries: " << entries << " *****************************" << endl;
    
    TLegend* l = new TLegend(0.1,0.7,0.3,0.9);
-   l->SetTextSize(0.035);
-   l->AddEntry(discr[0], "x[row] - (f(z[row]))", "f");
-   
-   TLegend* l1 = new TLegend(0.1,0.7,0.48,0.9);
-   l1->SetTextSize(0.035);
-   l1->AddEntry(amplitude[0], "x[row] - (f(z[row]))", "f");
-   
+      l->SetTextSize(0.035);
+      l->AddEntry(discr[0], "x[row] - (f(z[row]))", "f");
+    
+      TLegend* l1 = new TLegend(0.1,0.7,0.48,0.9);
+      l1->SetTextSize(0.035);
+      l1->AddEntry(amplitude[0], "x[row] - (f(z[row]))", "f");
    TCanvas *c = new TCanvas("c","c",1600,500);
-   c->Divide(3,2);
-   c->cd(1);
-   discr[0]->Draw();
-   TLine* centre0 = new TLine(0.,0.,0.,discr[0]->GetMaximum());
-   l->AddEntry(centre0,"x[row] - (f(z[row])) = 0","l");
-   centre0->SetLineColor(kRed);
-   centre0->Draw("SAME");
-   l->Draw("SAME");
-   c->cd(2);
-   discr[1]->Draw();
-   TLine* centre1 = new TLine(0.,0.,0.,discr[1]->GetMaximum());
-   centre1->SetLineColor(kRed);
-   centre1->Draw("SAME");
-   l->Draw("SAME");
-   c->cd(3);
-   discr[2]->Draw();
+     c->Divide(3,2);
+    c->cd(1);
+    discr[0]->Draw();
+    TLine* centre0 = new TLine(0.,0.,0.,discr[0]->GetMaximum());
+    l->AddEntry(centre0,"x[row] - (f(z[row])) = 0","l");
+    centre0->SetLineColor(kRed);
+    centre0->Draw("SAME");
+    l->Draw("SAME");
+    c->cd(2);
+     discr[1]->Draw();
+    TLine* centre1 = new TLine(0.,0.,0.,discr[1]->GetMaximum());
+    centre1->SetLineColor(kRed);
+    centre1->Draw("SAME");
+    l->Draw("SAME");
+    c->cd(3);
+    discr[2]->Draw();
    TLine* centre2 = new TLine(0.,0.,0.,discr[2]->GetMaximum());
    centre2->SetLineColor(kRed);
    centre2->Draw("SAME");
@@ -263,13 +270,15 @@ void chi(int run){
    centre4->SetLineColor(kRed);
    centre4->Draw("SAME");
    l->Draw("SAME");
+   c->Update();
+   //c_retta->Update();
    
-   TCanvas *c1 = new TCanvas("c1","c1",1600,500);
+   /*TCanvas *c1 = new TCanvas("c1","c1",1600,500);
    c1->Divide(3,2);
    c1->cd(1);
    amplitude[0]->Draw();
    TLine* centre10 = new TLine(0.,0.,0.,amplitude[0]->GetMaximum());
-   l1->AddEntry(centre0,"x[row] - (f(z[row])) = 0","l");
+   l1->AddEntry(centre0,"#sqrt{(x[row] - (f(z[row])))^{2}} = 0","l");
    centre10->SetLineColor(kRed);
    centre10->Draw("SAME");
    l1->Draw("SAME");
@@ -347,7 +356,7 @@ void chi(int run){
    char titolo1[100];
    sprintf(titolo1,"Amplitudes_run%d.png",run);
    //c->SaveAs(titolo0);
-   //c1->SaveAs(titolo1);
+   //c1->SaveAs(titolo1);*/
 
 
 }
