@@ -26,7 +26,7 @@ const Int_t NRows = 5;
 const Int_t NStrips = 11;
 const Int_t NPads = 60;
 
-void chi(int run){
+void chiClone(int run){
 
 //################################################################################################################
 // Variables
@@ -39,7 +39,9 @@ void chi(int run){
    Double_t my_chi = 0.;
    Double_t my_chiRed = 0.;
    Double_t Ndof = 3;
-   Double_t offset[NRows] = {0.};
+   Double_t offset[NRows] = {-0.626363,1.43511,-0.110855,-1.37773,0.694008};
+   Double_t x_corr[NRows] = {0.};
+   Double_t newOffset[NRows] = {0.};
    Double_t chiRed_min1 = 0.;
    Double_t chiRed_tot = 0.;
    
@@ -54,7 +56,7 @@ void chi(int run){
    anode->GetYaxis()->SetTitle("row");
    anode->GetYaxis()->SetNdivisions(-11);
    anode->GetYaxis()->SetLabelSize(0);
-   
+ 
    TH1D *h_theta = new TH1D("h_theta","",900,0,90);
    h_theta->GetXaxis()->SetTitle("#theta_{foc} (deg)");
    h_theta->GetXaxis()->SetTitleSize(0.05);
@@ -69,7 +71,7 @@ void chi(int run){
    h_theta->SetStats(0);
    
    TH1D *h_intercetta = new TH1D("h_intercetta","",300,-30,0);
-   h_intercetta->GetXaxis()->SetTitle("x_{foc} (mm)");
+   h_intercetta->GetXaxis()->SetTitle("#theta_{foc} (deg)");
    h_intercetta->GetXaxis()->SetTitleSize(0.05);
    h_intercetta->GetXaxis()->SetLabelSize(0.05);
    h_intercetta->GetXaxis()->SetTitleOffset(.9);
@@ -214,7 +216,8 @@ void chi(int run){
          }
          Double_t my_Singlechi = 0.;
          x[row] = x[row] / (totalCharge[row]);
-         retta->AddPoint(x[row], z[row]);
+         x_corr[row] = x[row]-offset[row];
+         retta->AddPoint(x_corr[row], z[row]);
          
       }
       
@@ -238,8 +241,8 @@ void chi(int run){
       h_intercetta->Fill(intercetta);
       
       for(Int_t row=0; row<NRows; row++){
-         my_chi += (pow(z[row]-f->Eval(x[row]),2)/1);
-         scarto[row] = x[row] - (f->GetX(z[row]));
+         my_chi += (pow(z[row]-f->Eval(x_corr[row]),2)/1);
+         scarto[row] = x_corr[row] - (f->GetX(z[row]));
          discr[row]->Fill(scarto[row]);
          ampiezza[row] = sqrt(scarto[row]*scarto[row]);
          amplitude[row]->Fill(ampiezza[row]);
@@ -269,18 +272,19 @@ void chi(int run){
    /* Average discrepancy evaluation by normal fit */
    for(Int_t row=0; row<NRows; row++){
       discr[row]->Fit("norm","","+",-5,5);
-      offset[row]=norm->GetParameter(1);
-      cout << "Offset " << row << ": " << offset[row] << endl;  
+      newOffset[row]=norm->GetParameter(1);
+      
+      cout << "Offset " << row << ": " << newOffset[row] << endl;  
    }
    
    TLegend* l = new TLegend(0.1,0.7,0.48,0.9);
    l->SetTextSize(0.035);
    l->SetLineWidth(0);
-   l->AddEntry(discr[0], "x[row] - (f(z[row]))", "f");
+   l->AddEntry(discr[0], "x_corr[row] - (f(z[row]))", "f");
     
    TLegend* l1 = new TLegend(0.1,0.7,0.48,0.9);
    l1->SetTextSize(0.035);
-   l1->AddEntry(amplitude[0], "x[row] - (f(z[row]))", "f");
+   l1->AddEntry(amplitude[0], "x_corr[row] - (f(z[row]))", "f");
    l1->SetLineWidth(0);
    
    TCanvas *c = new TCanvas("c","c",1600,1600);
@@ -288,7 +292,7 @@ void chi(int run){
    c->cd(1);
    discr[0]->Draw();
    TLine* centre0 = new TLine(0.,0.,0.,discr[0]->GetMaximum());
-   l->AddEntry(centre0,"x[row] - (f(z[row])) = 0","l");
+   l->AddEntry(centre0,"x_corr[row] - (f(z[row])) = 0","l");
    centre0->SetLineColor(kRed);
    centre0->Draw("SAME");
    //l->Draw("SAME");
@@ -323,7 +327,7 @@ void chi(int run){
    c1->cd(1);
    amplitude[0]->Draw();
    TLine* centre10 = new TLine(0.,0.,0.,amplitude[0]->GetMaximum());
-   l1->AddEntry(centre0,"#sqrt{(x[row] - (f(z[row])))^{2}} = 0","l");
+   l1->AddEntry(centre0,"#sqrt{(x_corr[row] - (f(z[row])))^{2}} = 0","l");
    centre10->SetLineColor(kRed);
    centre10->Draw("SAME");
    //l1->Draw("SAME");
@@ -370,11 +374,11 @@ void chi(int run){
    cout << "binMin:" << binMin << "    binMax: " << binMax << "   Integral: " << chiRed_min1 << endl;
       
    char titolo0[100];
-   sprintf(titolo0,"Pictures_Analysis/TrackQualityControl/Run%d/Discrepancies_run%d.png",run,run);
+   sprintf(titolo0,"Pictures_Analysis/TrackQualityControl/Run%d/Discrepancies_corr_run%d.png",run,run);
    char titolo1[100];
-   sprintf(titolo1,"Pictures_Analysis/TrackQualityControl/Run%d/Amplitudes_run%d.png",run,run);
+   sprintf(titolo1,"Pictures_Analysis/TrackQualityControl/Run%d/Amplitudes_corr_run%d.png",run,run);
    char titolo2[100];
-   sprintf(titolo2,"Pictures_Analysis/TrackQualityControl/Run%d/chi_run%d.png",run,run);
+   sprintf(titolo2,"Pictures_Analysis/TrackQualityControl/Run%d/chi_corr_run%d.png",run,run);
    c->SaveAs(titolo0);
    c1->SaveAs(titolo1);
    c2->SaveAs(titolo2);
