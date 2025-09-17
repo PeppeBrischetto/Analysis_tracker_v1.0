@@ -60,7 +60,7 @@ void chi(int run){
    h_theta->GetXaxis()->SetTitleSize(0.05);
    h_theta->GetXaxis()->SetLabelSize(0.05);
    h_theta->GetXaxis()->SetTitleOffset(.9);
-   h_theta->GetYaxis()->SetTitle("Counts");
+   //h_theta->GetYaxis()->SetTitle("Counts");
    h_theta->GetYaxis()->SetTitleSize(0.05);
    h_theta->GetYaxis()->SetLabelSize(0.05);
    h_theta->GetYaxis()->SetTitleOffset(1.);
@@ -69,11 +69,11 @@ void chi(int run){
    h_theta->SetStats(0);
    
    TH1D *h_intercetta = new TH1D("h_intercetta","",300,-30,0);
-   h_intercetta->GetXaxis()->SetTitle("x_{foc} (mm)");
+   h_intercetta->GetXaxis()->SetTitle("intercept (mm)");
    h_intercetta->GetXaxis()->SetTitleSize(0.05);
    h_intercetta->GetXaxis()->SetLabelSize(0.05);
    h_intercetta->GetXaxis()->SetTitleOffset(.9);
-   h_intercetta->GetYaxis()->SetTitle("Counts");
+   //h_intercetta->GetYaxis()->SetTitle("Counts");
    h_intercetta->GetYaxis()->SetTitleSize(0.05);
    h_intercetta->GetYaxis()->SetLabelSize(0.05);
    h_intercetta->GetYaxis()->SetTitleOffset(1.);
@@ -218,17 +218,17 @@ void chi(int run){
          
       }
       
-      TCanvas *c_retta = new TCanvas("c_retta");
       char fit[100];
       sprintf(fit,"f_%d",i);
-      c_retta->cd();
       retta->Fit(fit,"","+",0,300);
-      retta->Draw();
-      c_retta->Update();
-      char tit_retta[100];
-      sprintf(tit_retta,"Pictures_Analysis/TrackQualityControl/Run%d/bestTrack%d.png",run,i);
       
       if(i==0 || i==100 || i==200 || i==300 || i==400 || i==500 || i==600 || i==700){
+         TCanvas *c_retta = new TCanvas("c_retta");
+         c_retta->cd();
+         retta->Draw();
+         c_retta->Update();
+         char tit_retta[100];
+         sprintf(tit_retta,"Pictures_Analysis/TrackQualityControl/Run%d/bestTrack_corr%d.png",run,i);
          c_retta->SaveAs(tit_retta);
       }
       
@@ -263,7 +263,7 @@ void chi(int run){
 
       anode->Reset("ICES");
       
-      cin >> provv;
+      //cin >> provv;
    }
    
    /* Average discrepancy evaluation by normal fit */
@@ -367,7 +367,7 @@ void chi(int run){
    Int_t binMax = h_chiRed->FindBin(0.95);
    chiRed_min1 = h_chiRed->Integral(binMin,binMax);
    
-   cout << "binMin:" << binMin << "    binMax: " << binMax << "   Integral: " << chiRed_min1 << endl;
+   cout << "binMin:" << binMin << "    binMax: " << binMax << "   Integral: " << chiRed_min1 << "   chi_min^max/chi_tot: " << chiRed_min1/(h_chiRed->Integral(binMin,200)) << endl;
       
    char titolo0[100];
    sprintf(titolo0,"Pictures_Analysis/TrackQualityControl/Run%d/Discrepancies_run%d.png",run,run);
@@ -385,6 +385,9 @@ void chi(int run){
    h_theta->Draw();
    c3->cd(2);
    h_intercetta->Draw();
+   char titolo3[100];
+   sprintf(titolo3,"Pictures_Analysis/TrackQualityControl/Run%d/theta_intercetta%d.png",run,run);
+   c3->SaveAs(titolo3);
 
 
 }

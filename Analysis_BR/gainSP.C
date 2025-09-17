@@ -39,7 +39,7 @@ void gainSP(int run){
    Double_t rate = 0.;
    Double_t t = 0.;
    Double_t gain = 0.;
-   Double_t dE = 3.801e6;
+   Double_t dE = 0.351e6;
    char titolofile[100];
    Double_t v = 0.;
    
@@ -61,11 +61,11 @@ void gainSP(int run){
    TCutG *cutGli = new TCutG("cutGli",5);
    cutGli->SetVarX("cl_x_mm[0]");
    cutGli->SetVarY("cl_x_mm[1]");
-   cutGli->SetPoint(0,33,41);
-   cutGli->SetPoint(1,135,165);
-   cutGli->SetPoint(2,115,176);
-   cutGli->SetPoint(3,20,53);
-   cutGli->SetPoint(4,33,41);
+   cutGli->SetPoint(0,25,39);
+   cutGli->SetPoint(1,122,150);
+   cutGli->SetPoint(2,112,169);
+   cutGli->SetPoint(3,21,51);
+   cutGli->SetPoint(4,25,39);
    
    TCutG *cutGa = new TCutG("cutGa",5);
    cutGa->SetVarX("cl_x_mm[0]");
@@ -82,12 +82,12 @@ void gainSP(int run){
    for(Int_t i=0; i<entries; i++){
       tree->GetEntry(i);
       Double_t tot_charge = 0.;
-      //if(cutGli->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
       //tot_charge = cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]+cl_charge[5]+cl_charge[6]+cl_charge[7]+cl_charge[8]+cl_charge[9]+cl_charge[10];
       charge->Fill(cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]+cl_charge[5]+cl_charge[6]+cl_charge[7]+cl_charge[8]+cl_charge[9]+cl_charge[10]);
-      //}
+      }                                                                        //TCutg parenthesis
    }
-   charge->Fit("f","","",2.e4,2.e5);
+   charge->Fit("f","","",0.1,1e5);
    mean_charge = ((f->GetParameter(1))*2*61e3)/(20*3.62);
    primaries = dE/w_gas;
    gain=mean_charge/primaries;
@@ -95,11 +95,13 @@ void gainSP(int run){
    cout << "Primaries: " << primaries << endl;
    cout << "Gain: " << gain << endl;
    
+   cout << "Insert V_THGEM: " << endl;
+   cin >> v;
+   //outputfile << v << "	" << gain << endl;
+   
    TCanvas *c = new TCanvas("c");
    c->cd();
    charge->Draw();
    
-   cout << "Insert V_THGEM: " << endl;
-   cin >> v;
-   outputfile << v << "	" << gain << endl;
+   
 }

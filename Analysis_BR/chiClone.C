@@ -39,11 +39,12 @@ void chiClone(int run){
    Double_t my_chi = 0.;
    Double_t my_chiRed = 0.;
    Double_t Ndof = 3;
-   Double_t offset[NRows] = {-0.626363,1.43511,-0.110855,-1.37773,0.694008};
+   Double_t offset[NRows] = {-0.488407,1.90537,-0.575092,-2.34135,1.48288};
    Double_t x_corr[NRows] = {0.};
    Double_t newOffset[NRows] = {0.};
    Double_t chiRed_min1 = 0.;
    Double_t chiRed_tot = 0.;
+   Double_t rapp = 0.;
    
    Double_t theta_deg = 0.;
    Double_t intercetta = 0.;
@@ -62,7 +63,7 @@ void chiClone(int run){
    h_theta->GetXaxis()->SetTitleSize(0.05);
    h_theta->GetXaxis()->SetLabelSize(0.05);
    h_theta->GetXaxis()->SetTitleOffset(.9);
-   h_theta->GetYaxis()->SetTitle("Counts");
+   //h_theta->GetYaxis()->SetTitle("Counts");
    h_theta->GetYaxis()->SetTitleSize(0.05);
    h_theta->GetYaxis()->SetLabelSize(0.05);
    h_theta->GetYaxis()->SetTitleOffset(1.);
@@ -71,11 +72,11 @@ void chiClone(int run){
    h_theta->SetStats(0);
    
    TH1D *h_intercetta = new TH1D("h_intercetta","",300,-30,0);
-   h_intercetta->GetXaxis()->SetTitle("#theta_{foc} (deg)");
+   h_intercetta->GetXaxis()->SetTitle("intecrept (mm)");
    h_intercetta->GetXaxis()->SetTitleSize(0.05);
    h_intercetta->GetXaxis()->SetLabelSize(0.05);
    h_intercetta->GetXaxis()->SetTitleOffset(.9);
-   h_intercetta->GetYaxis()->SetTitle("Counts");
+   //h_intercetta->GetYaxis()->SetTitle("Counts");
    h_intercetta->GetYaxis()->SetTitleSize(0.05);
    h_intercetta->GetYaxis()->SetLabelSize(0.05);
    h_intercetta->GetYaxis()->SetTitleOffset(1.);
@@ -221,17 +222,18 @@ void chiClone(int run){
          
       }
       
-      TCanvas *c_retta = new TCanvas("c_retta");
+      
       char fit[100];
       sprintf(fit,"f_%d",i);
-      c_retta->cd();
       retta->Fit(fit,"","+",0,300);
-      retta->Draw();
-      c_retta->Update();
-      char tit_retta[100];
-      sprintf(tit_retta,"Pictures_Analysis/TrackQualityControl/Run%d/bestTrack%d.png",run,i);
       
       if(i==0 || i==100 || i==200 || i==300 || i==400 || i==500 || i==600 || i==700){
+         TCanvas *c_retta = new TCanvas("c_retta");
+         c_retta->cd();
+         retta->Draw();
+         c_retta->Update();
+         char tit_retta[100];
+         sprintf(tit_retta,"Pictures_Analysis/TrackQualityControl/Run%d/bestTrack_corr%d.png",run,i);
          c_retta->SaveAs(tit_retta);
       }
       
@@ -266,7 +268,7 @@ void chiClone(int run){
 
       anode->Reset("ICES");
       
-      cin >> provv;
+      //cin >> provv;
    }
    
    /* Average discrepancy evaluation by normal fit */
@@ -360,6 +362,17 @@ void chiClone(int run){
    c2->cd();
    h_chi->Draw();
    
+   
+         
+   char titolo0[100];
+   sprintf(titolo0,"Pictures_Analysis/TrackQualityControl/Run%d/Discrepancies_corr_run%d.png",run,run);
+   char titolo1[100];
+   sprintf(titolo1,"Pictures_Analysis/TrackQualityControl/Run%d/Amplitudes_corr_run%d.png",run,run);
+   char titolo2[100];
+   sprintf(titolo2,"Pictures_Analysis/TrackQualityControl/Run%d/chi_corr_run%d.png",run,run);
+   char chi_rapp[100];
+   sprintf(chi_rapp,"#tilde{chi}_{0}^{1}/#tilde{chi}=%.3f",rapp);
+   TLatex *lat2 = new TLatex(0.5,0.7,chi_rapp);  
    TPad *zoomPad = new TPad("zoomPad", "Zoom", 0.45,0.35,0.95,0.95);
    zoomPad->SetFillColor(0);
    zoomPad->SetFrameFillStyle(0);
@@ -370,15 +383,11 @@ void chiClone(int run){
    Int_t binMin = h_chiRed->FindBin(0);
    Int_t binMax = h_chiRed->FindBin(0.95);
    chiRed_min1 = h_chiRed->Integral(binMin,binMax);
+   rapp = chiRed_min1/(h_chiRed->Integral(binMin,200));
+   lat2->Draw("SAME");
    
-   cout << "binMin:" << binMin << "    binMax: " << binMax << "   Integral: " << chiRed_min1 << endl;
-      
-   char titolo0[100];
-   sprintf(titolo0,"Pictures_Analysis/TrackQualityControl/Run%d/Discrepancies_corr_run%d.png",run,run);
-   char titolo1[100];
-   sprintf(titolo1,"Pictures_Analysis/TrackQualityControl/Run%d/Amplitudes_corr_run%d.png",run,run);
-   char titolo2[100];
-   sprintf(titolo2,"Pictures_Analysis/TrackQualityControl/Run%d/chi_corr_run%d.png",run,run);
+   cout << "binMin:" << binMin << "    binMax: " << binMax << "   Integral: " << chiRed_min1 << "chi_min^max/chi_tot: " << rapp << endl;
+   
    c->SaveAs(titolo0);
    c1->SaveAs(titolo1);
    c2->SaveAs(titolo2);
@@ -389,6 +398,9 @@ void chiClone(int run){
    h_theta->Draw();
    c3->cd(2);
    h_intercetta->Draw();
+   char titolo3[100];
+   sprintf(titolo3,"Pictures_Analysis/TrackQualityControl/Run%d/theta_intercetta_corr%d.png",run,run);
+   c3->SaveAs(titolo3);
 
 
 }
