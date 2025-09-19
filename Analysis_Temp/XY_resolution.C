@@ -85,8 +85,8 @@ cout<<""<<endl;
 
 // Geometric variables required for positioning the collimator respect to the detector
 
-   double coll_size=0.20;	       // Dimension of the collimator front face (in mm)
-   double theta_tilt=55.0;	       // Rotation angle of the collimator with respect to the beam axis (in mm)
+   double coll_size=2.0;	       // Dimension of the collimator front face (in mm)
+   double theta_tilt=54.0;	       // Rotation angle of the collimator with respect to the beam axis (in mm)
    
    
 // Geometric variables required for the definition of a line parallel to the collimator front face
@@ -163,11 +163,11 @@ cout<<""<<endl;
    char fileIn[50];
 
    if(run<10){
-   sprintf(fileIn, "../Tracks/tracks_run00%i.root", run);
+   sprintf(fileIn, "../Tracks_Br/tracks_run00%i.root", run);
    }else if(run <100){
-      sprintf(fileIn, "../Tracks/tracks_run0%i.root", run);
+      sprintf(fileIn, "../Tracks_Br/tracks_run0%i.root", run);
    }else{
-      sprintf(fileIn, "../Tracks/tracks_run%i.root", run);
+      sprintf(fileIn, "../Tracks_Br/tracks_run%i.root", run);
    } 
 
    cout<<fileIn<<endl;
@@ -304,7 +304,7 @@ cout<<""<<endl;
 
 
 
-   //TCanvas *colplaneX=new TCanvas("colplaneX","colplaneX",800,500,600,600);
+   TCanvas *colplaneX=new TCanvas("colplaneX","colplaneX",800,500,600,600);
    //TCanvas *colplaneX2=new TCanvas("colplaneX2","colplaneX2",800,500,600,600);
    TCanvas *colplaneX3=new TCanvas("colplaneX3","colplaneX3",10,450,600,600);
    TCanvas *colplaneY=new TCanvas("colplaneY","colplaneY",690,450,600,600);
@@ -405,7 +405,7 @@ cout<<""<<endl;
 
    		
 // Calculate the horizontal position resolution in a plane parallel to the tracker
-/*
+
    colplaneX->cd();
    plx->Draw();
    
@@ -423,7 +423,7 @@ cout<<""<<endl;
    
    resX=sqrt(abs(pow(fwhmX,2.)-pow(coll_size/cos(0.5*PI-(theta_tilt*PI/180.0)),2.)));
  
-   */
+   
    // Calculate the horizontal position resolution in a plane parallel to the collimator - Method with tracks' rotation 
 /*
    colplaneX2->cd();
@@ -485,7 +485,7 @@ cout<<""<<endl;
    resY=sqrt(abs(pow(fwhmY,2.)-pow(coll_size,2.)));
 
 
-   //cout<<"X position resolution: "<< resX <<" mm"<<endl;
+   cout<<"X position resolution: "<< resX <<" mm"<<endl;
    //cout<<"X position resolution2: "<< resX2 <<" mm"<<endl;
    cout<<"X position resolution3: "<< resX3 <<" mm"<<endl;
    cout<<"Y position resolution: "<< resY <<" mm"<<endl;

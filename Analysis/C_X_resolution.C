@@ -83,7 +83,7 @@ cout<<""<<endl;
 
 // Geometric variables required for positioning the collimator respect to the detector
 
-   double coll_size=0.20;	       // Dimension of the collimator front face (in mm)
+   double coll_size=2.0;	       // Dimension of the collimator front face (in mm)
    double theta_tilt=60.0;	       // Rotation angle of the collimator with respect to the beam axis (in mm)
    
    

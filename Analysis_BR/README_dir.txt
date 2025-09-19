@@ -161,12 +161,36 @@
 *                                                                                 *
 ***********************************************************************************
 *                                                                                 *
-*  13. trackQualityControl.C                                                      *
+*  13. chi.C                                                                      *
 *  This macro allows to perform a quality control of all the track events. Pretty *
 *  similar to the previous ones, here the chi^2 is plotted together with the      *
 *  discrepancie |x_{i} - f(z_{i})|, i=0,1,2,3,4, being x_{i} the charge distrib.  *
 *  width experimentally obtained and f(z_{i}) the same observable coming by the   *
 *  best-fit. A TH1D of these discrepancies is obtained together with that of the  *
 *  amplitudes sqrt{(x_{i} - f(z_{i}))^2}.                                         *
+*                                                                                 *
+***********************************************************************************
+*                                                                                 *
+*  14. chi_corr.C                                                                 *
+*  This macro works as before, but having evaluated the systematic offset, it is  *
+*  used to correct x_{i}. Finally, the chi^2 (and the reduced one) is plotted and *
+*  the discrepancie |x_{i} - f(z_{i})|, i=0,1,2,3,4, as well. A TH1D for is made  *
+*  to observe discrepancies is obtained together with that of the amplitudes def. *
+*  as sqrt{(x_{i} - f(z_{i}))^2}.                                                 *
+*                                                                                 *
+***********************************************************************************
+*                                                                                 *
+*  15. gainSP.C                                                                   *
+*  This macro allows to evaluate the gain experimentally measured during the runs *
+*  performed at São Paulo - IRRAD4. Here the gain is estimated as the ratio of    *
+*  the total charge measured by the anode and the number of primaries (evaluated  *
+*  ab initio given the energy loss in the gas tracker and the mean ionization     *
+*  energy of the gas (i.e. 23.4 eV). The result is written in a .txt file.        *
+*                                                                                 *
+***********************************************************************************
+*                                                                                 *
+*  16. plot_gainSP.C                                                              *
+*  This macro plots the results coming by gainSP.C as a function of V_{THGEM}. A  *
+*  zoom-Pad is present to enfasize the region of interest.                        *
 *                                                                                 *
 ***********************************************************************************

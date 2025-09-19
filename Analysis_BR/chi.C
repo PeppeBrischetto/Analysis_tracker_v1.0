@@ -1,13 +1,10 @@
-//################################################################################################################
-//#   This macro allows to perform a chi^2 quality control on the track events coming from the IRRAD4 experiment.
-//#   In particular, for each track, this macro extrapolates the (pad,row)-pairs, thus makes a fit of them and 
-//#   plots the chi^2 in order to discern pathological events. Furthermore, the discrepancies and the amplitude 
-//#   histograms are plotted.
-//################################################################################################################
+//#################################################################################################################
+//#   This macro allows to evaluate the error on the x_{i} measured on the padPlane. It is pretty similar to chi.C.
+//#################################################################################################################
 //#   Created September 2025 by A. Pitronaci 
-//################################################################################################################
+//#################################################################################################################
 //#   Updated:
-//################################################################################################################
+//#################################################################################################################
 
 #include <iostream>
 #include <vector>
@@ -33,7 +30,6 @@ void chi(int run){
    char tasto[10]; 
    char titolofile[100];
    char histoname[100];
-   Double_t thetaDeg = 0.;
    Double_t z[5] = {18.6, 39.8, 61.0, 82.2, 103.4};
    Double_t chi_root = 0.;
    Double_t my_chi = 0.;
@@ -42,9 +38,20 @@ void chi(int run){
    Double_t offset[NRows] = {0.};
    Double_t chiRed_min1 = 0.;
    Double_t chiRed_tot = 0.;
+   Double_t pearson = 0.;
+   Double_t m = 0.;
+   Double_t q = 0.;
+   Double_t errX[NRows] = {0.};
+   Double_t errM = 0.;
+   Double_t errQ = 0.;
+   Double_t mean_errX[NRows] = {0.};
+   Double_t x_foc = 0.;
    
-   Double_t theta_deg = 0.;
+   Double_t thetaDeg = 0.;
    Double_t intercetta = 0.;
+   Double_t coeffAng = 0.;
+   
+   ofstream outfile;
    
    char provv;
 
@@ -95,7 +102,7 @@ void chi(int run){
    h_chi->SetStats(0);
    
    TH1D *h_chiRed = new TH1D("h_chiRed","",200,0,10);
-   h_chiRed->GetXaxis()->SetTitle("#tilde{#chi}^{2}_red");
+   h_chiRed->GetXaxis()->SetTitle("#tilde{#chi}^{2}_{red}");
    h_chiRed->GetXaxis()->SetTitleSize(0.05);
    h_chiRed->GetXaxis()->SetLabelSize(0.05);
    h_chiRed->GetXaxis()->SetTitleOffset(.9);
@@ -105,6 +112,46 @@ void chi(int run){
    h_chiRed->GetYaxis()->SetTitleOffset(1.);
    h_chiRed->SetNdivisions(7);
    h_chiRed->SetLineWidth(2);
+   
+   TH1D *h_corr = new TH1D("h_corr","",1400,0.995,1.002);
+   h_corr->GetXaxis()->SetTitle("r");
+   h_corr->GetXaxis()->SetTitleSize(0.05);
+   h_corr->GetXaxis()->SetLabelSize(0.05);
+   h_corr->GetXaxis()->SetTitleOffset(.9);
+   h_corr->GetYaxis()->SetTitle("Counts");
+   h_corr->GetYaxis()->SetTitleSize(0.05);
+   h_corr->GetYaxis()->SetLabelSize(0.05);
+   h_corr->GetYaxis()->SetTitleOffset(1.);
+   h_corr->SetNdivisions(7);
+   h_corr->SetLineWidth(2);
+   
+   TH1D *h_foc = new TH1D("h_foc","",1400,10,60);
+   h_foc->GetXaxis()->SetTitle("x_{z=0} (mm)");
+   h_foc->GetXaxis()->SetTitleSize(0.05);
+   h_foc->GetXaxis()->SetLabelSize(0.05);
+   h_foc->GetXaxis()->SetTitleOffset(.9);
+   h_foc->GetYaxis()->SetTitle("Counts");
+   h_foc->GetYaxis()->SetTitleSize(0.05);
+   h_foc->GetYaxis()->SetLabelSize(0.05);
+   h_foc->GetYaxis()->SetTitleOffset(1.);
+   h_foc->SetNdivisions(7);
+   h_foc->SetLineWidth(2);
+   
+   TH1D *h_errX[NRows];
+   for(Int_t i=0; i<NRows; i++){
+      sprintf(histoname,"h_errX_%d",i);
+      h_errX[i] = new TH1D("h_errX","",250,0,10);
+      h_errX[i]->GetXaxis()->SetTitle("#varepsilon_{x} (mm)");
+      h_errX[i]->GetXaxis()->SetTitleSize(0.05);
+      h_errX[i]->GetXaxis()->SetLabelSize(0.05);
+      h_errX[i]->GetXaxis()->SetTitleOffset(.9);
+      h_errX[i]->GetYaxis()->SetTitle("Counts");
+      h_errX[i]->GetYaxis()->SetTitleSize(0.05);
+      h_errX[i]->GetYaxis()->SetLabelSize(0.05);
+      h_errX[i]->GetYaxis()->SetTitleOffset(1.);
+      h_errX[i]->SetNdivisions(7);
+      h_errX[i]->SetLineWidth(2);
+   }
    
    TH1D *discr[NRows];
    for(int i=0; i<NRows; i++){
@@ -154,9 +201,9 @@ void chi(int run){
    openTrackFile(run);
    tree->Print();
    
-   //sprintf(titolofile,"pearson_coefficient/r_coefficient_Tracks_run%d_4He.txt",run);
+   //sprintf(titolofile,"pearson_coefficient/r_coefficient_Tracks_run%d_4He_50_60.txt",run);
    //outputfile.open(titolofile);
-   //outputfile << "************ Run " << run << "_4He - pearson coefficient ***********" << endl; 
+   //outputfile << "************ Run " << run << "_4He_50_60 - pearson coefficient ***********" << endl; 
 
 //###########################################################################################################
 // Graphyical cut definition
@@ -185,6 +232,10 @@ void chi(int run){
       my_chi = 0.;
       chi_root = 0.;
       my_chiRed = 0.;
+      pearson = 0.;
+      errM = 0.;
+      errQ = 0.;
+      x_foc = 0.;
       
       Double_t theta_fit = 0.;
       Double_t pad[NRows][100] = {0.};
@@ -202,7 +253,7 @@ void chi(int run){
       TF1 *f = new TF1(Form("f_%d", i), "[0] + [1]*x", 0, 300);
       f->SetParameters(0, 0);
       
-      //if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      if(theta_deg>=50 && theta_deg<60. && cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
       for(Int_t row = 0; row < NRows; row++){
          for(Int_t p = 0; p < cl_padMult[row]; p++){
             pad[row][p] = pads_fired[row][p];
@@ -221,6 +272,12 @@ void chi(int run){
       char fit[100];
       sprintf(fit,"f_%d",i);
       retta->Fit(fit,"","+",0,300);
+      intercetta = f->GetParameter(0);
+      coeffAng = f->GetParameter(1);
+      errM = f->GetParError(1);
+      errQ = f->GetParError(0);
+      pearson = retta->GetCorrelationFactor();
+      h_corr->Fill(pearson);
       
       if(i==0 || i==100 || i==200 || i==300 || i==400 || i==500 || i==600 || i==700){
          TCanvas *c_retta = new TCanvas("c_retta");
@@ -228,13 +285,13 @@ void chi(int run){
          retta->Draw();
          c_retta->Update();
          char tit_retta[100];
-         sprintf(tit_retta,"Pictures_Analysis/TrackQualityControl/Run%d/bestTrack_corr%d.png",run,i);
+         sprintf(tit_retta,"Pictures_Analysis/TrackQualityControl/Run%d/bestTrack%d_4He_50_60.png",run,i);
          c_retta->SaveAs(tit_retta);
       }
       
-      theta_deg = 90-(ATan(f->GetParameter(1))*180/Pi());
-      h_theta->Fill(theta_deg);
-      intercetta = f->GetParameter(0);
+      thetaDeg = 90-(ATan(f->GetParameter(1))*180/Pi());
+      h_theta->Fill(thetaDeg);
+      
       h_intercetta->Fill(intercetta);
       
       for(Int_t row=0; row<NRows; row++){
@@ -243,17 +300,27 @@ void chi(int run){
          discr[row]->Fill(scarto[row]);
          ampiezza[row] = sqrt(scarto[row]*scarto[row]);
          amplitude[row]->Fill(ampiezza[row]);
+         errX[row] = sqrt(pow((1/coeffAng)*errM,2) /*+ pow((-1/coeffAng)*10,2)*/ + pow(((intercetta-f->Eval(x[row]))/(pow(coeffAng,2))*errM),2) /*+ pow(scarto[row],2)*/);
          if(row==NRows-1){
             h_chi->Fill(my_chi);
          }
+         h_errX[row]->Fill(errX[row]);
+         h_errX[row]->Fit("norm","","",0,5);
+         mean_errX[row] = norm->GetParameter(1);
       }
       
+      x_foc = -intercetta/coeffAng;
+      cout << "x_foc: " << x_foc << endl;
+      h_foc->Fill(x_foc);
       my_chiRed = my_chi/Ndof;
       h_chiRed->Fill(my_chiRed);
       
       /* cout trials */
       cout << "My chi: " << my_chi << "    chi^2 reduced: " << endl;
-      //}                                                                      // TCutg parenthesis
+      }else{                                                                      // TCutg parenthesis
+               cout << "Evt: " << i << endl;
+            }
+      
       /*cout << " *************************************** " << endl;
       cout << "Event: " << i << endl;
       for(Int_t row=0; row<NRows; row++){
@@ -273,6 +340,18 @@ void chi(int run){
       cout << "Offset " << row << ": " << offset[row] << endl;  
    }
    
+   char tFile[100];
+   sprintf(tFile,"TrackQuality_txtFiles/qualityTest_run%d_4He_50_60",run);
+   outfile.open(tFile);
+   
+   outfile << "============================== Preliminaey quality test results ==============================" << endl << endl;
+   outfile << "                    error_coeffAng: " << errM << "    error_intercept: " << errQ << endl;
+   for(Int_t row=0; row<NRows; row++){
+      outfile << "                    Mean_error_x_" << row << ": " << mean_errX[row] << endl << endl;
+      outfile << "                    Offset_" << row << ": " << offset[row] << endl;
+      
+   } 
+   outfile << "                    Pearson_coeff.: " << h_corr->GetMean() << "    chi_{red}: " << h_chiRed->GetMean() << endl;
    TLegend* l = new TLegend(0.1,0.7,0.48,0.9);
    l->SetTextSize(0.035);
    l->SetLineWidth(0);
@@ -283,7 +362,7 @@ void chi(int run){
    l1->AddEntry(amplitude[0], "x[row] - (f(z[row]))", "f");
    l1->SetLineWidth(0);
    
-   TCanvas *c = new TCanvas("c","c",1600,1600);
+   TCanvas *c = new TCanvas("c","c",1600,1200);
    c->Divide(3,2);
    c->cd(1);
    discr[0]->Draw();
@@ -318,7 +397,7 @@ void chi(int run){
    //l->Draw("SAME");
    c->Update();
    
-   TCanvas *c1 = new TCanvas("c1","c1",1600,1600);
+   TCanvas *c1 = new TCanvas("c1","c1",1600,1200);
    c1->Divide(3,2);
    c1->cd(1);
    amplitude[0]->Draw();
@@ -370,11 +449,11 @@ void chi(int run){
    cout << "binMin:" << binMin << "    binMax: " << binMax << "   Integral: " << chiRed_min1 << "   chi_min^max/chi_tot: " << chiRed_min1/(h_chiRed->Integral(binMin,200)) << endl;
       
    char titolo0[100];
-   sprintf(titolo0,"Pictures_Analysis/TrackQualityControl/Run%d/Discrepancies_run%d.png",run,run);
+   sprintf(titolo0,"Pictures_Analysis/TrackQualityControl/Run%d/Discrepancies_run%d_4He_50_60.png",run,run);
    char titolo1[100];
-   sprintf(titolo1,"Pictures_Analysis/TrackQualityControl/Run%d/Amplitudes_run%d.png",run,run);
+   sprintf(titolo1,"Pictures_Analysis/TrackQualityControl/Run%d/Amplitudes_run%d_4He_50_60.png",run,run);
    char titolo2[100];
-   sprintf(titolo2,"Pictures_Analysis/TrackQualityControl/Run%d/chi_run%d.png",run,run);
+   sprintf(titolo2,"Pictures_Analysis/TrackQualityControl/Run%d/chi_run%d_4He_50_60.png",run,run);
    c->SaveAs(titolo0);
    c1->SaveAs(titolo1);
    c2->SaveAs(titolo2);
@@ -386,8 +465,31 @@ void chi(int run){
    c3->cd(2);
    h_intercetta->Draw();
    char titolo3[100];
-   sprintf(titolo3,"Pictures_Analysis/TrackQualityControl/Run%d/theta_intercetta%d.png",run,run);
+   sprintf(titolo3,"Pictures_Analysis/TrackQualityControl/Run%d/theta_intercetta%d_4He_50_60.png",run,run);
    c3->SaveAs(titolo3);
-
-
+   
+   TCanvas *c4 = new TCanvas("c4");
+   c4->Divide(3,2);
+   c4->cd();
+   h_corr->Draw();
+   char titolo4[100];
+   sprintf(titolo4,"Pictures_Analysis/TrackQualityControl/Run%d/pearson_%d_4He_50_60.png",run,run);
+   c4->SaveAs(titolo4);
+   
+   TCanvas *c5 = new TCanvas("c5","c5",900,500);
+   c5->Divide(3,2);
+   for(Int_t p=0; p<NRows; p++){
+      c5->cd(p+1);
+      h_errX[p]->Draw();
+   }
+   char titolo5[100];
+   sprintf(titolo5,"Pictures_Analysis/TrackQualityControl/Run%d/errX_run%d_4He_50_60.png",run,run);
+   c5->SaveAs(titolo5);
+   
+   TCanvas *c6 = new TCanvas("c6");
+   c6->cd();
+   h_foc->Draw();
+   char titolo6[100];
+   sprintf(titolo6,"Pictures_Analysis/TrackQualityControl/Run%d/x_foc_run%d_4He_50_60.png",run,run);
+   c6->SaveAs(titolo6);
 }
