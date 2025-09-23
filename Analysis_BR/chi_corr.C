@@ -37,7 +37,7 @@ void chi_corr(int run){
    Double_t my_chi = 0.;
    Double_t my_chiRed = 0.;
    Double_t Ndof = 3;
-   Double_t offset[NRows] = {-0.764822,0.8826,0.403131,-0.39966,-0.146673};
+   Double_t offset[NRows] = {-0.443957,2.08141,-0.470026,-3.06936,1.90394};
    Double_t x_corr[NRows] = {0.};
    Double_t newOffset[NRows] = {0.};
    Double_t chiRed_min1 = 0.;
@@ -158,6 +158,30 @@ void chi_corr(int run){
       h_errX[i]->SetLineWidth(2);
    }
    
+   TH1D *h_errM = new TH1D("h_errM","",100,0,0.1);
+   h_errM->GetXaxis()->SetTitle("#varepsilon_{m} (mm)");
+   h_errM->GetXaxis()->SetTitleSize(0.05);
+   h_errM->GetXaxis()->SetLabelSize(0.05);
+   h_errM->GetXaxis()->SetTitleOffset(.9);
+   h_errM->GetYaxis()->SetTitle("Counts");
+   h_errM->GetYaxis()->SetTitleSize(0.05);
+   h_errM->GetYaxis()->SetLabelSize(0.05);
+   h_errM->GetYaxis()->SetTitleOffset(1.);
+   h_errM->SetNdivisions(7);
+   h_errM->SetLineWidth(2);
+      
+   TH1D *h_errQ = new TH1D("h_errQ","",25,0,2);
+   h_errQ->GetXaxis()->SetTitle("#varepsilon_{q} (mm)");
+   h_errQ->GetXaxis()->SetTitleSize(0.05);
+   h_errQ->GetXaxis()->SetLabelSize(0.05);
+   h_errQ->GetXaxis()->SetTitleOffset(.9);
+   h_errQ->GetYaxis()->SetTitle("Counts");
+   h_errQ->GetYaxis()->SetTitleSize(0.05);
+   h_errQ->GetYaxis()->SetLabelSize(0.05);
+   h_errQ->GetYaxis()->SetTitleOffset(1.);
+   h_errQ->SetNdivisions(7);
+   h_errQ->SetLineWidth(2);
+   
    TH1D *discr[NRows];
    for(int i=0; i<NRows; i++){
       sprintf(histoname,"discr %i",i);
@@ -257,8 +281,8 @@ void chi_corr(int run){
 
       TF1 *f = new TF1(Form("f_%d", i), "[0] + [1]*x", 0, 300);
       f->SetParameters(0, 0);
-      
-      if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      if(sic_fired==1 && energySic>2000){
+      //if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
       for(Int_t row = 0; row < NRows; row++){
          for(Int_t p = 0; p < cl_padMult[row]; p++){
             pad[row][p] = pads_fired[row][p];
@@ -282,6 +306,8 @@ void chi_corr(int run){
       coeffAng = f->GetParameter(1);
       errM = f->GetParError(1);
       errQ = f->GetParError(0);
+      h_errM->Fill(errM);
+      h_errQ->Fill(errQ);
       pearson = retta->GetCorrelationFactor();
       h_corr->Fill(pearson);
       
@@ -323,7 +349,6 @@ void chi_corr(int run){
       
       /* cout trials */
       cout << "My chi: " << my_chi << "    chi^2 reduced: " << endl;
-      //}                                                                      // TCutg parenthesis
       /*cout << " *************************************** " << endl;
       cout << "Event: " << i << endl;
       for(Int_t row=0; row<NRows; row++){
@@ -334,7 +359,8 @@ void chi_corr(int run){
       anode->Reset("ICES");
       
       //cin >> provv;
-   }
+   //}                                                                           // TCutG parenthesis
+   }                                                                           // SiC_fired==1 & energySic>2000 - cut to select good events
    }
    
    /* Average discrepancy evaluation by normal fit */
@@ -348,10 +374,10 @@ void chi_corr(int run){
    sprintf(tFile,"TrackQuality_txtFiles/qualityTest_run%d_corr",run);
    outfile.open(tFile);
    
-   outfile << "============================== Preliminaey quality test results ==============================" << endl << endl;
-   outfile << "                    error_coeffAng: " << errM << "    error_intercept: " << errQ << endl;
+   outfile << "============================== Preliminary quality test results ==============================" << endl << endl;
+   outfile << "                    error_coeffAng: " << h_errM->GetMean() << "    error_intercept: " << h_errQ->GetMean() << endl << endl;
    for(Int_t row=0; row<NRows; row++){
-      outfile << "                    Mean_error_x_" << row << ": " << mean_errX[row] << endl;
+      outfile << "                    Mean_error_x_" << row << ": " << mean_errX[row] << endl << endl;
    } 
    outfile << "                    Pearson_coeff.: " << h_corr->GetMean() << "    chi_{red}: " << h_chiRed->GetMean() << endl;
    TLegend* l = new TLegend(0.1,0.7,0.48,0.9);

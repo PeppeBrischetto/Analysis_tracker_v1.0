@@ -32,10 +32,19 @@ void expSim_together(int run){
    
    Double_t pad[NRows][100] = {0.};
    Double_t charge[NRows][100] = {0.};
-   Double_t simul_pad[NRows][100] = {0.};
-   Double_t simul_charge[NRows][100] = {0.};
+   
+   Double_t simul_pad0[3] = {5,6,7};
+   Double_t simul_pad1[4] = {6,7,8,9};
+   Double_t simul_pad2[4] = {8,9,10,11};
+   Double_t simul_pad3[4] = {10,11,12,13};
+   Double_t simul_pad4[4] = {12,13,14,15};
+   Double_t simul_charge0[3] = {689761.5,3037646.6,258379.7};
+   Double_t simul_charge1[4] = {2246.8,1139117.5,2610758.4,128066.5};
+   Double_t simul_charge2[4] = {22467.8,1579486.3,2273741.4,53922.7};
+   Double_t simul_charge3[4] = {40442,2152415.2,1707552.8,8987.1};
+   Double_t simul_charge4[4] = {103351.9,2547848.5,1316613.1,8987.1};
+   
    char histoname[100];
-   ifstream simulFile;
       
    TH1D *chargeDistr[NRows];
    for(int i=0; i<NRows; i++){
@@ -71,7 +80,7 @@ void expSim_together(int run){
       //simul[i]->SetStats(0);
       simul[i]->SetNdivisions(7);
       //simul[i]->SetFillColor(i+1);
-      simul[i]->SetLineColor(kRed);
+      simul[i]->SetLineColor(kCyan+2);
       simul[i]->SetLineWidth(2);
    }
    
@@ -108,30 +117,57 @@ void expSim_together(int run){
 //#################################################################################################
 // Data loop
 
-   for (Int_t i=0; i<1; i++){
+   for (Int_t i=158; i<159; i++){
       tree->GetEntry(i);
       
+      if(theta_deg>=20 && theta_deg<30. && cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
       for(Int_t row = 0; row < NRows; row++){
          for(Int_t p = 0; p < cl_padMult[row]; p++){
             pad[row][p] = pads_fired[row][p];
             charge[row][p] = pad_charge[row][p];
             chargeDistr[row]->SetBinContent(pad[row][p],charge[row][p]);
          }
+         
+         
       }
+   
+   char t;
+   cout << "Evt: " << i << endl;
+   cin >> t ;
+   }else{                                                                             // TCutg parenthesis
+            cout << "Evt: " << endl;
+         }
    }
-
+   
+   for(Int_t k=0; k<8; k++){
+      simul[0]->SetBinContent(simul_pad0[k]+13,simul_charge0[k]*(20 * (pow(2,16))) / (2.762e5 * 8000));
+      simul[1]->SetBinContent(simul_pad1[k]+14,simul_charge1[k]*(20 * (pow(2,16))) / (2.762e5 * 8000));
+      simul[4]->SetBinContent(simul_pad4[k]+16,simul_charge2[k]*(20 * (pow(2,16))) / (2.762e5 * 8000));
+   }
+   
+   for(Int_t k=0; k<9; k++){
+      simul[2]->SetBinContent(simul_pad2[k]+14,simul_charge2[k]*(20 * (pow(2,16))) / (2.762e5 * 8000));
+      simul[3]->SetBinContent(simul_pad3[k]+14,simul_charge3[k]*(20 * (pow(2,16))) / (2.762e5 * 8000));
+   }
+    
+   
 //#################################################################################################
 // Visualization block
 
-   TLegend *l = new TLegend(0.1,0.7,0.3,0.9);
+   TLegend *l = new TLegend(0.78,0.58,0.98,0.78);
    l->SetTextSize(0.035);
-   //l->AddEntry(discr[0], "x[row] - (f(z[row]))", "f");
+   //l->SetLineWidth(0);
+   //l->SetFillStyle(0);
+   l->AddEntry(chargeDistr[0], "Charge_{exp}(pad)", "f");
+   l->AddEntry(simul[0], "Charge_{simul}(pad)", "f");
 
-   TCanvas *c = new TCanvas("c");
-   c->Divide(3,2);
+   TCanvas *c = new TCanvas("c","c",1600,200);
+   c->Divide(5,1);
    for(Int_t j=0; j<NRows; j++){
       c->cd(j+1);
       chargeDistr[j]->Draw();
+      simul[j]->Draw("SAME");
+      l->Draw("SAME");
    }
    
 }
