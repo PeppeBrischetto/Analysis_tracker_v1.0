@@ -1,0 +1,7 @@
+                  Charge Distribution width (FWHM) - run: 76
+
+FWHM row0: 2.09345      FWHM(2.35*RMS): 2.35*2.93475 = 6.89667
+FWHM row1: 1.36678      FWHM(2.35*RMS): 2.35*3.54774 = 8.33719
+FWHM row2: 1.12319      FWHM(2.35*RMS): 2.35*4.6776 = 10.9924
+FWHM row3: 2.00489      FWHM(2.35*RMS): 2.35*6.36568 = 14.9593
+FWHM row4: 3.95543      FWHM(2.35*RMS): 2.35*9.07727 = 21.3316

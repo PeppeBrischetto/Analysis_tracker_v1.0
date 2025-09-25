@@ -37,7 +37,7 @@ void chi_corr(int run){
    Double_t my_chi = 0.;
    Double_t my_chiRed = 0.;
    Double_t Ndof = 3;
-   Double_t offset[NRows] = {-0.443957,2.08141,-0.470026,-3.06936,1.90394};
+   Double_t offset[NRows] = {-0.629552,1.43104,-0.119058,-1.38679,0.698465};
    Double_t x_corr[NRows] = {0.};
    Double_t newOffset[NRows] = {0.};
    Double_t chiRed_min1 = 0.;
@@ -332,7 +332,7 @@ void chi_corr(int run){
          discr[row]->Fill(scarto[row]);
          ampiezza[row] = sqrt(scarto[row]*scarto[row]);
          amplitude[row]->Fill(ampiezza[row]);
-         errX[row] = sqrt(pow((1/coeffAng)*errM,2) /*+ pow((-1/coeffAng)*10,2)*/ + pow(((intercetta-f->Eval(x[row]))/(pow(coeffAng,2))*errM),2) /*pow(scarto[row],2)*/);
+         errX[row] = sqrt(pow((-1/coeffAng)*errQ,2) /*+ pow((-1/coeffAng)*10,2)*/ + pow(((intercetta-f->Eval(x[row]))/(pow(coeffAng,2))*errM),2) /*pow(scarto[row],2)*/);
          if(row==NRows-1){
             h_chi->Fill(my_chi);
          }

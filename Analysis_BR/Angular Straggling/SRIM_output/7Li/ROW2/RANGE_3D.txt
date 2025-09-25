@@ -1,0 +1,102 @@
+============================== SRIM-2013.00 ==============================
+==============================================================================
+====== SRIM Outputs\RANGE_3D.txt : File of Final Ion Positions =====
+
+Ion = Li (03)   Ion Mass= 007,0160
+Energy  = 2400000,E-02 keV
+Ion Angle to Surface = 00,0 degrees
+==================== TARGET =======================
+  Layer # 1 - Au absorber
+  Layer # 1 - Bottom Depth=828586,E-02 A
+  Layer # 1 - Density =0002,7020 g/cm3
+  Layer # 1 -  100 % of Al
+  Layer # 1 -  0 % of  N
+  Layer # 1 -  0 % of Si
+  Layer # 1 -  0 % of  H
+  Layer # 1 -  0 % of  C
+  Layer # 1 -  0 % of  H
+  Layer # 1 -  0 % of  C
+  Layer # 1 -  0 % of  H
+  Layer # 1 -  0 % of  C
+  Layer # 1 -  0 % of  H
+  Layer # 1 -  0 % of  C
+様様様様様様様様様様様様様様様様様様様様様様様様様様
+  Layer # 2 - Ni4Si3 window
+  Layer # 2 - Bottom Depth=182859,E-01 A
+  Layer # 2 - Density =0001,5810 g/cm3
+  Layer # 2 -  0 % of Al
+  Layer # 2 -  50 % of  N
+  Layer # 2 -  50 % of Si
+  Layer # 2 -  0 % of  H
+  Layer # 2 -  0 % of  C
+  Layer # 2 -  0 % of  H
+  Layer # 2 -  0 % of  C
+  Layer # 2 -  0 % of  H
+  Layer # 2 -  0 % of  C
+  Layer # 2 -  0 % of  H
+  Layer # 2 -  0 % of  C
+様様様様様様様様様様様様様様様様様様様様様様様様様様
+  Layer # 3 - Death layer
+  Layer # 3 - Bottom Depth=120602,E+04 A
+  Layer # 3 - Density =0000,0000 g/cm3
+  Layer # 3 -  0 % of Al
+  Layer # 3 -  0 % of  N
+  Layer # 3 -  0 % of Si
+  Layer # 3 -  71 % of  H
+  Layer # 3 -  29 % of  C
+  Layer # 3 -  0 % of  H
+  Layer # 3 -  0 % of  C
+  Layer # 3 -  0 % of  H
+  Layer # 3 -  0 % of  C
+  Layer # 3 -  0 % of  H
+  Layer # 3 -  0 % of  C
+様様様様様様様様様様様様様様様様様様様様様様様様様様
+  Layer # 4 - ROW0
+  Layer # 4 - Bottom Depth=160602,E+04 A
+  Layer # 4 - Density =0000,0000 g/cm3
+  Layer # 4 -  0 % of Al
+  Layer # 4 -  0 % of  N
+  Layer # 4 -  0 % of Si
+  Layer # 4 -  0 % of  H
+  Layer # 4 -  0 % of  C
+  Layer # 4 -  71 % of  H
+  Layer # 4 -  29 % of  C
+  Layer # 4 -  0 % of  H
+  Layer # 4 -  0 % of  C
+  Layer # 4 -  0 % of  H
+  Layer # 4 -  0 % of  C
+様様様様様様様様様様様様様様様様様様様様様様様様様様
+  Layer # 5 - ROW1
+  Layer # 5 - Bottom Depth=200602,E+04 A
+  Layer # 5 - Density =0000,0000 g/cm3
+  Layer # 5 -  0 % of Al
+  Layer # 5 -  0 % of  N
+  Layer # 5 -  0 % of Si
+  Layer # 5 -  0 % of  H
+  Layer # 5 -  0 % of  C
+  Layer # 5 -  0 % of  H
+  Layer # 5 -  0 % of  C
+  Layer # 5 -  71 % of  H
+  Layer # 5 -  29 % of  C
+  Layer # 5 -  0 % of  H
+  Layer # 5 -  0 % of  C
+様様様様様様様様様様様様様様様様様様様様様様様様様様
+  Layer # 6 - ROW2
+  Layer # 6 - Bottom Depth=225602,E+04 A
+  Layer # 6 - Density =0000,0000 g/cm3
+  Layer # 6 -  0 % of Al
+  Layer # 6 -  0 % of  N
+  Layer # 6 -  0 % of Si
+  Layer # 6 -  0 % of  H
+  Layer # 6 -  0 % of  C
+  Layer # 6 -  0 % of  H
+  Layer # 6 -  0 % of  C
+  Layer # 6 -  0 % of  H
+  Layer # 6 -  0 % of  C
+  Layer # 6 -  71 % of  H
+  Layer # 6 -  29 % of  C
+様様様様様様様様様様様様様様様様様様様様様様様様様様
+                                            
+Ion       Depth  X   Lateral Y   Lateral Z  
+Number    (Angstrom) (Angstrom)  (Angstrom) 
+-------  ----------- ----------- -----------

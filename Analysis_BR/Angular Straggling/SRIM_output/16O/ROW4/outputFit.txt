@@ -1,0 +1,5 @@
+                  Straggling ROW 4
+
+        FWHM(y): 1.52056     FWHM(z): 1.52459
+        chi(y): 16.7447     chi(z): 17.3104
+        NDoF(y): 38         NDoF(z): 38
