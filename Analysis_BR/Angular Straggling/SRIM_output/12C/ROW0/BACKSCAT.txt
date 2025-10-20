@@ -7,6 +7,6 @@
 =  Col.#5-7: Last location:  X= Depth into target, Y,Z= Transverse axes.     =
 =  Col.#8-10: Cosines of final trajectory.                                   =
 = *** This data file is in the same format as TRIM.DAT (see manual for uses).=
-====== TRIM Calc.=  C(45 MeV) ==> Au absorber+Ni4Si3 windo( 145. mm) =========
+====== TRIM Calc.=  C(45 MeV) ==> Dead space+Tr. ROW 0( 150. mm) =============
  Ion  Atom   Energy        Depth       Lateral-Position        Atom Direction      
  Numb Numb    (eV)          X(A)        Y(A)       Z(A)      Cos(X)  Cos(Y) Cos(Z) 

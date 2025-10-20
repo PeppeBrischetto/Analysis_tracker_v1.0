@@ -17,21 +17,9 @@
  =                  Cosine (Y) and Cosine (Z) are transverse motion. =
  =====================================================================
  ==================  CALCULATION   DATA  =============================
-  Calculation Date= 09-25-2025, Time= 12:37:05
+  Calculation Date= 10-15-2025, Time= 11:43:14
   Ion Data: Name,   Mass,   Energy (keV)
             C    12, 45000,
-  Displacement Energy of Au = 25,00000 eV
-  Latt.Binding Energy of Au = 3,00000 eV
-  SurfaceBind. Energy of Au = 3,80000 eV
-  Displacement Energy of  N = 28,00000 eV
-  Latt.Binding Energy of  N = 4,00000 eV
-  SurfaceBind. Energy of  N = 2,00000 eV
-  Displacement Energy of Si = 15,00000 eV
-  Latt.Binding Energy of Si = 3,00000 eV
-  SurfaceBind. Energy of Si = 4,70000 eV
-  Displacement Energy of  H = 10,00000 eV
-  Latt.Binding Energy of  H = 3,00000 eV
-  SurfaceBind. Energy of  H = 2,00000 eV
   Displacement Energy of  C = 28,00000 eV
   Latt.Binding Energy of  C = 3,00000 eV
   SurfaceBind. Energy of  C = 7,41000 eV
@@ -41,6 +29,9 @@
   Displacement Energy of  C = 28,00000 eV
   Latt.Binding Energy of  C = 3,00000 eV
   SurfaceBind. Energy of  C = 7,41000 eV
+  Displacement Energy of  H = 10,00000 eV
+  Latt.Binding Energy of  H = 3,00000 eV
+  SurfaceBind. Energy of  H = 2,00000 eV
 ==============================================================================
 =  This file tabulates the kinetics of ions or atoms leaving the target.     =
 =  Column #1: S= Sputtered Atom, B= Backscattered Ion, T= Transmitted Ion.   =
@@ -48,6 +39,6 @@
 =  Col.#5-7: Last location:  X= Depth into target, Y,Z= Transverse axes.     =
 =  Col.#8-10: Cosines of final trajectory.                                   =
 = *** This data file is in the same format as TRIM.DAT (see manual for uses).=
-====== TRIM Calc.=  C(45 MeV) ==> Au absorber+Ni4Si3 windo( 145. mm) =========
+====== TRIM Calc.=  C(45 MeV) ==> Dead space+Tr. ROW 0( 150. mm) =============
  Ion  Atom   Energy        Depth       Lateral-Position        Atom Direction      
  Numb Numb    (eV)          X(A)        Y(A)       Z(A)      Cos(X)  Cos(Y) Cos(Z) 

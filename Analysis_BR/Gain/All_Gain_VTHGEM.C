@@ -4,9 +4,9 @@
 void All_Gain_VTHGEM()
 {
 //=========Macro generated from canvas: c1/c1
-//=========  (Tue Sep 16 10:00:50 2025) by ROOT version 6.32.08
-   TCanvas *c1 = new TCanvas("c1", "c1",165,159,950,900);
-   c1->Range(136.25,2.432631,218.75,4.793527);
+//=========  (Thu Oct  9 17:19:19 2025) by ROOT version 6.32.08
+   TCanvas *c1 = new TCanvas("c1", "c1",115,109,950,900);
+   c1->Range(137.5,2.297109,212.5,4.915755);
    c1->SetFillColor(0);
    c1->SetBorderMode(0);
    c1->SetBorderSize(2);
@@ -16,8 +16,8 @@ void All_Gain_VTHGEM()
    c1->SetFrameBorderMode(0);
    c1->SetFrameBorderMode(0);
    
-   Double_t Graph_fx1[7] = { 150, 160, 160, 170, 180, 190, 205 };
-   Double_t Graph_fy1[7] = { 518.177, 1114.95, 1114.95, 3357.26, 8809.56, 17059.7, 32860 };
+   Double_t Graph_fx1[7] = { 150, 160, 160, 170, 180, 190, 200 };
+   Double_t Graph_fy1[7] = { 402.468, 1166.55, 1163.77, 3374.43, 8633.94, 33258.1, 41009.6 };
    TGraph *graph = new TGraph(7,Graph_fx1,Graph_fy1);
    graph->SetName("");
    graph->SetTitle("");
@@ -32,9 +32,9 @@ void All_Gain_VTHGEM()
    graph->SetMarkerColor(ci);
    graph->SetMarkerStyle(8);
    
-   TH1F *Graph_Graph1 = new TH1F("Graph_Graph1","",100,144.5,210.5);
-   Graph_Graph1->SetMinimum(466.3593);
-   Graph_Graph1->SetMaximum(36094.18);
+   TH1F *Graph_Graph1 = new TH1F("Graph_Graph1","",100,145,205);
+   Graph_Graph1->SetMinimum(362.2212);
+   Graph_Graph1->SetMaximum(45070.31);
    Graph_Graph1->SetDirectory(nullptr);
    Graph_Graph1->SetStats(0);
 
@@ -55,7 +55,7 @@ void All_Gain_VTHGEM()
    graph->Draw("apl ");
    
    Double_t Graph_fx2[6] = { 150, 160, 170, 180, 190, 200 };
-   Double_t Graph_fy2[6] = { 514.579, 1222.41, 3175, 8042.44, 15651, 27330.5 };
+   Double_t Graph_fy2[6] = { 403.935, 1173.82, 3440.44, 8175.26, 15871.2, 27525.9 };
    graph = new TGraph(6,Graph_fx2,Graph_fy2);
    graph->SetName("");
    graph->SetTitle("");
@@ -69,8 +69,8 @@ void All_Gain_VTHGEM()
    graph->SetMarkerStyle(8);
    
    TH1F *Graph_Graph2 = new TH1F("Graph_Graph2","",100,145,205);
-   Graph_Graph2->SetMinimum(463.1211);
-   Graph_Graph2->SetMaximum(30012.09);
+   Graph_Graph2->SetMinimum(363.5415);
+   Graph_Graph2->SetMaximum(30238.1);
    Graph_Graph2->SetDirectory(nullptr);
    Graph_Graph2->SetStats(0);
 
@@ -91,7 +91,7 @@ void All_Gain_VTHGEM()
    graph->Draw("pl ");
    
    Double_t Graph_fx3[5] = { 150, 160, 170, 180, 190 };
-   Double_t Graph_fy3[5] = { 517.765, 1252.71, 3314.95, 7451.59, 14190.4 };
+   Double_t Graph_fy3[5] = { 437.125, 1213.44, 3369.25, 7557.44, 14350.7 };
    graph = new TGraph(5,Graph_fx3,Graph_fy3);
    graph->SetName("");
    graph->SetTitle("");
@@ -105,8 +105,8 @@ void All_Gain_VTHGEM()
    graph->SetMarkerStyle(8);
    
    TH1F *Graph_Graph3 = new TH1F("Graph_Graph3","",100,146,194);
-   Graph_Graph3->SetMinimum(465.9885);
-   Graph_Graph3->SetMaximum(15557.66);
+   Graph_Graph3->SetMinimum(393.4125);
+   Graph_Graph3->SetMaximum(15742.06);
    Graph_Graph3->SetDirectory(nullptr);
    Graph_Graph3->SetStats(0);
 
@@ -127,7 +127,7 @@ void All_Gain_VTHGEM()
    graph->Draw("pl ");
    
    Double_t Graph_fx4[6] = { 150, 160, 170, 180, 190, 190 };
-   Double_t Graph_fy4[6] = { 302.17, 1098.42, 2958.45, 7044.79, 13195.2, 13195.2 };
+   Double_t Graph_fy4[6] = { 677.38, 3228.51, 8928.38, 20733.86, 38872.21, 38872.21 };
    graph = new TGraph(6,Graph_fx4,Graph_fy4);
    graph->SetName("");
    graph->SetTitle("");
@@ -141,8 +141,8 @@ void All_Gain_VTHGEM()
    graph->SetMarkerStyle(8);
    
    TH1F *Graph_Graph4 = new TH1F("Graph_Graph4","",100,146,194);
-   Graph_Graph4->SetMinimum(271.953);
-   Graph_Graph4->SetMaximum(14484.5);
+   Graph_Graph4->SetMinimum(609.642);
+   Graph_Graph4->SetMaximum(42691.69);
    Graph_Graph4->SetDirectory(nullptr);
    Graph_Graph4->SetStats(0);
 
@@ -162,8 +162,8 @@ void All_Gain_VTHGEM()
    
    graph->Draw("pl ");
    
-   Double_t Graph_fx5[5] = { 160, 170, 180, 190, 190 };
-   Double_t Graph_fy5[5] = { 2190.61, 2251.28, 6349.59, 14523.5, 14523.5 };
+   Double_t Graph_fx5[5] = { 160, 170, 180, 190, 200 };
+   Double_t Graph_fy5[5] = { 1741.39, 3172.35, 7673.09, 16976, 32793.5 };
    graph = new TGraph(5,Graph_fx5,Graph_fy5);
    graph->SetName("");
    graph->SetTitle("");
@@ -176,9 +176,9 @@ void All_Gain_VTHGEM()
    graph->SetMarkerColor(ci);
    graph->SetMarkerStyle(8);
    
-   TH1F *Graph_Graph5 = new TH1F("Graph_Graph5","",100,157,193);
-   Graph_Graph5->SetMinimum(957.321);
-   Graph_Graph5->SetMaximum(15756.79);
+   TH1F *Graph_Graph5 = new TH1F("Graph_Graph5","",100,156,204);
+   Graph_Graph5->SetMinimum(1567.251);
+   Graph_Graph5->SetMaximum(35898.71);
    Graph_Graph5->SetDirectory(nullptr);
    Graph_Graph5->SetStats(0);
 
@@ -270,7 +270,7 @@ void All_Gain_VTHGEM()
    
    gre->Draw("pl ");
    
-   TLegend *leg = new TLegend(0.1,0.5,0.35,0.9,NULL,"brNDC");
+   TLegend *leg = new TLegend(0.1,0.55,0.35,0.9,NULL,"brNDC");
    leg->SetBorderSize(1);
    leg->SetLineColor(1);
    leg->SetLineStyle(1);
@@ -376,10 +376,10 @@ void All_Gain_VTHGEM()
    leg->Draw();
   
 // ------------>Primitives in pad: zoomPad
-   TPad *zoomPad__0 = new TPad("zoomPad", "Zoom",0.5221519,0.1004566,0.899789,0.5159817);
+   TPad *zoomPad__0 = new TPad("zoomPad", "Zoom",0.6,0.1,0.9,0.4);
    zoomPad__0->Draw();
    zoomPad__0->cd();
-   zoomPad__0->Range(156.2975,2.882684,163.7225,3.500679);
+   zoomPad__0->Range(153.25,2.848182,166.75,3.730685);
    zoomPad__0->SetFillColor(0);
    zoomPad__0->SetBorderMode(0);
    zoomPad__0->SetBorderSize(2);
@@ -391,8 +391,8 @@ void All_Gain_VTHGEM()
    zoomPad__0->SetFrameFillStyle(0);
    zoomPad__0->SetFrameBorderMode(0);
    
-   Double_t gain2_cl_fx7[7] = { 150, 160, 160, 170, 180, 190, 205 };
-   Double_t gain2_cl_fy7[7] = { 518.177, 1114.95, 1114.95, 3357.26, 8809.56, 17059.7, 32860 };
+   Double_t gain2_cl_fx7[7] = { 150, 160, 160, 170, 180, 190, 200 };
+   Double_t gain2_cl_fy7[7] = { 402.468, 1166.55, 1163.77, 3374.43, 8633.94, 33258.1, 41009.6 };
    graph = new TGraph(7,gain2_cl_fx7,gain2_cl_fy7);
    graph->SetName("gain2_cl");
    graph->SetTitle("");
@@ -405,21 +405,20 @@ void All_Gain_VTHGEM()
    graph->SetMarkerColor(ci);
    graph->SetMarkerStyle(8);
    
-   TH1F *Graph_gain2_cl7 = new TH1F("Graph_gain2_cl7","",100,144.5,210.5);
-   Graph_gain2_cl7->SetMinimum(880.0025);
-   Graph_gain2_cl7->SetMaximum(2747.135);
+   TH1F *Graph_gain2_cl7 = new TH1F("Graph_gain2_cl7","",100,145,205);
+   Graph_gain2_cl7->SetMinimum(863.8375);
+   Graph_gain2_cl7->SetMaximum(4389.696);
    Graph_gain2_cl7->SetDirectory(nullptr);
    Graph_gain2_cl7->SetStats(0);
 
    ci = TColor::GetColor("#000099");
    Graph_gain2_cl7->SetLineColor(ci);
    Graph_gain2_cl7->GetXaxis()->SetTitle("V_{THGEM} (V)");
-   Graph_gain2_cl7->GetXaxis()->SetRange(20,28);
+   Graph_gain2_cl7->GetXaxis()->SetRange(17,34);
    Graph_gain2_cl7->GetXaxis()->SetLabelFont(42);
    Graph_gain2_cl7->GetXaxis()->SetTitleOffset(1);
    Graph_gain2_cl7->GetXaxis()->SetTitleFont(42);
    Graph_gain2_cl7->GetYaxis()->SetTitle("Gain");
-   Graph_gain2_cl7->GetYaxis()->SetRange(1,1);
    Graph_gain2_cl7->GetYaxis()->SetLabelFont(42);
    Graph_gain2_cl7->GetYaxis()->SetTitleFont(42);
    Graph_gain2_cl7->GetZaxis()->SetLabelFont(42);
@@ -430,7 +429,7 @@ void All_Gain_VTHGEM()
    graph->Draw("apl ");
    
    Double_t gain3_cl_fx8[6] = { 150, 160, 170, 180, 190, 200 };
-   Double_t gain3_cl_fy8[6] = { 514.579, 1222.41, 3175, 8042.44, 15651, 27330.5 };
+   Double_t gain3_cl_fy8[6] = { 403.935, 1173.82, 3440.44, 8175.26, 15871.2, 27525.9 };
    graph = new TGraph(6,gain3_cl_fx8,gain3_cl_fy8);
    graph->SetName("gain3_cl");
    graph->SetTitle("");
@@ -444,8 +443,8 @@ void All_Gain_VTHGEM()
    graph->SetMarkerStyle(8);
    
    TH1F *Graph_gain3_cl8 = new TH1F("Graph_gain3_cl8","",100,145,205);
-   Graph_gain3_cl8->SetMinimum(463.1211);
-   Graph_gain3_cl8->SetMaximum(30012.09);
+   Graph_gain3_cl8->SetMinimum(363.5415);
+   Graph_gain3_cl8->SetMaximum(30238.1);
    Graph_gain3_cl8->SetDirectory(nullptr);
    Graph_gain3_cl8->SetStats(0);
 
@@ -466,7 +465,7 @@ void All_Gain_VTHGEM()
    graph->Draw("pl ");
    
    Double_t gain4_cl_fx9[5] = { 150, 160, 170, 180, 190 };
-   Double_t gain4_cl_fy9[5] = { 517.765, 1252.71, 3314.95, 7451.59, 14190.4 };
+   Double_t gain4_cl_fy9[5] = { 437.125, 1213.44, 3369.25, 7557.44, 14350.7 };
    graph = new TGraph(5,gain4_cl_fx9,gain4_cl_fy9);
    graph->SetName("gain4_cl");
    graph->SetTitle("");
@@ -480,8 +479,8 @@ void All_Gain_VTHGEM()
    graph->SetMarkerStyle(8);
    
    TH1F *Graph_gain4_cl9 = new TH1F("Graph_gain4_cl9","",100,146,194);
-   Graph_gain4_cl9->SetMinimum(465.9885);
-   Graph_gain4_cl9->SetMaximum(15557.66);
+   Graph_gain4_cl9->SetMinimum(393.4125);
+   Graph_gain4_cl9->SetMaximum(15742.06);
    Graph_gain4_cl9->SetDirectory(nullptr);
    Graph_gain4_cl9->SetStats(0);
 
@@ -502,7 +501,7 @@ void All_Gain_VTHGEM()
    graph->Draw("pl ");
    
    Double_t gain5_cl_fx10[6] = { 150, 160, 170, 180, 190, 190 };
-   Double_t gain5_cl_fy10[6] = { 302.17, 1098.42, 2958.45, 7044.79, 13195.2, 13195.2 };
+   Double_t gain5_cl_fy10[6] = { 677.38, 3228.51, 8928.38, 20733.86, 38872.21, 38872.21 };
    graph = new TGraph(6,gain5_cl_fx10,gain5_cl_fy10);
    graph->SetName("gain5_cl");
    graph->SetTitle("");
@@ -516,8 +515,8 @@ void All_Gain_VTHGEM()
    graph->SetMarkerStyle(8);
    
    TH1F *Graph_gain5_cl10 = new TH1F("Graph_gain5_cl10","",100,146,194);
-   Graph_gain5_cl10->SetMinimum(271.953);
-   Graph_gain5_cl10->SetMaximum(14484.5);
+   Graph_gain5_cl10->SetMinimum(609.642);
+   Graph_gain5_cl10->SetMaximum(42691.69);
    Graph_gain5_cl10->SetDirectory(nullptr);
    Graph_gain5_cl10->SetStats(0);
 
@@ -537,8 +536,8 @@ void All_Gain_VTHGEM()
    
    graph->Draw("pl ");
    
-   Double_t gain6_cl_fx11[5] = { 160, 170, 180, 190, 190 };
-   Double_t gain6_cl_fy11[5] = { 2190.61, 2251.28, 6349.59, 14523.5, 14523.5 };
+   Double_t gain6_cl_fx11[5] = { 160, 170, 180, 190, 200 };
+   Double_t gain6_cl_fy11[5] = { 1741.39, 3172.35, 7673.09, 16976, 32793.5 };
    graph = new TGraph(5,gain6_cl_fx11,gain6_cl_fy11);
    graph->SetName("gain6_cl");
    graph->SetTitle("");
@@ -551,9 +550,9 @@ void All_Gain_VTHGEM()
    graph->SetMarkerColor(ci);
    graph->SetMarkerStyle(8);
    
-   TH1F *Graph_gain6_cl11 = new TH1F("Graph_gain6_cl11","",100,157,193);
-   Graph_gain6_cl11->SetMinimum(957.321);
-   Graph_gain6_cl11->SetMaximum(15756.79);
+   TH1F *Graph_gain6_cl11 = new TH1F("Graph_gain6_cl11","",100,156,204);
+   Graph_gain6_cl11->SetMinimum(1567.251);
+   Graph_gain6_cl11->SetMaximum(35898.71);
    Graph_gain6_cl11->SetDirectory(nullptr);
    Graph_gain6_cl11->SetStats(0);
 

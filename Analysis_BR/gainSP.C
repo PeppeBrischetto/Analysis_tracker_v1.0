@@ -39,7 +39,7 @@ void gainSP(int run){
    Double_t rate = 0.;
    Double_t t = 0.;
    Double_t gain = 0.;
-   Double_t dE = 0.351e6;
+   Double_t dE = 0.511e6;
    char titolofile[100];
    Double_t v = 0.;
    
@@ -58,36 +58,27 @@ void gainSP(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutGli = new TCutG("cutGli",5);
-   cutGli->SetVarX("cl_x_mm[0]");
-   cutGli->SetVarY("cl_x_mm[1]");
-   cutGli->SetPoint(0,25,39);
-   cutGli->SetPoint(1,122,150);
-   cutGli->SetPoint(2,112,169);
-   cutGli->SetPoint(3,21,51);
-   cutGli->SetPoint(4,25,39);
+   TCutG *cutG = new TCutG("cutG",5);
+   cutG->SetVarX("cl_x_mm[0]");
+   cutG->SetVarY("cl_x_mm[1]");
+   cutG->SetPoint(0,80,112.8);
+   cutG->SetPoint(1,80,111.6);
+   cutG->SetPoint(2,80.6,111.6);
+   cutG->SetPoint(3,80.9,112.8);
+   cutG->SetPoint(4,80.,112.8);
    
-   TCutG *cutGa = new TCutG("cutGa",5);
-   cutGa->SetVarX("cl_x_mm[0]");
-   cutGa->SetVarY("cl_x_mm[1]");
-   cutGa->SetPoint(0,25,16);
-   cutGa->SetPoint(1,195,207);
-   cutGa->SetPoint(2,173,216);
-   cutGa->SetPoint(3,13,22);
-   cutGa->SetPoint(4,25,16);
-
 //###########################################################################################################
 // Data loop
    
    for(Int_t i=0; i<entries; i++){
       tree->GetEntry(i);
       Double_t tot_charge = 0.;
-      if(cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      if(cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
       //tot_charge = cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]+cl_charge[5]+cl_charge[6]+cl_charge[7]+cl_charge[8]+cl_charge[9]+cl_charge[10];
       charge->Fill(cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]+cl_charge[5]+cl_charge[6]+cl_charge[7]+cl_charge[8]+cl_charge[9]+cl_charge[10]);
       }                                                                        //TCutg parenthesis
    }
-   charge->Fit("f","","",0.1,1e5);
+   charge->Fit("f","","",0.,4e6);
    mean_charge = ((f->GetParameter(1))*2*61e3)/(20*3.62);
    primaries = dE/w_gas;
    gain=mean_charge/primaries;
@@ -97,7 +88,7 @@ void gainSP(int run){
    
    cout << "Insert V_THGEM: " << endl;
    cin >> v;
-   //outputfile << v << "	" << gain << endl;
+   outputfile << v << "	" << gain << endl;
    
    TCanvas *c = new TCanvas("c");
    c->cd();

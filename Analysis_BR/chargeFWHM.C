@@ -99,8 +99,8 @@ void chargeFWHM(int run){
       TF1 *f = new TF1(Form("f_%d", i), "gaus", 0, 300);
       f->SetParameters(0, 0);
       h_charge[i]->Fit(f,"N","N",0,300);
-      fwhm[i] =2.35*f->GetParameter(2);
-      outfit << "FWHM row" << i << ": " << fwhm[i] << "   " << "   FWHM(2.35*RMS): 2.35*" << rms[i] << " = " << 2.35*rms[i] << endl;
+      fwhm[i] =f->GetParameter(2);
+      outfit << "FWHM row" << i << ": " << fwhm[i] << "   " << "   FWHM(2.35*RMS): 2.35*" << fwhm[i] << " = " << 2.35*fwhm[i] << endl;
    }
    
    

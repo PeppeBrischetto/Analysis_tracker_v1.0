@@ -1,0 +1,31 @@
+             Preliminary results
+
+stDEV_0: 0.507456   FWHM: 2.35*stDEV = 1.19252
+stDEV_1: 0.547757   FWHM: 2.35*stDEV = 1.28723
+stDEV_2: 0.841065   FWHM: 2.35*stDEV = 1.9765
+stDEV_3: 0.96756   FWHM: 2.35*stDEV = 2.27377
+stDEV_4: 1.27896   FWHM: 2.35*stDEV = 3.00557
+
+       Preliminary results - slit on ROW4
+
+stDEV_slit_0: 0.526303   FWHM: 2.35*stDEV_slit = 1.23681
+stDEV_slit_1: 0.518031   FWHM: 2.35*stDEV_slit = 1.21737
+stDEV_slit_2: 0.698354   FWHM: 2.35*stDEV_slit = 1.64113
+stDEV_slit_3: 0.676343   FWHM: 2.35*stDEV_slit = 1.58941
+stDEV_slit_4: 0.134962   FWHM: 2.35*stDEV_slit = 0.31716
+
+   Preliminary results - slit on ROW0 & ROW4
+
+stDEV_slitSlit_0: 0.156819   FWHM: 2.35*stDEV_slitSlit = 0.368525
+stDEV_slitSlit_1: 0.600439   FWHM: 2.35*stDEV_slitSlit = 1.41103
+stDEV_slitSlit_2: 0.634143   FWHM: 2.35*stDEV_slitSlit = 1.49024
+stDEV_slitSlit_3: 0.647691   FWHM: 2.35*stDEV_slitSlit = 1.52207
+stDEV_slitSlit_4: 0.124628   FWHM: 2.35*stDEV_slitSlit = 0.292876
+
+   Preliminary results - xf_fit improvement
+
+stDEV_xfit:1.35959   FWHM: 2.35*stDEV_xfit = 3.19503
+stDEV_xfit:0.719344   FWHM: 2.35*stDEV_xfit = 1.69046
+stDEV_xfit:0.722752   FWHM: 2.35*stDEV_xfit = 1.69847
+stDEV_xfit:0.557765   FWHM: 2.35*stDEV_xfit = 1.31075
+stDEV_xfit:0.359439   FWHM: 2.35*stDEV_xfit = 0.844681

@@ -57,7 +57,7 @@ void plot_gainSP(){
    gain1->SetLineColor(kMagenta+1);
    gain1->SetMarkerColor(kMagenta+1);
    gain1->GetXaxis()->SetRangeUser(120,240);
-   gain1->GetYaxis()->SetRangeUser(1e0,1e7);
+   gain1->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile1,dummy);
@@ -81,8 +81,8 @@ void plot_gainSP(){
    gain2->SetLineColor(kMagenta);
    //gain2->SetLineWidth(0);
    gain2->SetMarkerColor(kMagenta);
-   gain2->GetXaxis()->SetRangeUser(120,240);
-   gain2->GetYaxis()->SetRangeUser(1e0,1e7);
+   gain2->GetXaxis()->SetRangeUser(110,240);
+   gain2->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile2,dummy);
@@ -107,7 +107,7 @@ void plot_gainSP(){
    gain3->SetMarkerColor(kMagenta+2);
    gain3->SetLineColor(kMagenta+2);
    gain3->GetXaxis()->SetRangeUser(120,240);
-   gain3->GetYaxis()->SetRangeUser(1e0,1e7);
+   gain3->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile3,dummy);
@@ -132,7 +132,7 @@ void plot_gainSP(){
    gain4->SetLineColor(kMagenta+3);
    gain4->SetMarkerColor(kMagenta+3);
    gain4->GetXaxis()->SetRangeUser(120,240);
-   gain4->GetYaxis()->SetRangeUser(1e0,1e7);
+   gain4->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile4,dummy);
@@ -157,7 +157,7 @@ void plot_gainSP(){
    gain5->SetLineColor(kOrange+1);
    gain5->SetMarkerColor(kOrange+1);
    gain5->GetXaxis()->SetRangeUser(120,240);
-   gain5->GetYaxis()->SetRangeUser(1e0,1e7);
+   gain5->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile5,dummy);
@@ -171,7 +171,7 @@ void plot_gainSP(){
 //################################################################################################################ 
 // OpenFile 6: 12C
    
-   sprintf(titolofile6,"Gain/gainTHGEM_293_298_li.txt");
+   sprintf(titolofile6,"Gain/gainTHGEM_275_280_li.txt");
    infile6.open(titolofile6);
      
    TGraph *gain6 = new TGraph();
@@ -182,7 +182,7 @@ void plot_gainSP(){
    gain6->SetLineColor(kYellow+1);
    gain6->SetMarkerColor(kYellow+1);
    gain6->GetXaxis()->SetRangeUser(120,240);
-   gain6->GetYaxis()->SetRangeUser(1e0,1e7);
+   gain6->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile6,dummy);
@@ -207,7 +207,7 @@ void plot_gainSP(){
    gain7->SetLineColor(kGreen+1);
    gain7->SetMarkerColor(kGreen+1);
    gain7->GetXaxis()->SetRangeUser(120,240);
-   gain7->GetYaxis()->SetRangeUser(1e0,1e7);
+   gain7->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile7,dummy);
@@ -238,7 +238,7 @@ void plot_gainSP(){
 //################################################################################################################ 
 // Visualization block
    
-   TLegend *l = new TLegend(0.1,0.5,0.35,0.9);
+   TLegend *l = new TLegend(0.1,0.55,0.35,0.9);
    l->AddEntry(gain7,"#alpha","lp");
    l->AddEntry(gain6,"^{7}Li - 1000 Hz","lp");
    l->AddEntry(gain2,"^{12}C - 20 Hz","lp");
@@ -270,9 +270,10 @@ void plot_gainSP(){
    TGraph *gain6_cl = (TGraph*)gain6->Clone("gain6_cl");
    TGraph *gain7_cl = (TGraph*)gain7->Clone("gain7_cl");
    TGraph *gr4_cl = (TGraph*)gr4->Clone("gr4_cl");
-   gain2_cl->GetXaxis()->SetRangeUser(140,170);
+   gain2_cl->GetXaxis()->SetRangeUser(155,165);
+   gain2_cl->GetYaxis()->SetRangeUser(1e2,1e4);
    
-   TPad *zoomPad = new TPad("zoomPad", "Zoom", 0.6,0.,0.9,0.35);
+   TPad *zoomPad = new TPad("zoomPad", "Zoom", 0.6,0.1,0.9,0.4);
    zoomPad->SetFillColor(0);
    zoomPad->SetFrameFillStyle(0);
    zoomPad->SetLogy();

@@ -1,5 +1,5 @@
-                  Straggling ROW 1
+                  Straggling ROW1
 
-        FWHM(y): 3.48143     FWHM(z): 3.50582
-        chi(y): 20.0721     chi(z): 20.0969
-        NDoF(y): 47         NDoF(z): 47
+        FWHM(y): 2.35*0.326314 = 0.766839     FWHM(z): 2.35*0.319766 = 0.751449
+        chi(y): 30.6612     chi(z): 32.339
+        NDoF(y): 22         NDoF(z): 22

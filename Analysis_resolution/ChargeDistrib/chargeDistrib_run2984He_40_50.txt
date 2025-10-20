@@ -1,0 +1,19 @@
+                  Charge Distribution width (FWHM) - run: 298
+
+Theta: 0
+
+sigma row0: 1.13422   FWHM(2.35*sigma): 2.35*1.13422 = 2.66542
+x row0 (mm): 20   max row0 (ch): 9647.12
+
+sigma row1: 0.882619   FWHM(2.35*sigma): 2.35*0.882619 = 2.07415
+x row1 (mm): 20.4152   max row1 (ch): 8806.87
+
+sigma row2: 0.917155   FWHM(2.35*sigma): 2.35*0.917155 = 2.15532
+x row2 (mm): 20.1211   max row2 (ch): 9164.77
+
+sigma row3: 0.931417   FWHM(2.35*sigma): 2.35*0.931417 = 2.18883
+x row3 (mm): 21.436   max row3 (ch): 9413.58
+
+sigma row4: 0.970907   FWHM(2.35*sigma): 2.35*0.970907 = 2.28163
+x row4 (mm): 22.2318   max row4 (ch): 9283.65
+
