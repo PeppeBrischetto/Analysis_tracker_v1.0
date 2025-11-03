@@ -141,6 +141,21 @@ void resolution(int run){
       xfit[i]->SetLineWidth(2);
    }
    
+   TH1D *xfitW[NRows];
+   for(int i=0; i<NRows; i++){
+      sprintf(histoname,"xfit %i",i);
+      xfitW[i]=new TH1D("","",3000.,0.,300);
+      xfitW[i]->GetXaxis()->SetTitle("x^{fit} (mm)");
+      xfitW[i]->GetXaxis()->SetTitleSize(0.05);
+      xfitW[i]->GetXaxis()->SetLabelSize(0.05);
+      xfitW[i]->GetXaxis()->SetTitleOffset(1.);
+      xfitW[i]->GetYaxis()->SetTitleSize(0.05);
+      xfitW[i]->GetYaxis()->SetLabelSize(0.05);
+      xfitW[i]->GetYaxis()->SetTitleOffset(1.);
+      xfitW[i]->SetNdivisions(7);
+      xfitW[i]->SetLineWidth(2);
+   }
+   
    TGraphErrors *retta[5];
     for(int i=0; i<5; i++){
        sprintf(histoname,"row%i",i);
@@ -207,12 +222,19 @@ void resolution(int run){
          }
       }
       retta[0]->Fit(linea,"R+");
-      xfit[0]->Fill(linea->GetX(0));
+      xfit[0]->Fill(linea->GetX(18.6));
+      retta[0]->Fit(linea,"WL");
+      xfitW[0]->Fill(linea->GetX(18.6));
       linea->SetParameters(0,0);
       retta[1]->Fit(linea,"R+");
       if(/*theta_deg>=0 && theta_deg<20 &&*/ sic_fired==1 && energySic>2000 && cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
-      xfit[1]->Fill(linea->GetX(0));
-   }
+         xfit[1]->Fill(linea->GetX(18.6));
+      }
+      linea->SetParameters(0,0);
+      retta[1]->Fit(linea,"WL");
+      if(/*theta_deg>=0 && theta_deg<20 &&*/ sic_fired==1 && energySic>2000 && cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
+         xfitW[1]->Fill(linea->GetX(18.6));
+      }
    }
    f->Close();
    
@@ -249,7 +271,10 @@ void resolution(int run){
        }
        linea->SetParameters(0,0);
        retta[2]->Fit(linea,"R+");
-       xfit[2]->Fill(linea->GetX(0));
+       xfit[2]->Fill(linea->GetX(18.6));
+       linea->SetParameters(0,0);
+       retta[2]->Fit(linea,"WL");
+       xfit[2]->Fill(linea->GetX(18.6));
    }
    
    char fileOut[100];
@@ -374,11 +399,13 @@ void resolution(int run){
       output << "stDEV_xfit:" << f_gaus->GetParameter(2) << "   FWHM: 2.35*stDEV_xfit = "<< 2.35*f_gaus->GetParameter(2) << endl;
    }
    
-   /*TCanvas *cNC = new TCanvas("cNC","cNC",2200,300);
-   cNC->Divide(5,1);
+   TCanvas *cNC = new TCanvas("cNC","cNC",2200,300);
+   cNC->Divide(2,1);
    for(Int_t row=0; row<NRows; row++){
-      cNC->cd(row+1);
-      x_NC[row]->Draw();
-   }*/
+      cNC->cd(1);
+      x_fit[row]->Draw();
+      cNC->cd(2);
+      x_fitW[row]->Draw();
+   }
 }
 

@@ -39,7 +39,7 @@ void gainSP(int run){
    Double_t rate = 0.;
    Double_t t = 0.;
    Double_t gain = 0.;
-   Double_t dE = 0.511e6;
+   Double_t dE = 0.317e6;
    char titolofile[100];
    Double_t v = 0.;
    
@@ -61,11 +61,11 @@ void gainSP(int run){
    TCutG *cutG = new TCutG("cutG",5);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,80,112.8);
-   cutG->SetPoint(1,80,111.6);
-   cutG->SetPoint(2,80.6,111.6);
-   cutG->SetPoint(3,80.9,112.8);
-   cutG->SetPoint(4,80.,112.8);
+   cutG->SetPoint(0,29.66,13.13);
+   cutG->SetPoint(1,192.49,209.12);
+   cutG->SetPoint(2,176.50,214.1);
+   cutG->SetPoint(3,14.15,20.40);
+   cutG->SetPoint(4,29.66,13.13);
    
 //###########################################################################################################
 // Data loop
@@ -73,15 +73,16 @@ void gainSP(int run){
    for(Int_t i=0; i<entries; i++){
       tree->GetEntry(i);
       Double_t tot_charge = 0.;
-      if(cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      if(theta_deg>=-5 && theta_deg <=5 && cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
       //tot_charge = cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]+cl_charge[5]+cl_charge[6]+cl_charge[7]+cl_charge[8]+cl_charge[9]+cl_charge[10];
       charge->Fill(cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]+cl_charge[5]+cl_charge[6]+cl_charge[7]+cl_charge[8]+cl_charge[9]+cl_charge[10]);
       }                                                                        //TCutg parenthesis
    }
-   charge->Fit("f","","",0.,4e6);
+   charge->Fit("f","","",0.,3e5);
    mean_charge = ((f->GetParameter(1))*2*61e3)/(20*3.62);
    primaries = dE/w_gas;
    gain=mean_charge/primaries;
+   cout << f->GetParameter(1) << "   " << charge->GetMean() << endl;
    cout << "Mean charge: " << mean_charge << endl;
    cout << "Primaries: " << primaries << endl;
    cout << "Gain: " << gain << endl;
