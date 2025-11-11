@@ -1,0 +1,19 @@
+Theta: 1   ErrTheta: -nan
+0	0	0	0	0	
+-nan	
+-nan	
+-nan	
+-nan	
+-nan	Theta: 1   ErrTheta: -nan
+0	0	0	0	0	
+-nan	
+-nan	
+-nan	
+-nan	
+-nan	Theta: 12.2016   ErrTheta: 0.015759
+11.1697	12.3117	10.922	13.697	14.0703	
+0.61394	
+0.676713	
+0.600328	
+0.752855	
+0.773371	

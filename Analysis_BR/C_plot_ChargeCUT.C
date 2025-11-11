@@ -36,7 +36,7 @@ void C_plot_ChargeCUT(int run)
    f->SetParameters(1,1,1);
    
    char titoloFile[100];
-   sprintf(titoloFile,"OutputFile_chargeDistrib/Run%d.txt",run);
+   sprintf(titoloFile,"OutputFile_chargeDistrib/Run%d_provv16O.txt",run);
    outPut.open(titoloFile,std::ios_base::app);
   
    
@@ -59,7 +59,7 @@ void C_plot_ChargeCUT(int run)
       histo_Stat[i]->SetLineColor(kBlue);
    }
    
-   TH1F *histo_Theta = new TH1F("histo_Theta","",100,30,70);
+   TH1F *histo_Theta = new TH1F("histo_Theta","",100,0,60);
    histo_Theta=new TH1F("","",90,0,90);
    histo_Theta->GetXaxis()->SetTitle("Pad number");
    histo_Theta->GetYaxis()->SetTitle("Charge (a.u.)");
@@ -75,14 +75,22 @@ void C_plot_ChargeCUT(int run)
 //#################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",5);
+   TCutG *cutG = new TCutG("cutG",12);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,47.07,97.98);
-   cutG->SetPoint(1,47.07,97.23);
-   cutG->SetPoint(2,47.59,97.3);
-   cutG->SetPoint(3,47.83,97.99);
-   cutG->SetPoint(4,47.07,97.98);
+   cutG->SetPoint(0,59.8067,103.758);
+   cutG->SetPoint(1,59.572,103.989);
+   cutG->SetPoint(2,59.0896,104.023);
+   cutG->SetPoint(3,58.692,103.758);
+   cutG->SetPoint(4,58.5095,103.493);
+   cutG->SetPoint(5,58.4182,103.151);
+   cutG->SetPoint(6,58.5225,102.787);
+   cutG->SetPoint(7,58.9201,102.556);
+   cutG->SetPoint(8,59.4547,102.677);
+   cutG->SetPoint(9,59.8067,103.074);
+   cutG->SetPoint(10,59.8979,103.482);
+   cutG->SetPoint(11,59.8067,103.758);
+
          
 //#################################################################################################
 // Loop to get charge distribution referred to every single rows for each event
@@ -96,7 +104,7 @@ void C_plot_ChargeCUT(int run)
           histo[j]->Reset();
        }
        
-       if(cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
+       if(cutG->IsInside(cl_x_mm[0], cl_x_mm[1]) /*&& theta_deg>50 && theta_deg<60*/){
           c++;
           for(Int_t j = 0; j < 5; j++){
              histo_Stat[j]->Fill(cl_padMult[j]);
@@ -105,12 +113,26 @@ void C_plot_ChargeCUT(int run)
              }
           }
           histo_Theta->Fill(theta_deg);
+          
+          if(cl_charge[0]<=2600 && cl_charge[1]<=2600 && cl_charge[2]<=2600 && cl_charge[3]<=2600 && cl_charge[4]<=2600){
+            TCanvas *c = new TCanvas("c","c",1400,200);
+            c->Divide(5,1);
+            for(Int_t j=0; j<5; j++){
+               c->cd(j+1);
+               histo[j]->Draw();
+               char tit[100];
+               sprintf(tit,"Provv_chargedistr16O/d_%d.png",i);
+               c->SaveAs(tit);
+            }
+          }
        }
+       
+       
     }
   
-    histo_Theta->Fit(f,"","+",0,90);
-    theta = f->GetParameter(1);
-    err_theta = f->GetParError(2)/sqrt(c);
+    histo_Theta->Fit(f,"","+",0,60);
+    theta = histo_Theta->GetMean();
+    err_theta = histo_Theta->GetRMS();
     
     outPut << "Theta: " << theta << "   ErrTheta: " << err_theta << endl;
        for(Int_t j=0; j<5; j++){
@@ -129,5 +151,7 @@ void C_plot_ChargeCUT(int run)
      for(Int_t j=0; j<5; j++){
         outPut << endl << width[j] << "	";
      }  
+     
+     
        
    }

@@ -40,19 +40,23 @@ void cut(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",10);
+   TCutG *cutG = new TCutG("cutG",14);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,83.8692,115.759);
-   cutG->SetPoint(1,83.1424,115.641);
-   cutG->SetPoint(2,82.6127,115.041);
-   cutG->SetPoint(3,82.5141,114.296);
-   cutG->SetPoint(4,82.9946,113.578);
-   cutG->SetPoint(5,83.8692,113.291);
-   cutG->SetPoint(6,84.7315,113.826);
-   cutG->SetPoint(7,84.9779,114.714);
-   cutG->SetPoint(8,84.6699,115.341);
-   cutG->SetPoint(9,83.8692,115.759);
+   cutG->SetPoint(0,84.5357,115.814);
+   cutG->SetPoint(1,84.1774,115.997);
+   cutG->SetPoint(2,83.6477,115.89);
+   cutG->SetPoint(3,83.0556,115.388);
+   cutG->SetPoint(4,82.6661,114.672);
+   cutG->SetPoint(5,82.5648,114.154);
+   cutG->SetPoint(6,82.5726,113.788);
+   cutG->SetPoint(7,82.7284,113.392);
+   cutG->SetPoint(8,83.2426,113.194);
+   cutG->SetPoint(9,83.9281,113.53);
+   cutG->SetPoint(10,84.4968,114.245);
+   cutG->SetPoint(11,84.7461,115.053);
+   cutG->SetPoint(12,84.6915,115.555);
+   cutG->SetPoint(13,84.5357,115.814);
    cutG->SetLineColor(kRed);
    cutG->SetLineWidth(2);
    
@@ -68,6 +72,8 @@ void cut(int run){
    cutG->Draw("SAME");
    
    TH2D *h_cut_cl = (TH2D*)h_cut->Clone("h_cut_cl");
+   h_cut_cl->GetXaxis()->SetLabelSize(0.05);
+   h_cut_cl->GetYaxis()->SetLabelSize(0.05);
    TPad *zoomPad = new TPad("zoomPad", "Zoom", 0.5,0.1,0.9,0.5);
    zoomPad->SetFillColor(0);
    zoomPad->SetFrameFillStyle(0);

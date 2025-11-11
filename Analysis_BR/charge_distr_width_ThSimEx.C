@@ -64,12 +64,18 @@ const Int_t NAngles = 10;                                                       
 
 const TString InputSimul = "SimulFile.txt";
 
-const TString InputFileC = "OutputFile_chargeDistrib/Run202.txt";
-const TString InputFileLi = "OutputFile_chargeDistrib/Run215.txt";
+const TString InputFileHe1 = "OutputFile_chargeDistrib/Run298_4He_0_10.txt";
+const TString InputFileHe2 = "OutputFile_chargeDistrib/Run298_4He_10_20.txt";
+const TString InputFileHe3 = "OutputFile_chargeDistrib/Run298_4He_20_30.txt";
+const TString InputFileHe4 = "OutputFile_chargeDistrib/Run298_4He_30_40.txt";
+const TString InputFileHe5 = "OutputFile_chargeDistrib/Run298_4He_40_50.txt";
+const TString InputFileHe6 = "OutputFile_chargeDistrib/Run298_4He_50_60.txt";
+const TString InputFileC = "OutputFile_chargeDistrib/Run52.txt";
+const TString InputFileLi = "OutputFile_chargeDistrib/Run298_7Li.txt";
 const TString InputFileHe = "OutputFile_chargeDistrib/Run298Alpha.txt";
 const TString InputFileO = "OutputFile_chargeDistrib/Run171.txt";
-const TString InputFileC1 = "OutputFile_chargeDistrib/Run184.txt";
-const TString InputFileC2 = "OutputFile_chargeDistrib/Run193.txt";
+const TString InputFileC1 = "OutputFile_chargeDistrib/Run38.txt";
+const TString InputFileC2 = "OutputFile_chargeDistrib/Run65.txt";
 const TString InputFileC3 = "OutputFile_chargeDistrib/Run76.txt";
 
 
@@ -93,7 +99,7 @@ void charge_distr_width_ThSimEx(){
     TGraph *gr1[5];
     for(Int_t r=0; r<NRows; r++){
        gr1[r] = new TGraph();
-       gr1[r]->SetTitle("Charge distribution width ~ M-THGEM with RIM");
+       gr1[r]->SetTitle("Charge distribution width ~ M-THGEM without RIM");
        gr1[r]->SetLineWidth(3);
        gr1[r]->SetLineStyle(1);
        gr1[r]->SetMarkerStyle(1);
@@ -106,7 +112,7 @@ void charge_distr_width_ThSimEx(){
     TGraph *gr1_9mbar[5];
     for(Int_t r=0; r<NRows; r++){
        gr1_9mbar[r] = new TGraph();
-       gr1_9mbar[r]->SetTitle("Charge distribution width ~ M-THGEM with RIM");
+       gr1_9mbar[r]->SetTitle("Charge distribution width ~ M-THGEM without RIM");
        gr1_9mbar[r]->SetLineWidth(3);
        gr1_9mbar[r]->SetLineStyle(1);
        gr1_9mbar[r]->SetMarkerStyle(1);
@@ -119,7 +125,7 @@ void charge_distr_width_ThSimEx(){
     TGraph *gr1_11mbar[5];
     for(Int_t r=0; r<NRows; r++){
        gr1_11mbar[r] = new TGraph();
-       gr1_11mbar[r]->SetTitle("Charge distribution width ~ M-THGEM with RIM");
+       gr1_11mbar[r]->SetTitle("Charge distribution width ~ M-THGEM without RIM");
        gr1_11mbar[r]->SetLineWidth(3);
        gr1_11mbar[r]->SetLineStyle(1);
        gr1_11mbar[r]->SetMarkerStyle(1);
@@ -132,7 +138,7 @@ void charge_distr_width_ThSimEx(){
     TGraph *gr1_geo[5];
     for(Int_t r=0; r<NRows; r++){
        gr1_geo[r] = new TGraph();
-       gr1_geo[r]->SetTitle("Charge distribution width ~ M-THGEM with RIM");
+       gr1_geo[r]->SetTitle("Charge distribution width ~ M-THGEM without RIM");
        gr1_geo[r]->SetLineWidth(2);
        gr1_geo[r]->SetLineStyle(2);
        gr1_geo[r]->SetMarkerStyle(1);
@@ -145,7 +151,7 @@ void charge_distr_width_ThSimEx(){
     TGraph *gr1_diff[5];
     for(Int_t r=0; r<NRows; r++){
        gr1_diff[r] = new TGraph();
-       gr1_diff[r]->SetTitle("Charge distribution width ~ M-THGEM with RIM");
+       gr1_diff[r]->SetTitle("Charge distribution width ~ M-THGEM without RIM");
        gr1_diff[r]->SetLineWidth(1);
        gr1_diff[r]->SetLineStyle(10);
        gr1_diff[r]->SetMarkerStyle(1);
@@ -158,7 +164,7 @@ void charge_distr_width_ThSimEx(){
     TGraph *gr1_diff_9mbar[5];
     for(Int_t r=0; r<NRows; r++){
        gr1_diff_9mbar[r] = new TGraph();
-       gr1_diff_9mbar[r]->SetTitle("Charge distribution width ~ M-THGEM with RIM");
+       gr1_diff_9mbar[r]->SetTitle("Charge distribution width ~ M-THGEM without RIM");
        gr1_diff_9mbar[r]->SetLineWidth(1);
        gr1_diff_9mbar[r]->SetLineStyle(10);
        gr1_diff_9mbar[r]->SetMarkerStyle(1);
@@ -171,7 +177,7 @@ void charge_distr_width_ThSimEx(){
     TGraph *gr1_diff_11mbar[5];
     for(Int_t r=0; r<NRows; r++){
        gr1_diff_11mbar[r] = new TGraph();
-       gr1_diff_11mbar[r]->SetTitle("Charge distribution width ~ M-THGEM with RIM");
+       gr1_diff_11mbar[r]->SetTitle("Charge distribution width ~ M-THGEM without RIM");
        gr1_diff_11mbar[r]->SetLineWidth(1);
        gr1_diff_11mbar[r]->SetLineStyle(10);
        gr1_diff_11mbar[r]->SetMarkerStyle(1);
@@ -204,19 +210,19 @@ void charge_distr_width_ThSimEx(){
     
 //###########################################################################################################################
 //# SIMULATION BLOCK:
-    /* TGraph tracker_simulator - UP (gain by anode+top) & DOWN (gain by anode solo)*/
-    /*Double_t thetaSimul[9] = {0.};
-    Double_t xSimuld0[9] = {0.};
-    Double_t xSimulu0[9] = {0.};
+    
+    //TGraph tracker_simulator - (gain by anode)
+    Double_t thetaSimul[9] = {0.};
+    Double_t xSimul[9] = {0.};
     ifstream sim;
     string badlines;
     
-    sim.open(InputSimul);*/
+    sim.open(InputSimul);
     
     /* Reading-loop */
-    /*for(Int_t l=0; l<6; l++){
+    for(Int_t l=0; l<6; l++){
        getline(sim,badlines);
-       cout << badlines << endl;
+       //cout << badlines << endl;
     }
     
     for(Int_t l=6; l<9; l++){
@@ -224,40 +230,34 @@ void charge_distr_width_ThSimEx(){
           sim >> thetaSimul[c0];
        }
        for(Int_t c1=0; c1<9; c1++){
-          sim >> xSimuld0[c1];
-       }
-       for(Int_t c2=0; c2<9; c2++){
-          sim >> xSimulu0[c2];
+          sim >> xSimul[c1];
        }
     }
     
     
     
-    TGraph *trackSimuld = new TGraph(9,thetaSimul,xSimuld);
-    trackSimuld->SetTitle("Charge distribution width ~ M-THGEM with RIM");
-    trackSimuld->SetLineWidth(3);
-    trackSimuld->SetLineStyle(8);
-    trackSimuld->SetLineColor(kRed-7);
-    trackSimuld->SetMarkerStyle(26);
-    trackSimuld->SetMarkerColor(kRed-7);
-    trackSimuld->SetMarkerSize(1.5);
-   
-    
-    TGraph *trackSimulu = new TGraph(9,thetaSimul,xSimulu);
-    trackSimulu->SetTitle("Charge distribution width ~ M-THGEM with RIM");
-    trackSimulu->SetLineWidth(3);
-    trackSimulu->SetLineStyle(8);
-    trackSimulu->SetLineColor(kRed-7);
-    trackSimulu->SetMarkerStyle(23);
-    trackSimulu->SetMarkerColor(kRed-7);
-    trackSimulu->SetMarkerSize(1.5);*/
+    TGraph *trackSimul = new TGraph(9,thetaSimul,xSimul);
+    trackSimul->SetTitle("Charge distribution width ~ M-THGEM without RIM");
+    trackSimul->SetLineWidth(3);
+    trackSimul->SetLineStyle(1);
+    trackSimul->SetLineColor(kRed-7);
+    trackSimul->SetMarkerStyle(20);
+    trackSimul->SetMarkerColor(kRed-7);
+    trackSimul->SetMarkerSize(1.5);
    
 //###########################################################################################################################
 //# EXPERIMENTAL BLOCK:    
     
     char histoname[100];
     char gr_name[100];
-    ifstream f_he,f_li,f_c,f_c1,f_c2,f_c3,f_o;
+    ifstream f_he1,f_he2,f_he3,f_he4,f_he5,f_he6,f_li,f_c,f_c1,f_c2,f_c3,f_o;
+    
+    f_he1.open(InputFileHe1);
+    f_he2.open(InputFileHe2);
+    f_he3.open(InputFileHe3);
+    f_he4.open(InputFileHe4);
+    f_he5.open(InputFileHe5);
+    f_he6.open(InputFileHe6);
     f_li.open(InputFileLi);
     f_c.open(InputFileC);
     f_c1.open(InputFileC1);
@@ -265,9 +265,77 @@ void charge_distr_width_ThSimEx(){
     f_c3.open(InputFileC3);
     f_o.open(InputFileO);
     
-    Double_t theta_he,theta_li,theta_c,theta_c1,theta_c2,theta_c3,theta_o,err_theta_he,err_theta_li,err_theta_c,err_theta_c1,err_theta_c2,err_theta_c3,err_theta_o = 0;
+    Double_t theta_he1,theta_he2,theta_he3,theta_he4,theta_he5,theta_he6,theta_li,theta_c,theta_c1,theta_c2,theta_c3,theta_o,err_theta_he1,err_theta_he2,err_theta_he3,err_theta_he4,err_theta_he5,err_theta_he6,err_theta_li,err_theta_c,err_theta_c1,err_theta_c2,err_theta_c3,err_theta_o = 0;
     string line,dummy;
-    Double_t w_li[NRows],err_w_li[NRows],w_c[NRows],err_w_c[NRows],w_c1[NRows],err_w_c1[NRows],w_c2[NRows],err_w_c2[NRows],w_c3[NRows],err_w_c3[NRows],w_o[NRows],err_w_o[NRows] = {0.};
+    Double_t w_he1[NRows],err_w_he1[NRows],w_he2[NRows],err_w_he2[NRows],w_he3[NRows],err_w_he3[NRows],w_he4[NRows],err_w_he4[NRows],w_he5[NRows],w_he6[NRows],err_w_he5[NRows],err_w_he6[NRows],w_li[NRows],err_w_li[NRows],w_c[NRows],err_w_c[NRows],w_c1[NRows],err_w_c1[NRows],w_c2[NRows],err_w_c2[NRows],w_c3[NRows],err_w_c3[NRows],w_o[NRows],err_w_o[NRows] = {0.};
+    
+    TGraphErrors *gr_he1[5];
+    for(int i=0; i<5; i++){
+       sprintf(histoname,"row%i",i);
+       gr_he1[i]=new TGraphErrors();
+       gr_he1[i]->GetXaxis()->SetTitle("#theta (deg)");
+       gr_he1[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+       gr_he1[i]->SetMarkerSize(1.6);
+       gr_he1[i]->SetMarkerStyle(53);
+       gr_he1[i]->SetMarkerColor(kGreen+1);
+       gr_he1[i]->SetLineColor(kGreen+1);
+    }
+    TGraphErrors *gr_he2[5];
+    for(int i=0; i<5; i++){
+       sprintf(histoname,"row%i",i);
+       gr_he2[i]=new TGraphErrors();
+       gr_he2[i]->GetXaxis()->SetTitle("#theta (deg)");
+       gr_he2[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+       gr_he2[i]->SetMarkerSize(1.6);
+       gr_he2[i]->SetMarkerStyle(53);
+       gr_he2[i]->SetMarkerColor(kGreen+1);
+       gr_he2[i]->SetLineColor(kGreen+1);
+    }
+    TGraphErrors *gr_he3[5];
+    for(int i=0; i<5; i++){
+       sprintf(histoname,"row%i",i);
+       gr_he3[i]=new TGraphErrors();
+       gr_he3[i]->GetXaxis()->SetTitle("#theta (deg)");
+       gr_he3[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+       gr_he3[i]->SetMarkerSize(1.6);
+       gr_he3[i]->SetMarkerStyle(53);
+       gr_he3[i]->SetMarkerColor(kGreen+1);
+       gr_he3[i]->SetLineColor(kGreen+1);
+    }
+    TGraphErrors *gr_he4[5];
+    for(int i=0; i<5; i++){
+       sprintf(histoname,"row%i",i);
+       gr_he4[i]=new TGraphErrors();
+       gr_he4[i]->GetXaxis()->SetTitle("#theta (deg)");
+       gr_he4[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+       gr_he4[i]->SetMarkerSize(1.6);
+       gr_he4[i]->SetMarkerStyle(53);
+       gr_he4[i]->SetMarkerColor(kGreen+1);
+       gr_he4[i]->SetLineColor(kGreen+1);
+    }
+    TGraphErrors *gr_he5[5];
+    for(int i=0; i<5; i++){
+       sprintf(histoname,"row%i",i);
+       gr_he5[i]=new TGraphErrors();
+       gr_he5[i]->GetXaxis()->SetTitle("#theta (deg)");
+       gr_he5[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+       gr_he5[i]->SetMarkerSize(1.6);
+       gr_he5[i]->SetMarkerStyle(53);
+       gr_he5[i]->SetMarkerColor(kGreen+1);
+       gr_he5[i]->SetLineColor(kGreen+1);
+    }
+    
+    TGraphErrors *gr_he6[5];
+    for(int i=0; i<5; i++){
+       sprintf(histoname,"row%i",i);
+       gr_he6[i]=new TGraphErrors();
+       gr_he6[i]->GetXaxis()->SetTitle("#theta (deg)");
+       gr_he6[i]->GetYaxis()->SetTitle("#delta_{x}^{tot} (mm)");
+       gr_he6[i]->SetMarkerSize(1.6);
+       gr_he6[i]->SetMarkerStyle(53);
+       gr_he6[i]->SetMarkerColor(kGreen+1);
+       gr_he6[i]->SetLineColor(kGreen+1);
+    }
     
     TGraphErrors *gr_c[5];
     for(int i=0; i<5; i++){
@@ -337,6 +405,12 @@ void charge_distr_width_ThSimEx(){
        gr_o[i]->SetLineColor(kOrange+2);
     }
     
+    f_he1 >> dummy >> theta_he1 >> dummy >> err_theta_he1;
+    f_he2 >> dummy >> theta_he2 >> dummy >> err_theta_he2;
+    f_he3 >> dummy >> theta_he3 >> dummy >> err_theta_he3;
+    f_he4 >> dummy >> theta_he4 >> dummy >> err_theta_he4;
+    f_he5 >> dummy >> theta_he5 >> dummy >> err_theta_he5;
+    f_he6 >> dummy >> theta_he6 >> dummy >> err_theta_he6;
     f_c >> dummy >> theta_c >> dummy >> err_theta_c;
     f_c1 >> dummy >> theta_c1 >> dummy >> err_theta_c1;
     f_c2 >> dummy >> theta_c2 >> dummy >> err_theta_c2;
@@ -344,6 +418,12 @@ void charge_distr_width_ThSimEx(){
     f_li >> dummy >> theta_li >> dummy >> err_theta_li;
     f_o >> dummy >> theta_o >> dummy >> err_theta_o;
 
+    f_he1 >> w_he1[0] >> w_he1[1] >> w_he1[2] >> w_he1[3] >> w_he1[4];
+    f_he2 >> w_he2[0] >> w_he2[1] >> w_he2[2] >> w_he2[3] >> w_he2[4];
+    f_he3 >> w_he3[0] >> w_he3[1] >> w_he3[2] >> w_he3[3] >> w_he3[4];
+    f_he4 >> w_he4[0] >> w_he4[1] >> w_he4[2] >> w_he4[3] >> w_he4[4];
+    f_he5 >> w_he5[0] >> w_he5[1] >> w_he5[2] >> w_he5[3] >> w_he5[4];
+    f_he6 >> w_he6[0] >> w_he6[1] >> w_he6[2] >> w_he6[3] >> w_he6[4];
     f_c >> w_c[0] >> w_c[1] >> w_c[2] >> w_c[3] >> w_c[4];
     f_c1 >> w_c1[0] >> w_c1[1] >> w_c1[2] >> w_c1[3] >> w_c1[4];
     f_c2 >> w_c2[0] >> w_c2[1] >> w_c2[2] >> w_c2[3] >> w_c2[4];
@@ -351,6 +431,12 @@ void charge_distr_width_ThSimEx(){
     f_li >> w_li[0] >> w_li[1] >> w_li[2] >> w_li[3] >> w_li[4];
     f_o >> w_o[0] >> w_o[1] >> w_o[2] >> w_o[3] >> w_o[4];
 
+    f_he1 >> err_w_he1[0] >> err_w_he1[1] >> err_w_he1[2] >> err_w_he1[3] >> err_w_he1[4];
+    f_he2 >> err_w_he2[0] >> err_w_he2[1] >> err_w_he2[2] >> err_w_he2[3] >> err_w_he2[4];
+    f_he3 >> err_w_he3[0] >> err_w_he3[1] >> err_w_he3[2] >> err_w_he3[3] >> err_w_he3[4];
+    f_he4 >> err_w_he4[0] >> err_w_he4[1] >> err_w_he4[2] >> err_w_he4[3] >> err_w_he4[4];
+    f_he5 >> err_w_he5[0] >> err_w_he5[1] >> err_w_he5[2] >> err_w_he5[3] >> err_w_he5[4];
+    f_he6 >> err_w_he6[0] >> err_w_he6[1] >> err_w_he6[2] >> err_w_he6[3] >> err_w_he6[4];
     f_c >> err_w_c[0] >> err_w_c[1] >> err_w_c[2] >> err_w_c[3] >> err_w_c[4];
     f_c1 >> err_w_c1[0] >> err_w_c1[1] >> err_w_c1[2] >> err_w_c1[3] >> err_w_c1[4];
     f_c2 >> err_w_c2[0] >> err_w_c2[1] >> err_w_c2[2] >> err_w_c2[3] >> err_w_c2[4];
@@ -359,6 +445,18 @@ void charge_distr_width_ThSimEx(){
     f_o >> err_w_o[0] >> err_w_o[1] >> err_w_o[2] >> err_w_o[3] >> err_w_o[4];
        
     for(Int_t row=0; row<NRows; row++){
+       gr_he1[row]->SetPoint(0,theta_he1,w_he1[row]);
+       gr_he1[row]->SetPointError(0,err_theta_he1,err_w_he1[row]);
+       gr_he2[row]->SetPoint(0,theta_he2,w_he2[row]);
+       gr_he2[row]->SetPointError(0,err_theta_he2,err_w_he2[row]);
+       gr_he3[row]->SetPoint(0,theta_he3,w_he3[row]);
+       gr_he3[row]->SetPointError(0,err_theta_he3,err_w_he3[row]);
+       gr_he4[row]->SetPoint(0,theta_he4,w_he4[row]);
+       gr_he4[row]->SetPointError(0,err_theta_he4,err_w_he4[row]);
+       gr_he5[row]->SetPoint(0,theta_he5,w_he5[row]);
+       gr_he5[row]->SetPointError(0,err_theta_he5,err_w_he5[row]);
+       gr_he6[row]->SetPoint(0,theta_he6,w_he6[row]);
+       gr_he6[row]->SetPointError(0,err_theta_he6,err_w_he6[row]);
        gr_c[row]->SetPoint(0,theta_c,w_c[row]);
        gr_c[row]->SetPointError(0,err_theta_c,err_w_c[row]);
        gr_c1[row]->SetPoint(0,theta_c1,w_c1[row]);
@@ -380,25 +478,26 @@ void charge_distr_width_ThSimEx(){
 
    TLegend *leg = new TLegend(0.1,0.45,0.5,0.9);
    //leg->SetNColumns(2);
-   leg->AddEntry(gr1_9mbar[0],"#delta x_{diff} - 9mbar","lp");
-   leg->AddEntry(gr1[0],"#delta x_{diff} - 10mbar","lp");
-   leg->AddEntry(gr1_11mbar[0],"#delta x_{diff} - 11mbar","lp");
-   leg->AddEntry(gr1_geo[0],"#delta x_{geo} ","lp");
-   leg->AddEntry(gr1_diff_9mbar[0],"#delta x_{tot} - 9mbar","lp");
+   //leg->AddEntry(gr1_9mbar[0],"#delta x_{tot} - 9mbar","lp");
+   //leg->AddEntry(gr1[0],"#delta x_{tot} - 10mbar","lp");
+   //leg->AddEntry(gr1_11mbar[0],"#delta x_{tot} - 11mbar","lp");
+   leg->AddEntry(gr1_diff_9mbar[0],"#delta x_{diff} - 9mbar","lp");
    leg->AddEntry(gr1_diff[0],"#delta x_{diff} - 10mbar","lp");
-   leg->AddEntry(gr1_diff_11mbar[0],"#delta x_{tot} - 11mbar","lp");
+   leg->AddEntry(gr1_diff_11mbar[0],"#delta x_{diff} - 11mbar","lp");
+   leg->AddEntry(gr1_geo[0],"#delta x_{geo} ","lp");
    //leg->AddEntry(gr1he6[0],"#alpha","lp");
    //leg->AddEntry(gr1he1[0],"#alpha - [20#circ-30#circ]","lp");
    //leg->AddEntry(gr1he2[0],"#alpha - [30#circ-40#circ]","lp");
    //leg->AddEntry(gr1he3[0],"#alpha - [40#circ-50#circ]","lp");
    //leg->AddEntry(gr1he4[0],"#alpha - [50#circ-60#circ]","lp");
-   leg->AddEntry(gr_li[0],"^{7}Li - 2000 Hz","lp");
-   leg->AddEntry(gr_c[0],"^{12}C - 260 Hz","lp");
-   leg->AddEntry(gr_c1[0],"^{12}C - 1300 Hz","lp");
-   leg->AddEntry(gr_c2[0],"^{12}C - 3000 Hz","lp");
-   //leg->AddEntry(gr_c3[0],"^{12}C - 3000 Hz","lp");
-   //leg->AddEntry(gr_o[0],"^{16}O - 250 Hz","lp");
-   //leg->AddEntry(trackSimuld,"python sim. - gain by anode","p");
+   leg->AddEntry(gr_he1[0],"#alpha","lp");
+   leg->AddEntry(gr_li[0],"^{7}Li - 1000 Hz","lp");
+   leg->AddEntry(gr_c[0],"^{12}C - 20 Hz","lp");
+   leg->AddEntry(gr_c1[0],"^{12}C - 250 Hz","lp");
+   leg->AddEntry(gr_c2[0],"^{12}C - 1000 Hz","lp");
+   leg->AddEntry(gr_c3[0],"^{12}C - 3000 Hz","lp");
+   leg->AddEntry(gr_o[0],"^{16}O - 250 Hz","lp");
+   //leg->AddEntry(trackSimul,"python sim. - gain by anode","lp");
    //leg->AddEntry(trackSimulu,"python sim. - gain by anode+top","p");
    //leg->AddEntry(gr_band,"gain ROI (by python sim.)","f");
    
@@ -410,7 +509,7 @@ void charge_distr_width_ThSimEx(){
    geometry->SetTextFont(112);
    
    TLine* sep_line[3];
-   sep_line[0] = new TLine(28.89,0,28.89,55);
+   sep_line[0] = new TLine(29.23,0,29.23,55);
    sep_line[1] = new TLine(26.67,0,26.67,55);
    sep_line[2] = new TLine(30.23,0,30.23,55);
    for(Int_t th=0; th<3; th++){
@@ -429,21 +528,27 @@ void charge_distr_width_ThSimEx(){
        c[r]->SetGridy(1);
        c[r]->SetTickx(1);
        c[r]->SetTicky(1);
-       gr1[r]->Draw("APC");
+       //gr1[r]->Draw("APC");
        gr1[r]->GetXaxis()->SetRangeUser(0,80);
        gr1[r]->GetYaxis()->SetRangeUser(0,65);
-       gr1_9mbar[r]->Draw("PC SAME");
-       gr1_11mbar[r]->Draw("PC SAME");
-       gr1_geo[r]->Draw("PC SAME");
+       //gr1_9mbar[r]->Draw("PC SAME");
+       //gr1_11mbar[r]->Draw("PC SAME");
+       gr1_geo[r]->Draw("APC SAME");
        gr1_diff[r]->Draw("PC SAME");
        gr1_diff_9mbar[r]->Draw("PC SAME");
        gr1_diff_11mbar[r]->Draw("PC SAME");
+       gr_he1[r]->Draw("PC SAME");
+       gr_he2[r]->Draw("PC SAME");
+       gr_he3[r]->Draw("PC SAME");
+       gr_he4[r]->Draw("PC SAME");
+       gr_he5[r]->Draw("PC SAME");
+       gr_he6[r]->Draw("PC SAME");
        gr_c[r]->Draw("PC SAME");
        gr_c1[r]->Draw("PC SAME");
        gr_c2[r]->Draw("PC SAME");
        //gr_c3[r]->Draw("PC SAME");
        gr_li[r]->Draw("PC SAME");
-       //gr_o[r]->Draw("PC SAME");
+       gr_o[r]->Draw("PC SAME");
        if(r==0 || r==1){
           sep_line[0]->Draw("SAME");
        }else
@@ -456,8 +561,7 @@ void charge_distr_width_ThSimEx(){
        leg->Draw("SAME");
        diffusion->Draw("SAME");
        geometry->Draw("SAME");
-       //trackSimuld->Draw("P SAME");
-       //trackSimulu->Draw("P SAME");
+       //trackSimul->Draw("PL SAME");
        //gr_band->Draw("F SAME");
        
        char titlepng[500];

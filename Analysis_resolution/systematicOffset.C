@@ -234,21 +234,19 @@ void systematicOffset(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",12);
+   TCutG *cutG = new TCutG("cutG",10);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,62.0455,105.653);
-   cutG->SetPoint(1,61.6948,105.624);
-   cutG->SetPoint(2,61.3791,105.358);
-   cutG->SetPoint(3,61.2475,105.04);
-   cutG->SetPoint(4,61.3615,104.549);
-   cutG->SetPoint(5,61.6246,104.324);
-   cutG->SetPoint(6,61.9842,104.249);
-   cutG->SetPoint(7,62.3174,104.341);
-   cutG->SetPoint(8,62.598,104.659);
-   cutG->SetPoint(9,62.6682,105.052);
-   cutG->SetPoint(10,62.4226,105.497);
-   cutG->SetPoint(11,62.0455,105.653);
+   cutG->SetPoint(0,61.9775,105.647);
+   cutG->SetPoint(1,61.5703,105.337);
+   cutG->SetPoint(2,61.3036,104.879);
+   cutG->SetPoint(3,61.3036,104.515);
+   cutG->SetPoint(4,61.6546,104.259);
+   cutG->SetPoint(5,62.2021,104.434);
+   cutG->SetPoint(6,62.5952,105);
+   cutG->SetPoint(7,62.5812,105.471);
+   cutG->SetPoint(8,62.3566,105.673);
+   cutG->SetPoint(9,61.9775,105.647);
 
 //#################################################################################################
 // Data loop
@@ -313,7 +311,7 @@ void systematicOffset(int run){
          retta->Draw();
          c_retta->Update();
          char tit_retta[100];
-         sprintf(tit_retta,"Tracks/Run%d/bestTrack%d_.png",run,i);
+         sprintf(tit_retta,"Tracks/Run%d/bestTrack%d_ELLcut.png",run,i);
          c_retta->SaveAs(tit_retta);
       }
       
@@ -370,14 +368,14 @@ void systematicOffset(int run){
    }
    
    char tFile[100];
-   sprintf(tFile,"TrackQuality_txtFiles/qualityTest_run%d.txt",run);
+   sprintf(tFile,"TrackQuality_txtFiles/qualityTest_run%dELLcut.txt",run);
    outfile.open(tFile);
    
-   outfile << "============================== Preliminaey quality test results ==============================" << endl << endl;
+   outfile << "============================== Preliminary quality test results ==============================" << endl << endl;
    outfile << "                    error_coeffAng: " << h_errM->GetMean() << "    error_intercept: " << h_errQ->GetMean() << endl << endl;
    for(Int_t row=0; row<NRows; row++){
       outfile << "                    Mean_error_x_" << row << ": " << mean_errX[row] << endl;
-      outfile << "                    Offset_" << row << ": " << offset[row] << endl << endl;
+      outfile << "                    Offset_" << row << ": " << offset[row] << "   Mean(): " << discr[row]->GetMean() << endl << endl;
       
    } 
    outfile << "                    Pearson_coeff.: " << h_corr->GetMean() << "    chi_{red}: " << h_chiRed->GetMean() << endl;
@@ -478,11 +476,11 @@ void systematicOffset(int run){
    cout << "binMin:" << binMin << "    binMax: " << binMax << "   Integral: " << chiRed_min1 << "   chi_min^max/chi_tot: " << chiRed_min1/(h_chiRed->Integral(binMin,200)) << endl;
       
    char titolo0[100];
-   sprintf(titolo0,"TrackQualityControl/Run%d/offset_run%d.png",run,run);
+   sprintf(titolo0,"TrackQualityControl/Run%d/offset_run%dELLcut.png",run,run);
    char titolo1[100];
-   sprintf(titolo1,"TrackQualityControl/Run%d/Amplitudes_run%d.png",run,run);
+   sprintf(titolo1,"TrackQualityControl/Run%d/Amplitudes_run%dELLcut.png",run,run);
    char titolo2[100];
-   sprintf(titolo2,"TrackQualityControl/Run%d/chi_run%d.png",run,run);
+   sprintf(titolo2,"TrackQualityControl/Run%d/chi_run%dELLcut.png",run,run);
    c->SaveAs(titolo0);
    c1->SaveAs(titolo1);
    c2->SaveAs(titolo2);
@@ -494,7 +492,7 @@ void systematicOffset(int run){
    c3->cd(2);
    h_intercetta->Draw();
    char titolo3[100];
-   sprintf(titolo3,"TrackQualityControl/Run%d/theta_intercetta%d.png",run,run);
+   sprintf(titolo3,"TrackQualityControl/Run%d/theta_intercetta%dELLcut.png",run,run);
    c3->SaveAs(titolo3);
    
    TCanvas *c4 = new TCanvas("c4");
@@ -502,7 +500,7 @@ void systematicOffset(int run){
    c4->cd();
    h_corr->Draw();
    char titolo4[100];
-   sprintf(titolo4,"TrackQualityControl/Run%d/pearson_%d.png",run,run);
+   sprintf(titolo4,"TrackQualityControl/Run%d/pearson_%dELLcut.png",run,run);
    c4->SaveAs(titolo4);
    
    TCanvas *c5 = new TCanvas("c5","c5",900,500);
@@ -512,14 +510,14 @@ void systematicOffset(int run){
       h_errX[p]->Draw();
    }
    char titolo5[100];
-   sprintf(titolo5,"TrackQualityControl/Run%d/errX_run%d.png",run,run);
+   sprintf(titolo5,"TrackQualityControl/Run%d/errX_run%dELLcut.png",run,run);
    c5->SaveAs(titolo5);
    
    TCanvas *c6 = new TCanvas("c6");
    c6->cd();
    h_foc->Draw();
    char titolo6[100];
-   sprintf(titolo6,"TrackQualityControl/Run%d/x_foc_run%d.png",run,run);
+   sprintf(titolo6,"TrackQualityControl/Run%d/x_foc_run%dELLcut.png",run,run);
    c6->SaveAs(titolo6);
    
    TCanvas *c7 = new TCanvas("c7","c7",900,900);
@@ -529,7 +527,7 @@ void systematicOffset(int run){
    c7->cd(2);
    h_errQ->Draw();
    char titolo7[100];
-   sprintf(titolo7,"TrackQualityControl/Run%d/errMQ_run%d.png",run,run);
+   sprintf(titolo7,"TrackQualityControl/Run%d/errMQ_run%dELLcut.png",run,run);
    c7->SaveAs(titolo7);
    
 }

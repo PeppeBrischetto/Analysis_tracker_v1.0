@@ -38,7 +38,7 @@ void systematicOffset_corr_slit(int run){
    Double_t my_chi = 0.;
    Double_t my_chiRed = 0.;
    Double_t Ndof = 3;
-   Double_t offset[NRows] = {-0.447191,1.86749,-0.629959,-2.31805,1.49552};
+   Double_t offset[NRows] = {-0.448542,1.87365,-0.632863,-2.32077,1.49756};
    Double_t x_corr[NRows] = {0.};
    Double_t newOffset[NRows] = {0.};
    Double_t chiRed_min1 = 0.;
@@ -124,21 +124,19 @@ void systematicOffset_corr_slit(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",12);
+   TCutG *cutG = new TCutG("cutG",10);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,62.0455,105.653);
-   cutG->SetPoint(1,61.6948,105.624);
-   cutG->SetPoint(2,61.3791,105.358);
-   cutG->SetPoint(3,61.2475,105.04);
-   cutG->SetPoint(4,61.3615,104.549);
-   cutG->SetPoint(5,61.6246,104.324);
-   cutG->SetPoint(6,61.9842,104.249);
-   cutG->SetPoint(7,62.3174,104.341);
-   cutG->SetPoint(8,62.598,104.659);
-   cutG->SetPoint(9,62.6682,105.052);
-   cutG->SetPoint(10,62.4226,105.497);
-   cutG->SetPoint(11,62.0455,105.653);
+   cutG->SetPoint(0,61.9775,105.647);
+   cutG->SetPoint(1,61.5703,105.337);
+   cutG->SetPoint(2,61.3036,104.879);
+   cutG->SetPoint(3,61.3036,104.515);
+   cutG->SetPoint(4,61.6546,104.259);
+   cutG->SetPoint(5,62.2021,104.434);
+   cutG->SetPoint(6,62.5952,105);
+   cutG->SetPoint(7,62.5812,105.471);
+   cutG->SetPoint(8,62.3566,105.673);
+   cutG->SetPoint(9,61.9775,105.647);
    
 //#################################################################################################
 // Data loop

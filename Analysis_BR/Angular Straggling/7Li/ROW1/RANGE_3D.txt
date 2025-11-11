@@ -1,0 +1,18 @@
+============================== SRIM-2013.00 ==============================
+==============================================================================
+====== SRIM Outputs\RANGE_3D.txt : File of Final Ion Positions =====
+
+Ion = Li (03)   Ion Mass= 007,0160
+Energy  = 2400000,E-02 keV
+Ion Angle to Surface = 00,0 degrees
+==================== TARGET =======================
+  Layer # 1 - Dead space
+  Layer # 1 - Bottom Depth=190600,E+04 A
+  Layer # 1 - Density =0000,0000 g/cm3
+  Layer # 1 -  29 % of  C
+  Layer # 1 -  71 % of  H
+様様様様様様様様様様様様様様様様様様様様様様様様様様
+                                            
+Ion       Depth  X   Lateral Y   Lateral Z  
+Number    (Angstrom) (Angstrom)  (Angstrom) 
+-------  ----------- ----------- -----------

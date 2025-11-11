@@ -33,16 +33,16 @@ void expSim_together(int run){
    Double_t pad[NRows][100] = {0.};
    Double_t charge[NRows][100] = {0.};
    
-   Double_t simul_pad0[3] = {5,6,7};
-   Double_t simul_pad1[4] = {6,7,8,9};
-   Double_t simul_pad2[4] = {8,9,10,11};
-   Double_t simul_pad3[4] = {10,11,12,13};
-   Double_t simul_pad4[4] = {12,13,14,15};
-   Double_t simul_charge0[3] = {689761.5,3037646.6,258379.7};
-   Double_t simul_charge1[4] = {2246.8,1139117.5,2610758.4,128066.5};
-   Double_t simul_charge2[4] = {22467.8,1579486.3,2273741.4,53922.7};
-   Double_t simul_charge3[4] = {40442,2152415.2,1707552.8,8987.1};
-   Double_t simul_charge4[4] = {103351.9,2547848.5,1316613.1,8987.1};
+   Double_t simul_pad0[9] = {7,8,9,10,11,12,13,14,15};
+   Double_t simul_pad1[9] = {14,15,16,17,18,19,20,21,22};
+   Double_t simul_pad2[9] = {22,23,24,25,26,27,28,29,30};
+   Double_t simul_pad3[9] = {30,31,32,33,34,35,36,37,38};
+   Double_t simul_pad4[9] = {38,39,40,41,42,43,44,45,46};
+   Double_t simul_charge0[9] = {43147,743716,2140312,2738691,2605844,1799679,423521,15896,1135};
+   Double_t simul_charge1[9] = {2271,85158,962857,2294733,2680784,2586542,1619143,303164,7948};
+   Double_t simul_charge2[9] = {2271,139660,1154747,2446882,2719389,2487758,1404544,211193,4542};
+   Double_t simul_charge3[9] = {4542,190755,1418170,2528634,2646720,2416225,1092297,141930,1135};
+   Double_t simul_charge4[9] = {11354,338362,1706573,2596761,2646720,2256128,887917,77210,0};
    
    char histoname[100];
       
@@ -62,7 +62,10 @@ void expSim_together(int run){
       chargeDistr[i]->SetNdivisions(7);
       //chargeDistr[i]->SetFillColor(i+1);
       chargeDistr[i]->SetLineColor(kRed);
-      chargeDistr[i]->SetLineWidth(2);
+      chargeDistr[i]->SetLineWidth(1);
+      chargeDistr[i]->SetFillColor(kRed-7);
+      chargeDistr[i]->SetFillStyle(3001);
+      chargeDistr[i]->GetXaxis()->SetRangeUser(0,2800);
    }
    
    TH1D *simul[NRows];
@@ -81,7 +84,9 @@ void expSim_together(int run){
       simul[i]->SetNdivisions(7);
       //simul[i]->SetFillColor(i+1);
       simul[i]->SetLineColor(kCyan+2);
-      simul[i]->SetLineWidth(2);
+      simul[i]->SetLineWidth(1);
+      simul[i]->SetFillColor(kCyan+1);
+      simul[i]->SetFillStyle(3001);
    }
    
 //################################################################################################################
@@ -95,6 +100,22 @@ void expSim_together(int run){
 
 //###########################################################################################################
 // Graphyical cut definition
+
+   TCutG *cutG = new TCutG("cutG",12);
+   cutG->SetVarX("cl_x_mm[0]");
+   cutG->SetVarY("cl_x_mm[1]");
+   cutG->SetPoint(0,59.8067,103.758);
+   cutG->SetPoint(1,59.572,103.989);
+   cutG->SetPoint(2,59.0896,104.023);
+   cutG->SetPoint(3,58.692,103.758);
+   cutG->SetPoint(4,58.5095,103.493);
+   cutG->SetPoint(5,58.4182,103.151);
+   cutG->SetPoint(6,58.5225,102.787);
+   cutG->SetPoint(7,58.9201,102.556);
+   cutG->SetPoint(8,59.4547,102.677);
+   cutG->SetPoint(9,59.8067,103.074);
+   cutG->SetPoint(10,59.8979,103.482);
+   cutG->SetPoint(11,59.8067,103.758);
 
    TCutG *cutGli = new TCutG("cutGli",5);
    cutGli->SetVarX("cl_x_mm[0]");
@@ -117,10 +138,12 @@ void expSim_together(int run){
 //#################################################################################################
 // Data loop
 
-   for (Int_t i=158; i<159; i++){
+   for (Int_t i=18; i<19; i++){
       tree->GetEntry(i);
-      
-      if(theta_deg>=20 && theta_deg<30. && cutGa->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      for(Int_t r=0; r<NRows; r++){
+         chargeDistr[r]->Reset();
+      }
+      if(/*theta_deg>=20 && theta_deg<30. &&*/ cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
       for(Int_t row = 0; row < NRows; row++){
          for(Int_t p = 0; p < cl_padMult[row]; p++){
             pad[row][p] = pads_fired[row][p];
@@ -131,37 +154,34 @@ void expSim_together(int run){
          
       }
    
-   char t;
+   /*char t;
    cout << "Evt: " << i << endl;
-   cin >> t ;
+   cin >> t ;*/
    }else{                                                                             // TCutg parenthesis
             cout << "Evt: " << endl;
          }
    }
    
-   for(Int_t k=0; k<8; k++){
-      simul[0]->SetBinContent(simul_pad0[k]+13,simul_charge0[k]*(20 * (pow(2,16))) / (2.762e5 * 8000));
-      simul[1]->SetBinContent(simul_pad1[k]+14,simul_charge1[k]*(20 * (pow(2,16))) / (2.762e5 * 8000));
-      simul[4]->SetBinContent(simul_pad4[k]+16,simul_charge2[k]*(20 * (pow(2,16))) / (2.762e5 * 8000));
-   }
-   
    for(Int_t k=0; k<9; k++){
-      simul[2]->SetBinContent(simul_pad2[k]+14,simul_charge2[k]*(20 * (pow(2,16))) / (2.762e5 * 8000));
-      simul[3]->SetBinContent(simul_pad3[k]+14,simul_charge3[k]*(20 * (pow(2,16))) / (2.762e5 * 8000));
+      simul[0]->SetBinContent(simul_pad0[k],simul_charge0[k]*1.5*(20 * (pow(2,16))) / (2.762e5 * 8000));
+      simul[1]->SetBinContent(simul_pad1[k],simul_charge1[k]*1.5*(20 * (pow(2,16))) / (2.762e5 * 8000));
+      simul[2]->SetBinContent(simul_pad2[k],simul_charge2[k]*1.5*(20 * (pow(2,16))) / (2.762e5 * 8000));
+      simul[3]->SetBinContent(simul_pad3[k],simul_charge3[k]*1.5*(20 * (pow(2,16))) / (2.762e5 * 8000));
+      simul[4]->SetBinContent(simul_pad4[k],simul_charge4[k]*1.5*(20 * (pow(2,16))) / (2.762e5 * 8000));
    }
     
    
 //#################################################################################################
 // Visualization block
 
-   TLegend *l = new TLegend(0.78,0.58,0.98,0.78);
+   TLegend *l = new TLegend(0.78,0.7,0.98,0.9);
    l->SetTextSize(0.035);
    //l->SetLineWidth(0);
    //l->SetFillStyle(0);
-   l->AddEntry(chargeDistr[0], "Charge_{exp}(pad)", "f");
-   l->AddEntry(simul[0], "Charge_{simul}(pad)", "f");
+   l->AddEntry(chargeDistr[0], "Exp.", "f");
+   l->AddEntry(simul[0], "Sim.", "f");
 
-   TCanvas *c = new TCanvas("c","c",1600,200);
+   TCanvas *c = new TCanvas("c","c",1400,500);
    c->Divide(5,1);
    for(Int_t j=0; j<NRows; j++){
       c->cd(j+1);

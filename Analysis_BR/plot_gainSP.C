@@ -53,11 +53,11 @@ void plot_gainSP(){
    gain1->GetXaxis()->SetTitle("V_{THGEM} (V)");
    gain1->GetYaxis()->SetTitle("Gain");
    gain1->SetMarkerStyle(8);
-   //gain1->SetLineWidth(0);
+   gain1->SetLineWidth(2);
    gain1->SetLineColor(kMagenta+1);
    gain1->SetMarkerColor(kMagenta+1);
-   gain1->GetXaxis()->SetRangeUser(120,240);
-   gain1->GetYaxis()->SetRangeUser(1e0,1e8);
+   //gain1->GetXaxis()->SetRangeUser(120,240);
+   //gain1->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile1,dummy);
@@ -79,10 +79,10 @@ void plot_gainSP(){
    gain2->GetYaxis()->SetTitle("Gain");
    gain2->SetMarkerStyle(8);
    gain2->SetLineColor(kMagenta);
-   //gain2->SetLineWidth(0);
+   gain2->SetLineWidth(2);
    gain2->SetMarkerColor(kMagenta);
-   gain2->GetXaxis()->SetRangeUser(110,240);
-   gain2->GetYaxis()->SetRangeUser(1e0,1e8);
+   //gain2->GetXaxis()->SetRangeUser(110,240);
+   //gain2->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile2,dummy);
@@ -103,11 +103,11 @@ void plot_gainSP(){
    gain3->GetXaxis()->SetTitle("V_{THGEM} (V)");
    gain3->GetYaxis()->SetTitle("Gain");
    gain3->SetMarkerStyle(8);
-   //gain3->SetLineWidth(0);
+   gain3->SetLineWidth(2);
    gain3->SetMarkerColor(kMagenta+2);
    gain3->SetLineColor(kMagenta+2);
-   gain3->GetXaxis()->SetRangeUser(120,240);
-   gain3->GetYaxis()->SetRangeUser(1e0,1e8);
+   //gain3->GetXaxis()->SetRangeUser(120,240);
+   //gain3->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile3,dummy);
@@ -128,11 +128,11 @@ void plot_gainSP(){
    gain4->GetXaxis()->SetTitle("V_{THGEM} (V)");
    gain4->GetYaxis()->SetTitle("Gain");
    gain4->SetMarkerStyle(8);
-   //gain4->SetLineWidth(0);
+   gain4->SetLineWidth(2);
    gain4->SetLineColor(kMagenta+3);
    gain4->SetMarkerColor(kMagenta+3);
-   gain4->GetXaxis()->SetRangeUser(120,240);
-   gain4->GetYaxis()->SetRangeUser(1e0,1e8);
+   //gain4->GetXaxis()->SetRangeUser(120,240);
+   //gain4->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile4,dummy);
@@ -153,11 +153,11 @@ void plot_gainSP(){
    gain5->GetXaxis()->SetTitle("V_{THGEM} (V)");
    gain5->GetYaxis()->SetTitle("Gain");
    gain5->SetMarkerStyle(8);
-   //gain5->SetLineWidth(0);
+   gain5->SetLineWidth(2);
    gain5->SetLineColor(kOrange+1);
    gain5->SetMarkerColor(kOrange+1);
-   gain5->GetXaxis()->SetRangeUser(120,240);
-   gain5->GetYaxis()->SetRangeUser(1e0,1e8);
+   //gain5->GetXaxis()->SetRangeUser(120,240);
+   //gain5->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile5,dummy);
@@ -178,11 +178,11 @@ void plot_gainSP(){
    gain6->GetXaxis()->SetTitle("V_{THGEM} (V)");
    gain6->GetYaxis()->SetTitle("Gain");
    gain6->SetMarkerStyle(8);
-   //gain6->SetLineWidth(0);
+   gain6->SetLineWidth(2);
    gain6->SetLineColor(kYellow+1);
    gain6->SetMarkerColor(kYellow+1);
-   gain6->GetXaxis()->SetRangeUser(120,240);
-   gain6->GetYaxis()->SetRangeUser(1e0,1e8);
+   //gain6->GetXaxis()->SetRangeUser(120,240);
+   //gain6->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile6,dummy);
@@ -203,11 +203,11 @@ void plot_gainSP(){
    gain7->GetXaxis()->SetTitle("V_{THGEM} (V)");
    gain7->GetYaxis()->SetTitle("Gain");
    gain7->SetMarkerStyle(8);
-   //gain7->SetLineWidth(0);
+   gain7->SetLineWidth(2);
    gain7->SetLineColor(kGreen+1);
    gain7->SetMarkerColor(kGreen+1);
-   gain7->GetXaxis()->SetRangeUser(120,240);
-   gain7->GetYaxis()->SetRangeUser(1e0,1e8);
+   //gain7->GetXaxis()->SetRangeUser(120,240);
+   //gain7->GetYaxis()->SetRangeUser(1e0,1e8);
    
    for(Int_t r=0; r<2; r++){
       getline(infile7,dummy);
@@ -227,6 +227,7 @@ void plot_gainSP(){
    gr4->SetMarkerStyle(20);
    gr4->SetMarkerColor(kCyan+2);
    gr4->SetLineColor(kCyan+2);
+   gr4->SetLineWidth(2);
    for(int i=0; i<14; i++){
       in4 >> V >> a >> err_a >> b >> err_b >> c >> err_c >> d >> err_d >> e >> err_e >> f >> err_f;
       cout<<V<<"\t"<<a<<"\t"<<err_a<<"\t"<<b<<"\t"<<err_b<<"\t"<<c<<"\t"<<err_c<<"\t"<<d<<"\t"<<err_d<<"\t"<<e<<"\t"<<err_e<<"\t"<<f<<err_f<<endl;
@@ -252,8 +253,8 @@ void plot_gainSP(){
    c1->SetLogy();
    c1->SetGrid();
    c1->cd();
-   gain1->Draw("PL SAME");
-   gain2->Draw("APL SAME");
+   gain1->Draw("APL SAME");
+   gain2->Draw("PL SAME");
    gain3->Draw("PL SAME");
    gain4->Draw("PL SAME");
    gain5->Draw("PL SAME");
@@ -279,8 +280,8 @@ void plot_gainSP(){
    zoomPad->SetLogy();
    zoomPad->Draw();
    zoomPad->cd();
-   gain1_cl->Draw("PL SAME");
-   gain2_cl->Draw("APL SAME");
+   gain1_cl->Draw("APL SAME");
+   gain2_cl->Draw("PL SAME");
    gain3_cl->Draw("PL SAME");
    gain4_cl->Draw("PL SAME");
    gain5_cl->Draw("PL SAME");

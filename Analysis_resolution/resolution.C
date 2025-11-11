@@ -177,21 +177,19 @@ void resolution(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",12);
+   TCutG *cutG = new TCutG("cutG",10);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,62.0455,105.653);
-   cutG->SetPoint(1,61.6948,105.624);
-   cutG->SetPoint(2,61.3791,105.358);
-   cutG->SetPoint(3,61.2475,105.04);
-   cutG->SetPoint(4,61.3615,104.549);
-   cutG->SetPoint(5,61.6246,104.324);
-   cutG->SetPoint(6,61.9842,104.249);
-   cutG->SetPoint(7,62.3174,104.341);
-   cutG->SetPoint(8,62.598,104.659);
-   cutG->SetPoint(9,62.6682,105.052);
-   cutG->SetPoint(10,62.4226,105.497);
-   cutG->SetPoint(11,62.0455,105.653);
+   cutG->SetPoint(0,61.9775,105.647);
+   cutG->SetPoint(1,61.5703,105.337);
+   cutG->SetPoint(2,61.3036,104.879);
+   cutG->SetPoint(3,61.3036,104.515);
+   cutG->SetPoint(4,61.6546,104.259);
+   cutG->SetPoint(5,62.2021,104.434);
+   cutG->SetPoint(6,62.5952,105);
+   cutG->SetPoint(7,62.5812,105.471);
+   cutG->SetPoint(8,62.3566,105.673);
+   cutG->SetPoint(9,61.9775,105.647);
    
 //#################################################################################################
 
@@ -223,6 +221,7 @@ void resolution(int run){
       }
       retta[0]->Fit(linea,"R+");
       xfit[0]->Fill(linea->GetX(18.6));
+      linea->SetParameters(0,0);
       retta[0]->Fit(linea,"WL");
       xfitW[0]->Fill(linea->GetX(18.6));
       linea->SetParameters(0,0);
@@ -274,11 +273,11 @@ void resolution(int run){
        xfit[2]->Fill(linea->GetX(18.6));
        linea->SetParameters(0,0);
        retta[2]->Fit(linea,"WL");
-       xfit[2]->Fill(linea->GetX(18.6));
+       xfitW[2]->Fill(linea->GetX(18.6));
    }
    
    char fileOut[100];
-   sprintf(fileOut,"resol_run_%d.txt",run);
+   sprintf(fileOut,"resol_run_%dELLcut.txt",run);
    output.open(fileOut);
    
    output << "             Preliminary results" << endl << endl;
@@ -297,7 +296,7 @@ void resolution(int run){
       x_NC[row]->Draw();
       x_NC_cut[row]->Draw("SAME");
       xCorr[row]->Draw("SAME");
-      output << "stDEV_" << row << ": " << stDEV << "   FWHM: 2.35*stDEV = "<< 2.35*stDEV << endl;
+      output << "stDEV_" << row << ": " << stDEV << "   FWHM: 2.35*stDEV = "<< 2.35*stDEV << "   StdDEV(): " << xCorr[row]->GetStdDev() << "   FWHM: 2.35*stDEV = " << 2.35*(xCorr[row]->GetStdDev())<< endl;
    }
    
    row0 = xCorr[0]->GetMean();
@@ -312,7 +311,10 @@ void resolution(int run){
       }
       linea->SetParameters(0,0);
       retta[3]->Fit(linea,"R+");
-      xfit[3]->Fill(linea->GetX(0));
+      xfit[3]->Fill(linea->GetX(18.6));
+      linea->SetParameters(0,0);
+      retta[3]->Fit(linea,"WL");
+      xfitW[3]->Fill(linea->GetX(18.6));
       }
    }
    
@@ -321,7 +323,7 @@ void resolution(int run){
       f_gaus->SetParameters(0,0,0);
       xCorr_slit[row]->Fit(f_gaus,"N","N",0,299);
       Double_t stDEV_slit = f_gaus->GetParameter(2);
-      output << "stDEV_slit_" << row << ": " << stDEV_slit << "   FWHM: 2.35*stDEV_slit = "<< 2.35*stDEV_slit << endl;
+      output << "stDEV_slit_" << row << ": " << stDEV_slit << "   FWHM: 2.35*stDEV_slit = "<< 2.35*stDEV_slit << "   StdDEV(): " << xCorr_slit[row]->GetStdDev() << "   FWHM: 2.35*stDEV = " << 2.35*(xCorr_slit[row]->GetStdDev())<< endl;
    }
    
    for(Int_t i=0; i<evts; i++){
@@ -333,7 +335,10 @@ void resolution(int run){
       }
       linea->SetParameters(0,0);
       retta[4]->Fit(linea,"R+");
-      xfit[4]->Fill(linea->GetX(0));
+      xfit[4]->Fill(linea->GetX(18.6));
+      linea->SetParameters(0,0);
+      retta[4]->Fit(linea,"WL");
+      xfitW[4]->Fill(linea->GetX(18.6));
       }
    }
    
@@ -368,7 +373,7 @@ void resolution(int run){
       xCorr_slit[row]->Draw("SAME");
       xCorr_slitSlit[row]->Draw("SAME");
       l->Draw("SAME");
-      output << "stDEV_slitSlit_" << row << ": " << stDEV_slitSlit << "   FWHM: 2.35*stDEV_slitSlit = "<< 2.35*stDEV_slitSlit << endl;
+      output << "stDEV_slitSlit_" << row << ": " << stDEV_slitSlit << "   FWHM: 2.35*stDEV_slitSlit = "<< 2.35*stDEV_slitSlit << "   StdDEV(): " << xCorr_slitSlit[row]->GetStdDev() << "   FWHM: 2.35*stDEV = " << 2.35*(xCorr_slitSlit[row]->GetStdDev())<< endl;
       if(row==4){
          c->cd(row+2);
          xfit[0]->SetLineColor(kGreen+1);
@@ -396,16 +401,16 @@ void resolution(int run){
    for(Int_t i=0; i<NRows; i++){
       f_gaus->SetParameters(0,0,0);
       xfit[i]->Fit(f_gaus,"N","N",0,299);
-      output << "stDEV_xfit:" << f_gaus->GetParameter(2) << "   FWHM: 2.35*stDEV_xfit = "<< 2.35*f_gaus->GetParameter(2) << endl;
+      output << "stDEV_xfit:" << f_gaus->GetParameter(2) << "   FWHM: 2.35*stDEV_xfit = "<< 2.35*f_gaus->GetParameter(2) << "   StdDEV(): " << xfit[i]->GetStdDev() << "   FWHM: 2.35*stDEV = " << 2.35*(xfit[i]->GetStdDev())<< endl;
    }
    
    TCanvas *cNC = new TCanvas("cNC","cNC",2200,300);
    cNC->Divide(2,1);
    for(Int_t row=0; row<NRows; row++){
       cNC->cd(1);
-      x_fit[row]->Draw();
+      xfit[row]->Draw();
       cNC->cd(2);
-      x_fitW[row]->Draw();
+      xfitW[row]->Draw();
    }
 }
 

@@ -13,7 +13,7 @@
 
 using namespace TMath;
 
-const TString DataTable = "SRIM_output/16O/ROW4/TRANSMIT.txt";
+const TString DataTable = "12C/ROW4/TRANSMIT.txt";
 const Int_t N_rows = 11000;
 
 
@@ -101,7 +101,7 @@ void straggling()
        sprintf(tity,"ROW4 - FWHM: %.2f mm",st_y);
        TText *ty = new TText(-0.9,0.5*h_y->GetMaximum(),tity);
        ty->SetTextSize(0.035);
-       TLatex *t0 = new TLatex(-0.95,0.6*h_y->GetMaximum(),"^{16}O @ 64.0 MeV P = 10.0 mbar");
+       TLatex *t0 = new TLatex(-0.95,0.6*h_y->GetMaximum(),"^{12}C @ 45.0 MeV P = 10.0 mbar");
        t0->SetTextSize(0.035);
        chi_y = norm->GetChisquare()/norm->GetNDF();
        n_y = norm->GetNDF();
@@ -127,9 +127,9 @@ void straggling()
        t0->Draw("SAME");
        tz->Draw("SAME");
        norm->Draw("SAME");
-       c->SaveAs("SRIM_output/16O/ROW4/LateralDispersions.png");
+       c->SaveAs("12C/ROW4/LateralDispersions.png");
        
-       output.open("SRIM_output/16O/ROW4/outputFit.txt");
+       output.open("12C/ROW4/outputFit.txt");
        output << "                  Straggling ROW4" << endl << endl;
        output << "        FWHM(y): 2.35*" << st_y << " = " << 2.35*st_y << "     FWHM(z): 2.35*" << st_z << " = " << 2.35*st_z << endl;
        output << "        chi(y): " << chi_y << "     chi(z): " << chi_z << endl;
@@ -138,6 +138,6 @@ void straggling()
        TCanvas *c1 = new TCanvas("c1","c1");
        c1->cd();
        print->Draw("CONT4");
-       c1->SaveAs("SRIM_output/16O/ROW4/2D_dispersion.png");
+       c1->SaveAs("12C/ROW4/2D_dispersion.png");
   }
 
