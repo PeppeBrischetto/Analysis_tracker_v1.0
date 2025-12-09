@@ -28,7 +28,7 @@ void gainSP(int run){
 //###########################################################################################################
 // Needed Variables
    
-   TH1D *charge = new TH1D("charge","",250,0,1e7);
+   TH1D *charge = new TH1D("charge","",5000,0,1e7);
    TF1 *f = new TF1("f","gaus",0,5e5);
    f->SetParameters(0.,0.,0.);
    
@@ -42,6 +42,10 @@ void gainSP(int run){
    Double_t dE = 0.317e6;
    char titolofile[100];
    Double_t v = 0.;
+   
+   TFile *f_taglio = new TFile("f_taglio");
+   char titolo_file[100];
+   char titolo_cut[100];
    
    ofstream outputfile;
    
@@ -58,47 +62,53 @@ void gainSP(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",16);
+   /*sprintf(titolo_file,"../GCut/cut_12c_%d.root",run);
+   f_taglio->Open(titolo_file);
+   TCutG *cutG = (TCutG*)f_taglio->Get("cutG_new");
+   cutG->SetVarX("cl_x_mm[0]");
+   cutG->SetVarY("cl_x_mm[1]");*/
+   
+   TCutG *cutG = new TCutG("cutG",9);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,80.5734,113.448);
-   cutG->SetPoint(1,80.107,113.189);
-   cutG->SetPoint(2,79.8539,112.9);
-   cutG->SetPoint(3,79.6007,112.397);
-   cutG->SetPoint(4,79.4408,111.788);
-   cutG->SetPoint(5,79.4142,111.316);
-   cutG->SetPoint(6,79.5874,110.935);
-   cutG->SetPoint(7,79.8672,110.752);
-   cutG->SetPoint(8,80.2136,110.828);
-   cutG->SetPoint(9,80.5867,111.255);
-   cutG->SetPoint(10,80.8398,111.651);
-   cutG->SetPoint(11,80.9864,111.97);
-   cutG->SetPoint(12,81.1196,112.443);
-   cutG->SetPoint(13,81.133,112.991);
-   cutG->SetPoint(14,80.9731,113.296);
-   cutG->SetPoint(15,80.5734,113.448);
+   cutG->SetPoint(0,48.204,101.365);
+   cutG->SetPoint(1,46.0368,99.2029);
+   cutG->SetPoint(2,44.5785,95.4529);
+   cutG->SetPoint(3,44.7202,92.7176);
+   cutG->SetPoint(4,49.2572,95.2765);
+   cutG->SetPoint(5,50.756,97.8353);
+   cutG->SetPoint(6,50.7965,100.438);
+   cutG->SetPoint(7,50.0471,101.365);
+   cutG->SetPoint(8,48.204,101.365);
+/*   cutG->SetPoint(9,64.6483,107.479);
+   cutG->SetPoint(10,63.8178,107.41);
+   cutG->SetPoint(11,62.0058,106.028);
+   cutG->SetPoint(12,46.0816,99.3924);
+   cutG->SetPoint(13,46.5123,96.646);
+   cutG->SetPoint(14,47.4303,96.7187);
+   cutG->SetPoint(15,48.0639,97.0585);
+   cutG->SetPoint(16,48.4388,97.2162);
+   cutG->SetPoint(17,49.0207,97.4952);
+   cutG->SetPoint(18,49.2146,97.8956);
+   cutG->SetPoint(19,48.9431,98.5265);
+   cutG->SetPoint(20,48.2578,98.3809);
+   cutG->SetPoint(21,47.8699,98.4415);
+   cutG->SetPoint(22,47.7277,98.8419);
+   cutG->SetPoint(23,48.1932,99.1452);
+   cutG->SetPoint(24,49.3956,99.3272);
+   cutG->SetPoint(25,49.5767,99.946);
+   cutG->SetPoint(26,49.3827,100.346);
+   cutG->SetPoint(27,48.9172,100.443);
+   cutG->SetPoint(28,48.0509,100.371);
+   cutG->SetPoint(29,47.857,100.419);
+   cutG->SetPoint(30,47.857,100.419);
+   cutG->SetPoint(31,46.8614,100.528);*/
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
 //###########################################################################################################
 // Data loop
    
@@ -110,7 +120,7 @@ void gainSP(int run){
       charge->Fill(cl_charge[0]+cl_charge[1]+cl_charge[2]+cl_charge[3]+cl_charge[4]+cl_charge[5]+cl_charge[6]+cl_charge[7]+cl_charge[8]+cl_charge[9]+cl_charge[10]);
       }                                                                        //TCutg parenthesis
    }
-   charge->Fit("f","","",0.,4e6);
+   charge->Fit("f","","",0,4e6);
    mean_charge = ((f->GetParameter(1))*2*61e3)/(20*3.62);
    primaries = dE/w_gas;
    gain=mean_charge/primaries;

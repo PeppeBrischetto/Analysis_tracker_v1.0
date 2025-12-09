@@ -46,7 +46,7 @@ void plot_gainSP(){
 //################################################################################################################ 
 // OpenFile 1: 12C
    
-   sprintf(titolofile1,"Gain/gainTHGEM_37_43.txt");
+   sprintf(titolofile1,"Gain/gainTHGEM_175_180_NEW.txt");
    infile1.open(titolofile1);
      
    TGraph *gain1 = new TGraph();
@@ -71,7 +71,7 @@ void plot_gainSP(){
 //################################################################################################################ 
 // OpenFile 2: 12C
    
-   sprintf(titolofile2,"Gain/gainTHGEM_51_57.txt");
+   sprintf(titolofile2,"Gain/gainTHGEM_186_190_NEW.txt");
    infile2.open(titolofile2);
      
    TGraph *gain2 = new TGraph();
@@ -96,7 +96,7 @@ void plot_gainSP(){
 //################################################################################################################ 
 // OpenFile 3: 12C
    
-   sprintf(titolofile3,"Gain/gainTHGEM_63_69.txt");
+   sprintf(titolofile3,"Gain/gainTHGEM_197_201_NEW.txt");
    infile3.open(titolofile3);
      
    TGraph *gain3 = new TGraph();
@@ -121,7 +121,7 @@ void plot_gainSP(){
 //################################################################################################################ 
 // OpenFile 4: 12C
    
-   sprintf(titolofile4,"Gain/gainTHGEM_74_79.txt");
+   sprintf(titolofile4,"Gain/gainTHGEM_202_206_NEW.txt");
    infile4.open(titolofile4);
      
    TGraph *gain4 = new TGraph();
@@ -146,7 +146,7 @@ void plot_gainSP(){
 //################################################################################################################ 
 // OpenFile 5: 12C
    
-   sprintf(titolofile5,"Gain/gainTHGEM_170_174.txt");
+   sprintf(titolofile5,"Gain/gainTHGEM_215_219_NEW.txt");
    infile5.open(titolofile5);
      
    TGraph *gain5 = new TGraph();
@@ -154,8 +154,8 @@ void plot_gainSP(){
    gain5->GetYaxis()->SetTitle("Gain");
    gain5->SetMarkerStyle(8);
    gain5->SetLineWidth(2);
-   gain5->SetLineColor(kOrange+1);
-   gain5->SetMarkerColor(kOrange+1);
+   gain5->SetLineColor(kYellow+1);
+   gain5->SetMarkerColor(kYellow+1);
    //gain5->GetXaxis()->SetRangeUser(120,240);
    //gain5->GetYaxis()->SetRangeUser(1e0,1e8);
    
@@ -171,7 +171,7 @@ void plot_gainSP(){
 //################################################################################################################ 
 // OpenFile 6: 12C
    
-   sprintf(titolofile6,"Gain/gainTHGEM_275_280_li.txt");
+   sprintf(titolofile6,"Gain/gainTHGEM_275_279_NEW.txt");
    infile6.open(titolofile6);
      
    TGraph *gain6 = new TGraph();
@@ -196,7 +196,7 @@ void plot_gainSP(){
 //################################################################################################################ 
 // OpenFile 7: 12C
    
-   sprintf(titolofile7,"Gain/gainTHGEM_293_298_a.txt");
+   sprintf(titolofile7,"Gain/gainTHGEM_293_298_NEW.txt");
    infile7.open(titolofile7);
      
    TGraph *gain7 = new TGraph();
@@ -221,7 +221,7 @@ void plot_gainSP(){
 //################################################################################################################ 
 // OpenFile 8: INFN-LNS characterization - alpha source
       
-   in4.open("../../Antonino/Analisi_PICO2023/DataTable/VTHGEM_run400_414_10mbar_withoutRim.txt");
+   in4.open("../../Antonino/Analisi_PICO2023/DataTable/VTHGEM_run55_69_10mbar.txt");
    in4.getline(buffer,200);
    TGraphErrors *gr4=new TGraphErrors(0); // Graph for 10 mbar/no rim
    gr4->SetMarkerStyle(20);
@@ -232,7 +232,7 @@ void plot_gainSP(){
       in4 >> V >> a >> err_a >> b >> err_b >> c >> err_c >> d >> err_d >> e >> err_e >> f >> err_f;
       cout<<V<<"\t"<<a<<"\t"<<err_a<<"\t"<<b<<"\t"<<err_b<<"\t"<<c<<"\t"<<err_c<<"\t"<<d<<"\t"<<err_d<<"\t"<<e<<"\t"<<err_e<<"\t"<<f<<err_f<<endl;
       
-      gr4->SetPoint(i, V, (a)*GF1);  	//anode
+      gr4->SetPoint(i, V, (a+b)*GF1);  	//anode
       gr4->SetPointError( i, 0., TMath::Sqrt(err_a*err_a)*GF1);
    }
       
@@ -240,13 +240,13 @@ void plot_gainSP(){
 // Visualization block
    
    TLegend *l = new TLegend(0.1,0.55,0.35,0.9);
-   l->AddEntry(gain7,"#alpha","lp");
-   l->AddEntry(gain6,"^{7}Li - 1000 Hz","lp");
-   l->AddEntry(gain2,"^{12}C - 20 Hz","lp");
-   l->AddEntry(gain1,"^{12}C - 250 Hz","lp");
-   l->AddEntry(gain3,"^{12}C - 1000 Hz","lp");
-   l->AddEntry(gain4,"^{12}C - 3000 Hz","lp");
-   l->AddEntry(gain5,"^{16}O - 250 Hz","lp");
+   //l->AddEntry(gain7,"#alpha","lp");
+   //l->AddEntry(gain6,"^{7}Li - 1000 Hz","lp");
+   l->AddEntry(gain2,"^{12}C - 3000 Hz","lp");
+   l->AddEntry(gain1,"^{12}C - 1400 Hz","lp");
+   l->AddEntry(gain3,"^{12}C - 2600 Hz","lp");
+   l->AddEntry(gain4,"^{12}C - 260 Hz","lp");
+   l->AddEntry(gain5,"^{7}Li - 2000 Hz","lp");
    l->AddEntry(gr4,"#alpha @INFN-LNS","lp");
  
    TCanvas *c1 = new TCanvas("c1","c1",950.,900.);
@@ -258,8 +258,8 @@ void plot_gainSP(){
    gain3->Draw("PL SAME");
    gain4->Draw("PL SAME");
    gain5->Draw("PL SAME");
-   gain6->Draw("PL SAME");
-   gain7->Draw("PL SAME");  
+   //gain6->Draw("PL SAME");
+   //gain7->Draw("PL SAME");  
    gr4->Draw("PL SAME");    
    l->Draw("SAME");
    
@@ -268,8 +268,8 @@ void plot_gainSP(){
    TGraph *gain3_cl = (TGraph*)gain3->Clone("gain3_cl");
    TGraph *gain4_cl = (TGraph*)gain4->Clone("gain4_cl");
    TGraph *gain5_cl = (TGraph*)gain5->Clone("gain5_cl");
-   TGraph *gain6_cl = (TGraph*)gain6->Clone("gain6_cl");
-   TGraph *gain7_cl = (TGraph*)gain7->Clone("gain7_cl");
+   //TGraph *gain6_cl = (TGraph*)gain6->Clone("gain6_cl");
+   //TGraph *gain7_cl = (TGraph*)gain7->Clone("gain7_cl");
    TGraph *gr4_cl = (TGraph*)gr4->Clone("gr4_cl");
    gain2_cl->GetXaxis()->SetRangeUser(155,165);
    gain2_cl->GetYaxis()->SetRangeUser(1e2,1e4);
@@ -285,8 +285,8 @@ void plot_gainSP(){
    gain3_cl->Draw("PL SAME");
    gain4_cl->Draw("PL SAME");
    gain5_cl->Draw("PL SAME");
-   gain6_cl->Draw("PL SAME");
-   gain7_cl->Draw("PL SAME");  
+   //gain6_cl->Draw("PL SAME");
+   //gain7_cl->Draw("PL SAME");  
    gr4_cl->Draw("PL SAME");
 
    

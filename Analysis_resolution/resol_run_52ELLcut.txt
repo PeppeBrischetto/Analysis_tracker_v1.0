@@ -1,31 +1,31 @@
              Preliminary results
 
-stDEV_0: 0.331093   FWHM: 2.35*stDEV = 0.778068   StdDEV(): 0.322855   FWHM: 2.35*stDEV = 0.758708
-stDEV_1: 0.28178   FWHM: 2.35*stDEV = 0.662184   StdDEV(): 0.302211   FWHM: 2.35*stDEV = 0.710196
-stDEV_2: 0.366155   FWHM: 2.35*stDEV = 0.860463   StdDEV(): 0.584264   FWHM: 2.35*stDEV = 1.37302
-stDEV_3: 0.926267   FWHM: 2.35*stDEV = 2.17673   StdDEV(): 0.956803   FWHM: 2.35*stDEV = 2.24849
-stDEV_4: 1.3464   FWHM: 2.35*stDEV = 3.16405   StdDEV(): 1.37883   FWHM: 2.35*stDEV = 3.24025
+stDEV_0: 0.9468   FWHM: 2.35*stDEV = 2.22498   StdDEV(): 0.957827   FWHM: 2.35*stDEV = 2.25089
+stDEV_1: 0.517424   FWHM: 2.35*stDEV = 1.21595   StdDEV(): 0.730034   FWHM: 2.35*stDEV = 1.71558
+stDEV_2: 0.428774   FWHM: 2.35*stDEV = 1.00762   StdDEV(): 0.878953   FWHM: 2.35*stDEV = 2.06554
+stDEV_3: 1.27382   FWHM: 2.35*stDEV = 2.99348   StdDEV(): 1.30212   FWHM: 2.35*stDEV = 3.05998
+stDEV_4: 1.72771   FWHM: 2.35*stDEV = 4.06013   StdDEV(): 1.8181   FWHM: 2.35*stDEV = 4.27253
 
        Preliminary results - slit on ROW4
 
-stDEV_slit_0: 0.341789   FWHM: 2.35*stDEV_slit = 0.803204   StdDEV(): 0.301639   FWHM: 2.35*stDEV = 0.70885
-stDEV_slit_1: 0.293968   FWHM: 2.35*stDEV_slit = 0.690825   StdDEV(): 0.277614   FWHM: 2.35*stDEV = 0.652392
-stDEV_slit_2: 0.281692   FWHM: 2.35*stDEV_slit = 0.661977   StdDEV(): 0.38425   FWHM: 2.35*stDEV = 0.902987
-stDEV_slit_3: 0.529071   FWHM: 2.35*stDEV_slit = 1.24332   StdDEV(): 0.612   FWHM: 2.35*stDEV = 1.4382
-stDEV_slit_4: 0.148096   FWHM: 2.35*stDEV_slit = 0.348025   StdDEV(): 0.116573   FWHM: 2.35*stDEV = 0.273946
+stDEV_slit_0: 0.877549   FWHM: 2.35*stDEV_slit = 2.06224   StdDEV(): 0.833547   FWHM: 2.35*stDEV = 1.95884
+stDEV_slit_1: 0.440929   FWHM: 2.35*stDEV_slit = 1.03618   StdDEV(): 0.548937   FWHM: 2.35*stDEV = 1.29
+stDEV_slit_2: 0.31499   FWHM: 2.35*stDEV_slit = 0.740227   StdDEV(): 0.464898   FWHM: 2.35*stDEV = 1.09251
+stDEV_slit_3: 0.618036   FWHM: 2.35*stDEV_slit = 1.45238   StdDEV(): 0.644807   FWHM: 2.35*stDEV = 1.5153
+stDEV_slit_4: 0.11474   FWHM: 2.35*stDEV_slit = 0.269639   StdDEV(): 0.115141   FWHM: 2.35*stDEV = 0.270581
 
    Preliminary results - slit on ROW0 & ROW4
 
-stDEV_slitSlit_0: 0.138536   FWHM: 2.35*stDEV_slitSlit = 0.325559   StdDEV(): 0.11294   FWHM: 2.35*stDEV = 0.265408
-stDEV_slitSlit_1: 0.309213   FWHM: 2.35*stDEV_slitSlit = 0.72665   StdDEV(): 0.286617   FWHM: 2.35*stDEV = 0.67355
-stDEV_slitSlit_2: 0.249117   FWHM: 2.35*stDEV_slitSlit = 0.585426   StdDEV(): 0.332755   FWHM: 2.35*stDEV = 0.781975
-stDEV_slitSlit_3: 0.581029   FWHM: 2.35*stDEV_slitSlit = 1.36542   StdDEV(): 0.571186   FWHM: 2.35*stDEV = 1.34229
-stDEV_slitSlit_4: 0.130779   FWHM: 2.35*stDEV_slitSlit = 0.307331   StdDEV(): 0.112604   FWHM: 2.35*stDEV = 0.264619
+stDEV_slitSlit_0: 0.109955   FWHM: 2.35*stDEV_slitSlit = 0.258394   StdDEV(): 0.110762   FWHM: 2.35*stDEV = 0.26029
+stDEV_slitSlit_1: 0.389208   FWHM: 2.35*stDEV_slitSlit = 0.914639   StdDEV(): 0.580454   FWHM: 2.35*stDEV = 1.36407
+stDEV_slitSlit_2: 0.296325   FWHM: 2.35*stDEV_slitSlit = 0.696363   StdDEV(): 0.366863   FWHM: 2.35*stDEV = 0.862129
+stDEV_slitSlit_3: 0.736753   FWHM: 2.35*stDEV_slitSlit = 1.73137   StdDEV(): 0.622732   FWHM: 2.35*stDEV = 1.46342
+stDEV_slitSlit_4: 1.15913   FWHM: 2.35*stDEV_slitSlit = 2.72395   StdDEV(): 0.116351   FWHM: 2.35*stDEV = 0.273425
 
    Preliminary results - xf_fit improvement
 
-0.709589	1.66753	12.7308	29.9175
-0.284272	0.66804	0.293512	0.689752
-0.28258	0.664063	0.291612	0.685288
-0.259016	0.608688	0.247591	0.58184
-0.153691	0.361173	0.142098	0.33393
+stDEV_xfit:0.709589   FWHM: 2.35*stDEV_xfit = 1.66753   StdDEV(): 12.7308   FWHM: 2.35*stDEV = 29.9175
+stDEV_xfit:0   FWHM: 2.35*stDEV_xfit = 0   StdDEV(): 0   FWHM: 2.35*stDEV = 0
+stDEV_xfit:0.650371   FWHM: 2.35*stDEV_xfit = 1.52837   StdDEV(): 0.668282   FWHM: 2.35*stDEV = 1.57046
+stDEV_xfit:0.593043   FWHM: 2.35*stDEV_xfit = 1.39365   StdDEV(): 0.61362   FWHM: 2.35*stDEV = 1.44201
+stDEV_xfit:0.190068   FWHM: 2.35*stDEV_xfit = 0.446659   StdDEV(): 0.256523   FWHM: 2.35*stDEV = 0.602828

@@ -36,7 +36,7 @@ void C_plot_ChargeCUT(int run)
    f->SetParameters(1,1,1);
    
    char titoloFile[100];
-   sprintf(titoloFile,"OutputFile_chargeDistrib/Run%d_provv16O.txt",run);
+   sprintf(titoloFile,"OutputFile_chargeDistrib/Run%d.txt",run);
    outPut.open(titoloFile,std::ios_base::app);
   
    
@@ -75,21 +75,16 @@ void C_plot_ChargeCUT(int run)
 //#################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",12);
+   TCutG *cutG = new TCutG("cutG",7);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,59.8067,103.758);
-   cutG->SetPoint(1,59.572,103.989);
-   cutG->SetPoint(2,59.0896,104.023);
-   cutG->SetPoint(3,58.692,103.758);
-   cutG->SetPoint(4,58.5095,103.493);
-   cutG->SetPoint(5,58.4182,103.151);
-   cutG->SetPoint(6,58.5225,102.787);
-   cutG->SetPoint(7,58.9201,102.556);
-   cutG->SetPoint(8,59.4547,102.677);
-   cutG->SetPoint(9,59.8067,103.074);
-   cutG->SetPoint(10,59.8979,103.482);
-   cutG->SetPoint(11,59.8067,103.758);
+   cutG->SetPoint(0,85.2879,115.724);
+   cutG->SetPoint(1,83.3135,115.264);
+   cutG->SetPoint(2,82.914,114.345);
+   cutG->SetPoint(3,85.0059,113.977);
+   cutG->SetPoint(4,89.0252,114.437);
+   cutG->SetPoint(5,88.461,115.724);
+   cutG->SetPoint(6,85.2879,115.724);
 
          
 //#################################################################################################
@@ -122,7 +117,7 @@ void C_plot_ChargeCUT(int run)
                histo[j]->Draw();
                char tit[100];
                sprintf(tit,"Provv_chargedistr16O/d_%d.png",i);
-               c->SaveAs(tit);
+               //c->SaveAs(tit);
             }
           }
        }

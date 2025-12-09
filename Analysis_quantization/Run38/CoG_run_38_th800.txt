@@ -1,0 +1,12 @@
+                  Centre of Gravity reconstruction - run: 38
+
+
+Centre of Gravity (>thr) row 0: 64.2813   Error of Centre of Gravity Tot): 0.00672668
+
+Centre of Gravity (>thr) row 1: 105.687   Error of Centre of Gravity Tot): 0.00812232
+
+Centre of Gravity (>thr) row 2: 142.484   Error of Centre of Gravity Tot): 0.00743538
+
+Centre of Gravity (>thr) row 3: 179.339   Error of Centre of Gravity Tot): 0.0106197
+
+Centre of Gravity (>thr) row 4: 220.96   Error of Centre of Gravity Tot): 0.0158943

@@ -55,25 +55,15 @@ void quantaClass_def_ROW0(int run){
 //################################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",16);
+   TCutG *cutG = new TCutG("cutG",6);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,65.5044,108.12);
-   cutG->SetPoint(1,64.8152,108.042);
-   cutG->SetPoint(2,64.0144,107.627);
-   cutG->SetPoint(3,63.3998,107.159);
-   cutG->SetPoint(4,62.7107,106.484);
-   cutG->SetPoint(5,62.3009,105.835);
-   cutG->SetPoint(6,61.9657,105.497);
-   cutG->SetPoint(7,61.8912,103.913);
-   cutG->SetPoint(8,62.1333,102.952);
-   cutG->SetPoint(9,63.0273,102.874);
-   cutG->SetPoint(10,63.9213,103.263);
-   cutG->SetPoint(11,65.1319,103.965);
-   cutG->SetPoint(12,66.0817,105.731);
-   cutG->SetPoint(13,66.3611,107.445);
-   cutG->SetPoint(14,66.2493,107.886);
-   cutG->SetPoint(15,65.5044,108.12);
+   cutG->SetPoint(0,63.088,107.395);
+   cutG->SetPoint(1,61.4118,105.511);
+   cutG->SetPoint(2,61.6129,103.344);
+   cutG->SetPoint(3,65.0827,105.26);
+   cutG->SetPoint(4,65.0827,107.144);
+   cutG->SetPoint(5,63.088,107.395);
 
    
 //################################################################################################################

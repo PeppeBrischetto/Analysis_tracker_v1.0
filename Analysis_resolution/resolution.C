@@ -26,6 +26,7 @@ const Int_t NPads = 60;
 
 void resolution(int run){
 
+   Int_t nPoint = 0;
    Double_t row0 = 0.;
    Double_t row4 = 0.;
    Double_t z[5] = {18.6, 39.8, 61.0, 82.2, 103.4};
@@ -177,26 +178,23 @@ void resolution(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",10);
+   TCutG *cutG = new TCutG("cutG",7);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,61.9775,105.647);
-   cutG->SetPoint(1,61.5703,105.337);
-   cutG->SetPoint(2,61.3036,104.879);
-   cutG->SetPoint(3,61.3036,104.515);
-   cutG->SetPoint(4,61.6546,104.259);
-   cutG->SetPoint(5,62.2021,104.434);
-   cutG->SetPoint(6,62.5952,105);
-   cutG->SetPoint(7,62.5812,105.471);
-   cutG->SetPoint(8,62.3566,105.673);
-   cutG->SetPoint(9,61.9775,105.647);
+   cutG->SetPoint(0,64.0752,106.298);
+   cutG->SetPoint(1,62.4996,105.348);
+   cutG->SetPoint(2,61.7302,104.19);
+   cutG->SetPoint(3,62.976,103.901);
+   cutG->SetPoint(4,64.2828,104.63);
+   cutG->SetPoint(5,64.8324,105.589);
+   cutG->SetPoint(6,64.0752,106.298);
    
 //#################################################################################################
 
    for(Int_t i=0; i<entries; i++){
    
-      Double_t pad[NRows][100] = {0.};
-      Double_t charge[NRows][100] = {0.};
+      Double_t pad[NRows][50] = {0.};
+      Double_t charge[NRows][50] = {0.};
       Double_t x[NRows] = {0.};
       Double_t x_mm[NStrips] = {0.};
       Double_t totalCharge[NRows] = {0.};
@@ -204,6 +202,7 @@ void resolution(int run){
       tree->GetEntry(i);
       
       for(Int_t row = 0; row < NRows; row++){
+         nPoint = row;
          for(Int_t p = 0; p < cl_padMult[row]; p++){
             pad[row][p] = pads_fired[row][p];
             charge[row][p] = pad_charge[row][p];
@@ -213,36 +212,33 @@ void resolution(int run){
          }
          x[row] = x[row] / (totalCharge[row]);
          x_NC[row]->Fill(x[row]);
-         retta[0]->SetPoint(row,x[row],z[row]);
+         retta[0]->SetPoint(nPoint,x[row],z[row]);
          if(/*theta_deg>=0 && theta_deg<20 &&*/ sic_fired==1 && energySic>2000 && cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
             x_NC_cut[row]->Fill(x[row]);
-            retta[1]->SetPoint(row,x[row],z[row]);
+            retta[1]->SetPoint(nPoint,x[row],z[row]);
          }
       }
       retta[0]->Fit(linea,"R+");
       xfit[0]->Fill(linea->GetX(18.6));
       linea->SetParameters(0,0);
-      retta[0]->Fit(linea,"WL");
+      /*retta[0]->Fit(linea,"WL");
       xfitW[0]->Fill(linea->GetX(18.6));
-      linea->SetParameters(0,0);
+      linea->SetParameters(0,0);*/
       retta[1]->Fit(linea,"R+");
       if(/*theta_deg>=0 && theta_deg<20 &&*/ sic_fired==1 && energySic>2000 && cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
          xfit[1]->Fill(linea->GetX(18.6));
       }
-      linea->SetParameters(0,0);
-      retta[1]->Fit(linea,"WL");
+      /*linea->SetParameters(0,0);
+      retta[1]->Fit(linea,"WL");*/
       if(/*theta_deg>=0 && theta_deg<20 &&*/ sic_fired==1 && energySic>2000 && cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
          xfitW[1]->Fill(linea->GetX(18.6));
       }
    }
-   f->Close();
+   //f->Close();
    
    ofstream output;
    
-   TFile *f_out;
-   TTree *mytree;
-   
-   char fileInName[50];
+   char fileInName[100];
    Double_t x_corr[NRows] = {0.};
    if(run<10){
          sprintf(fileInName,"CorrectedX/xCorr_run00%i.root",run);
@@ -251,8 +247,10 @@ void resolution(int run){
       }else{
          sprintf(fileInName,"CorrectedX/xCorr_run%i.root",run);
       } 
-
-   f_out = new TFile(fileInName,"READ");
+      
+   TFile *f_out = new TFile(fileInName,"READ");
+   TTree *mytree;
+   
    mytree = (TTree*)f_out->Get("Data_cor");
    mytree->SetBranchAddress("x_corr0", &x_corr[0]);
    mytree->SetBranchAddress("x_corr1", &x_corr[1]);
@@ -262,18 +260,20 @@ void resolution(int run){
    
    evts = mytree->GetEntries();
    cout << "Evts: " << evts << endl;
+
    for(Int_t i=0; i<evts; i++){
        mytree->GetEntry(i);
        for(Int_t row=0; row<NRows; row++){
+          nPoint = row;
           xCorr[row]->Fill(x_corr[row]);
-          retta[2]->SetPoint(row,x_corr[row],z[row]);
+          retta[2]->SetPoint(nPoint,x_corr[row],z[row]);
        }
        linea->SetParameters(0,0);
        retta[2]->Fit(linea,"R+");
        xfit[2]->Fill(linea->GetX(18.6));
-       linea->SetParameters(0,0);
+       /*linea->SetParameters(0,0);
        retta[2]->Fit(linea,"WL");
-       xfitW[2]->Fill(linea->GetX(18.6));
+       xfitW[2]->Fill(linea->GetX(18.6));*/
    }
    
    char fileOut[100];
@@ -306,15 +306,16 @@ void resolution(int run){
       mytree->GetEntry(i);
       if(x_corr[4]>=row4-0.2 && x_corr[4]<=row4+0.2){
       for(Int_t row=0; row<NRows; row++){
+         nPoint = row;
          xCorr_slit[row]->Fill(x_corr[row]);
-         retta[3]->SetPoint(row,x_corr[row],z[row]);
+         retta[3]->SetPoint(nPoint,x_corr[row],z[row]);
       }
       linea->SetParameters(0,0);
       retta[3]->Fit(linea,"R+");
       xfit[3]->Fill(linea->GetX(18.6));
-      linea->SetParameters(0,0);
+      /*linea->SetParameters(0,0);
       retta[3]->Fit(linea,"WL");
-      xfitW[3]->Fill(linea->GetX(18.6));
+      xfitW[3]->Fill(linea->GetX(18.6));*/
       }
    }
    
@@ -330,20 +331,17 @@ void resolution(int run){
       mytree->GetEntry(i);
       if(x_corr[0]>=row0-0.2 && x_corr[0]<=row0+0.2 && x_corr[4]>=row4-0.2 && x_corr[4]<=row4+0.2){
       for(Int_t row=0; row<NRows; row++){
+         nPoint = row;
          xCorr_slitSlit[row]->Fill(x_corr[row]);
-         retta[4]->SetPoint(row,x_corr[row],z[row]);
+         retta[4]->SetPoint(nPoint,x_corr[row],z[row]);
       }
       linea->SetParameters(0,0);
       retta[4]->Fit(linea,"R+");
       xfit[4]->Fill(linea->GetX(18.6));
-      linea->SetParameters(0,0);
+      /*linea->SetParameters(0,0);
       retta[4]->Fit(linea,"WL");
-      xfitW[4]->Fill(linea->GetX(18.6));
+      xfitW[4]->Fill(linea->GetX(18.6));*/
       }
-   }
-   
-   for(Int_t row=0; row<NRows; row++){
-      
    }
    
    TLegend* l = new TLegend(0.1,0.7,0.48,0.9);
@@ -404,13 +402,16 @@ void resolution(int run){
       output << "stDEV_xfit:" << f_gaus->GetParameter(2) << "   FWHM: 2.35*stDEV_xfit = "<< 2.35*f_gaus->GetParameter(2) << "   StdDEV(): " << xfit[i]->GetStdDev() << "   FWHM: 2.35*stDEV = " << 2.35*(xfit[i]->GetStdDev())<< endl;
    }
    
-   TCanvas *cNC = new TCanvas("cNC","cNC",2200,300);
+   /*TCanvas *cNC = new TCanvas("cNC","cNC",2200,300);
    cNC->Divide(2,1);
    for(Int_t row=0; row<NRows; row++){
       cNC->cd(1);
       xfit[row]->Draw();
       cNC->cd(2);
       xfitW[row]->Draw();
-   }
+   }*/
 }
+
+
+
 

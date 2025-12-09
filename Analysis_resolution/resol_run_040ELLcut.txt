@@ -1,0 +1,16 @@
+             Preliminary results
+
+Row 0 sigma=1.15494 FWHM=2.71411 StdDev=1.16385 FWHM(StdDev)=2.73505
+Row 1 sigma=0.957609 FWHM=2.25038 StdDev=0.975099 FWHM(StdDev)=2.29148
+Row 2 sigma=1.03803 FWHM=2.43936 StdDev=1.06809 FWHM(StdDev)=2.51001
+Row 3 sigma=1.46964 FWHM=3.45366 StdDev=1.51396 FWHM(StdDev)=3.55781
+Row 4 sigma=2.3685 FWHM=5.56596 StdDev=2.47025 FWHM(StdDev)=5.80508
+
+   Preliminary results - slit on ROW4
+
+
+   Preliminary results - slit on ROW0 & ROW4
+
+
+   Preliminary results - xfit improvement
+

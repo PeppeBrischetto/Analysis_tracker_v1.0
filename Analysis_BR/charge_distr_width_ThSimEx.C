@@ -497,7 +497,7 @@ void charge_distr_width_ThSimEx(){
    leg->AddEntry(gr_c2[0],"^{12}C - 1000 Hz","lp");
    leg->AddEntry(gr_c3[0],"^{12}C - 3000 Hz","lp");
    leg->AddEntry(gr_o[0],"^{16}O - 250 Hz","lp");
-   //leg->AddEntry(trackSimul,"python sim. - gain by anode","lp");
+   leg->AddEntry(trackSimul,"python sim. - gain by anode","lp");
    //leg->AddEntry(trackSimulu,"python sim. - gain by anode+top","p");
    //leg->AddEntry(gr_band,"gain ROI (by python sim.)","f");
    
@@ -561,7 +561,7 @@ void charge_distr_width_ThSimEx(){
        leg->Draw("SAME");
        diffusion->Draw("SAME");
        geometry->Draw("SAME");
-       //trackSimul->Draw("PL SAME");
+       trackSimul->Draw("PL SAME");
        //gr_band->Draw("F SAME");
        
        char titlepng[500];

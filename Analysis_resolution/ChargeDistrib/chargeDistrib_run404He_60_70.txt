@@ -1,0 +1,19 @@
+                  Charge Distribution width (FWHM) - run: 40
+
+Theta: -1
+
+sigma row0: -nan   FWHM(2.35*sigma): 2.35*-nan = -nan
+x row0 (mm): -nan   max row0 (ch): -nan
+
+sigma row1: -nan   FWHM(2.35*sigma): 2.35*-nan = -nan
+x row1 (mm): -nan   max row1 (ch): -nan
+
+sigma row2: -nan   FWHM(2.35*sigma): 2.35*-nan = -nan
+x row2 (mm): -nan   max row2 (ch): -nan
+
+sigma row3: -nan   FWHM(2.35*sigma): 2.35*-nan = -nan
+x row3 (mm): -nan   max row3 (ch): -nan
+
+sigma row4: -nan   FWHM(2.35*sigma): 2.35*-nan = -nan
+x row4 (mm): -nan   max row4 (ch): -nan
+

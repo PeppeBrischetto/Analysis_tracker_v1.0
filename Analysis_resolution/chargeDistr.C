@@ -94,7 +94,7 @@ void chargeDistr(int run){
       }
       
       tree->GetEntry(i);
-      if(theta_deg>=60 && theta_deg<70. && cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
+      //if(theta_deg>=60 && theta_deg<70. && cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
       counter++ ;
       h_theta->Fill(theta_deg);
       for(Int_t row=0; row<NRows; row++){
@@ -108,7 +108,7 @@ void chargeDistr(int run){
          }
          if(counter<100){
            char titolo[100];
-           sprintf(titolo,"ChargeDistrib/Run%d/4He_60_70/chargeDistr_%d.png",run,i);
+           sprintf(titolo,"ChargeDistrib/Run%d/chargeDistr_%d.png",run,i);
            c->SaveAs(titolo);                                                                     
          }
          
@@ -118,14 +118,14 @@ void chargeDistr(int run){
             h_charge[i]->Fit(f,"N","N",0,300);
             fwhm[i] += f->GetParameter(2);
          }
-      }else{                                                                                 // TCutG parenthesis
-               cout << "I am out of the blob!" << endl;
-           }
+      //}else{                                                                                 // TCutG parenthesis
+        //       cout << "I am out of the blob!" << endl;
+          // }
    }
    
    theta=h_theta->Fit("norm","R+");
    char titolo[100];
-   sprintf(titolo,"ChargeDistrib/chargeDistrib_run%d4He_60_70.txt",run);
+   sprintf(titolo,"ChargeDistrib/chargeDistrib_run%d.txt",run);
    outfit.open(titolo);
    outfit << "                  Charge Distribution width (FWHM) - run: " << run << endl << endl;
    outfit << "Theta: " << theta << endl << endl; 
