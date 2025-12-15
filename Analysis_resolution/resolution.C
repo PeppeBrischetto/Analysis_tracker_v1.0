@@ -178,16 +178,23 @@ void resolution(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",7);
+   TCutG *cutG = new TCutG("cutG",14);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,64.0752,106.298);
-   cutG->SetPoint(1,62.4996,105.348);
-   cutG->SetPoint(2,61.7302,104.19);
-   cutG->SetPoint(3,62.976,103.901);
-   cutG->SetPoint(4,64.2828,104.63);
-   cutG->SetPoint(5,64.8324,105.589);
-   cutG->SetPoint(6,64.0752,106.298);
+   cutG->SetPoint(0,64.4273,107.008);
+   cutG->SetPoint(1,63.5976,106.433);
+   cutG->SetPoint(2,63.0751,106.032);
+   cutG->SetPoint(3,62.86,105.529);
+   cutG->SetPoint(4,62.9112,104.872);
+   cutG->SetPoint(5,63.1981,104.461);
+   cutG->SetPoint(6,63.8639,104.369);
+   cutG->SetPoint(7,64.4478,104.708);
+   cutG->SetPoint(8,65.0931,105.18);
+   cutG->SetPoint(9,65.5438,105.868);
+   cutG->SetPoint(10,65.5336,106.577);
+   cutG->SetPoint(11,65.298,106.864);
+   cutG->SetPoint(12,65.0624,107.018);
+   cutG->SetPoint(13,64.4273,107.00);
    
 //#################################################################################################
 
@@ -241,11 +248,11 @@ void resolution(int run){
    char fileInName[100];
    Double_t x_corr[NRows] = {0.};
    if(run<10){
-         sprintf(fileInName,"CorrectedX/xCorr_run00%i.root",run);
+         sprintf(fileInName,"CorrectedX/xCorr_run00%i_th.root",run);
       }else if(run <100){
-         sprintf(fileInName,"CorrectedX/xCorr_run0%i.root",run);
+         sprintf(fileInName,"CorrectedX/xCorr_run0%i_th.root",run);
       }else{
-         sprintf(fileInName,"CorrectedX/xCorr_run%i.root",run);
+         sprintf(fileInName,"CorrectedX/xCorr_run%i_th.root",run);
       } 
       
    TFile *f_out = new TFile(fileInName,"READ");
@@ -277,7 +284,7 @@ void resolution(int run){
    }
    
    char fileOut[100];
-   sprintf(fileOut,"resol_run_%dELLcut.txt",run);
+   sprintf(fileOut,"resol_run_%dELLcut_th.txt",run);
    output.open(fileOut);
    
    output << "             Preliminary results" << endl << endl;

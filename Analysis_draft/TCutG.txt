@@ -1,0 +1,31 @@
+============================================================================================
+=                         Graphycal cut cl_x_mm[1]:cl_x_mm[0]                              =
+============================================================================================
+=                                                                                          =
+=  RUN38 - V_{ind}=70V; V_{THGEM}=160V; V_{drift}=800V                                     =
+=                                                                                          =
+=  TCutG *cutG = new TCutG("cutG",14);                                                     =
+=  cutG->SetVarX("cl_x_mm[0]");                                                            =
+=  cutG->SetVarY("cl_x_mm[1]");                                                            =
+=  cutG->SetPoint(0,64.4859,107.16);                                                       =
+=  cutG->SetPoint(1,63.5976,106.433);                                                      =
+=  cutG->SetPoint(2,63.0751,106.032);                                                      =
+=  cutG->SetPoint(3,62.8961,105.602);                                                      =
+=  cutG->SetPoint(4,62.9112,104.872);                                                      =
+=  cutG->SetPoint(5,63.1981,104.461);                                                      =
+=  cutG->SetPoint(6,63.9078,104.388);                                                      =
+=  cutG->SetPoint(7,64.4478,104.708);                                                      =
+=  cutG->SetPoint(8,65.0034,105.075);                                                      =
+=  cutG->SetPoint(9,65.493,105.795);                                                       =
+=  cutG->SetPoint(10,65.5116,106.429);                                                     =
+=  cutG->SetPoint(11,65.298,106.864);                                                      =
+=  cutG->SetPoint(12,64.9894,107.171);                                                     =
+=  cutG->SetPoint(13,64.4859,107.16);                                                      =
+= ---------------------------------------------------------------------------------------- =
+=                                                                                          =
+=  RUN39 - V_{ind}=70V; V_{THGEM}=170V; V_{drift}=800V                                     =
+=                                                                                          =
+=  TCutG *cutG = new TCutG("cutG",14);                                                     =
+=  cutG->SetVarX("cl_x_mm[0]");                                                            =
+=  cutG->SetVarY("cl_x_mm[1]");                                                            =
+=  cutG->SetPoint(

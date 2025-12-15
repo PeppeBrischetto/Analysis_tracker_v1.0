@@ -234,16 +234,23 @@ void systematicOffset(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",7);
+   TCutG *cutG = new TCutG("cutG",14);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,64.4567,108.127);
-   cutG->SetPoint(1,61.1462,106.06);
-   cutG->SetPoint(2,59.889,103.573);
-   cutG->SetPoint(3,60.0776,101.891);
-   cutG->SetPoint(4,62.7386,103.047);
-   cutG->SetPoint(5,65.4624,105.815);
-   cutG->SetPoint(6,64.4567,108.127);
+   cutG->SetPoint(0,64.4273,107.008);
+   cutG->SetPoint(1,63.5976,106.433);
+   cutG->SetPoint(2,63.0751,106.032);
+   cutG->SetPoint(3,62.86,105.529);
+   cutG->SetPoint(4,62.9112,104.872);
+   cutG->SetPoint(5,63.1981,104.461);
+   cutG->SetPoint(6,63.8639,104.369);
+   cutG->SetPoint(7,64.4478,104.708);
+   cutG->SetPoint(8,65.0931,105.18);
+   cutG->SetPoint(9,65.5438,105.868);
+   cutG->SetPoint(10,65.5336,106.577);
+   cutG->SetPoint(11,65.298,106.864);
+   cutG->SetPoint(12,65.0624,107.018);
+   cutG->SetPoint(13,64.4273,107.00);
 
 //#################################################################################################
 // Data loop
@@ -308,7 +315,7 @@ void systematicOffset(int run){
          retta->Draw();
          c_retta->Update();
          char tit_retta[100];
-         sprintf(tit_retta,"Tracks/Run%d/bestTrack%d__NEW_cut.png",run,i);
+         sprintf(tit_retta,"Tracks/Run%d/bestTrack%d__NEW_cut_th.png",run,i);
          c_retta->SaveAs(tit_retta);
       }
       
@@ -365,7 +372,7 @@ void systematicOffset(int run){
    }
    
    char tFile[100];
-   sprintf(tFile,"TrackQuality_txtFiles/qualityTest_run%d_NEW_cut.txt",run);
+   sprintf(tFile,"TrackQuality_txtFiles/qualityTest_run%d_NEW_cut_th.txt",run);
    outfile.open(tFile);
    
    outfile << "============================== Preliminary quality test results ==============================" << endl << endl;
@@ -473,11 +480,11 @@ void systematicOffset(int run){
    cout << "binMin:" << binMin << "    binMax: " << binMax << "   Integral: " << chiRed_min1 << "   chi_min^max/chi_tot: " << chiRed_min1/(h_chiRed->Integral(binMin,200)) << endl;
       
    char titolo0[100];
-   sprintf(titolo0,"TrackQualityControl/Run%d/offset_run%d_NEW_cut.png",run,run);
+   sprintf(titolo0,"TrackQualityControl/Run%d/offset_run%d_NEW_cut_th.png",run,run);
    char titolo1[100];
-   sprintf(titolo1,"TrackQualityControl/Run%d/Amplitudes_run%d_NEW_cut.png",run,run);
+   sprintf(titolo1,"TrackQualityControl/Run%d/Amplitudes_run%d_NEW_cut_th.png",run,run);
    char titolo2[100];
-   sprintf(titolo2,"TrackQualityControl/Run%d/chi_run%d_NEW_cut.png",run,run);
+   sprintf(titolo2,"TrackQualityControl/Run%d/chi_run%d_NEW_cut_th.png",run,run);
    c->SaveAs(titolo0);
    c1->SaveAs(titolo1);
    c2->SaveAs(titolo2);
@@ -489,7 +496,7 @@ void systematicOffset(int run){
    c3->cd(2);
    h_intercetta->Draw();
    char titolo3[100];
-   sprintf(titolo3,"TrackQualityControl/Run%d/theta_intercetta%d_NEW_cut.png",run,run);
+   sprintf(titolo3,"TrackQualityControl/Run%d/theta_intercetta%d_NEW_cut_th.png",run,run);
    c3->SaveAs(titolo3);
    
    TCanvas *c4 = new TCanvas("c4");
@@ -497,7 +504,7 @@ void systematicOffset(int run){
    c4->cd();
    h_corr->Draw();
    char titolo4[100];
-   sprintf(titolo4,"TrackQualityControl/Run%d/pearson_%d_NEW_cut.png",run,run);
+   sprintf(titolo4,"TrackQualityControl/Run%d/pearson_%d_NEW_cut_th.png",run,run);
    c4->SaveAs(titolo4);
    
    TCanvas *c5 = new TCanvas("c5","c5",900,500);
@@ -507,14 +514,14 @@ void systematicOffset(int run){
       h_errX[p]->Draw();
    }
    char titolo5[100];
-   sprintf(titolo5,"TrackQualityControl/Run%d/errX_run%d_NEW_cut.png",run,run);
+   sprintf(titolo5,"TrackQualityControl/Run%d/errX_run%d_NEW_cut_th.png",run,run);
    c5->SaveAs(titolo5);
    
    TCanvas *c6 = new TCanvas("c6");
    c6->cd();
    h_foc->Draw();
    char titolo6[100];
-   sprintf(titolo6,"TrackQualityControl/Run%d/x_foc_run%d_NEW_cut.png",run,run);
+   sprintf(titolo6,"TrackQualityControl/Run%d/x_foc_run%d_NEW_cut_th.png",run,run);
    c6->SaveAs(titolo6);
    
    TCanvas *c7 = new TCanvas("c7","c7",900,900);
@@ -524,7 +531,7 @@ void systematicOffset(int run){
    c7->cd(2);
    h_errQ->Draw();
    char titolo7[100];
-   sprintf(titolo7,"TrackQualityControl/Run%d/errMQ_run%d_NEW_cut.png",run,run);
+   sprintf(titolo7,"TrackQualityControl/Run%d/errMQ_run%d_NEW_cut_th.png",run,run);
    c7->SaveAs(titolo7);
    
 }

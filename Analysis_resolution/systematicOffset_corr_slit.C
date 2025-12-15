@@ -38,7 +38,7 @@ void systematicOffset_corr_slit(int run){
    Double_t my_chi = 0.;
    Double_t my_chiRed = 0.;
    Double_t Ndof = 3;
-   Double_t offset[NRows] = {-0.442586,1.67883,-0.417923,-2.17951,1.35606};
+   Double_t offset[NRows] = {-0.793277,1.94624,-0.250104,-1.89942,0.99685};
    Double_t x_corr[NRows] = {0.};
    Double_t newOffset[NRows] = {0.};
    Double_t chiRed_min1 = 0.;
@@ -97,11 +97,11 @@ void systematicOffset_corr_slit(int run){
    
    char f_outName[50];
    if(run<10){
-         sprintf(f_outName,"CorrectedX/xCorr_run00%i.root",run);
+         sprintf(f_outName,"CorrectedX/xCorr_run00%i_th.root",run);
       }else if(run <100){
-         sprintf(f_outName,"CorrectedX/xCorr_run0%i.root",run);
+         sprintf(f_outName,"CorrectedX/xCorr_run0%i_th.root",run);
       }else{
-         sprintf(f_outName,"CorrectedX/xCorr_run%i.root",run);
+         sprintf(f_outName,"CorrectedX/xCorr_run%i_th.root",run);
       } 
    TFile *f_out = new TFile(f_outName, "recreate");
    TTree *mytree = new TTree("Data_cor", "Offset_Correction");
@@ -124,16 +124,23 @@ void systematicOffset_corr_slit(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",7);
+   TCutG *cutG = new TCutG("cutG",14);
    cutG->SetVarX("cl_x_mm[0]");
    cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,64.4567,108.127);
-   cutG->SetPoint(1,61.1462,106.06);
-   cutG->SetPoint(2,59.889,103.573);
-   cutG->SetPoint(3,60.0776,101.891);
-   cutG->SetPoint(4,62.7386,103.047);
-   cutG->SetPoint(5,65.4624,105.815);
-   cutG->SetPoint(6,64.4567,108.127);
+   cutG->SetPoint(0,64.4273,107.008);
+   cutG->SetPoint(1,63.5976,106.433);
+   cutG->SetPoint(2,63.0751,106.032);
+   cutG->SetPoint(3,62.86,105.529);
+   cutG->SetPoint(4,62.9112,104.872);
+   cutG->SetPoint(5,63.1981,104.461);
+   cutG->SetPoint(6,63.8639,104.369);
+   cutG->SetPoint(7,64.4478,104.708);
+   cutG->SetPoint(8,65.0931,105.18);
+   cutG->SetPoint(9,65.5438,105.868);
+   cutG->SetPoint(10,65.5336,106.577);
+   cutG->SetPoint(11,65.298,106.864);
+   cutG->SetPoint(12,65.0624,107.018);
+   cutG->SetPoint(13,64.4273,107.00);
    
 //#################################################################################################
 // Data loop

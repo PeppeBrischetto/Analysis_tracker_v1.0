@@ -31,13 +31,14 @@ void cogVsth(int run){
 // Nedeed variables
    char histoname[100];
    char titolox[100];
+   char titolofile[100];
    char tit_canva[100];
    Double_t x[NRows] = {0.};
    Double_t x_i[NRows] = {0.};
    Double_t totalCharge[NRows] = {0.};
    Double_t pad[NRows][100] = {0.};
    Double_t charge[NRows][100] = {0.};
-   Int_t thresh = 0;
+   Int_t thresh = 1600;
    
    ofstream output;
    
@@ -110,10 +111,11 @@ void cogVsth(int run){
       c->cd(row+1);
       h_charge[row]->Draw();
    }
-   sprintf(tit_canva,"ChargeDistrib_th%d.png",thresh);
-   c->SaveAs(tit_canva);
-
-   output.open("CoG_Th.txt",std::ios::app);
+   //sprintf(tit_canva,"ChargeDistrib_th%d.png",thresh);
+   //c->SaveAs(tit_canva);
+   
+   sprintf(titolofile,"CoG_Th_%d_i.txt",run);
+   output.open(titolofile,std::ios::app);
    if(!output.is_open()){
      cout << "Opening output file failed!" << endl;
    }else{
