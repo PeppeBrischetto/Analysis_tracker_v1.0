@@ -284,7 +284,7 @@ void resolution(int run){
    }
    
    char fileOut[100];
-   sprintf(fileOut,"resol_run_%dELLcut_th.txt",run);
+   sprintf(fileOut,"resol_run_%d_cut_th.txt",run);
    output.open(fileOut);
    
    output << "             Preliminary results" << endl << endl;

@@ -234,23 +234,27 @@ void systematicOffset(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-  TCutG *cutG = new TCutG("cutG",14);                                                    
+                                                                                          
+  TCutG *cutG = new TCutG("cutG",17);                                                     
   cutG->SetVarX("cl_x_mm[0]");                                                            
   cutG->SetVarY("cl_x_mm[1]");                                                            
-  cutG->SetPoint(0,64.4859,107.16);                                                       
-  cutG->SetPoint(1,63.5976,106.433);                                                      
-  cutG->SetPoint(2,63.0751,106.032);                                                      
-  cutG->SetPoint(3,62.8961,105.602);                                                      
-  cutG->SetPoint(4,62.9112,104.872);                                                      
-  cutG->SetPoint(5,63.1981,104.461);                                                      
-  cutG->SetPoint(6,63.9078,104.388);                                                      
-  cutG->SetPoint(7,64.4478,104.708);                                                      
-  cutG->SetPoint(8,65.0034,105.075);                                                      
-  cutG->SetPoint(9,65.493,105.795);                                                       
-  cutG->SetPoint(10,65.5116,106.429);                                                     
-  cutG->SetPoint(11,65.298,106.864);                                                      
-  cutG->SetPoint(12,64.9894,107.171);                                                     
-  cutG->SetPoint(13,64.4859,107.16);
+  cutG->SetPoint(0,61.3231,106.368);                                                      
+  cutG->SetPoint(1,60.744,106.088);                                                        
+  cutG->SetPoint(2,60.4596,105.69);                                                        
+  cutG->SetPoint(3,60.1437,105.175);                                                       
+  cutG->SetPoint(4,59.8805,104.637);                                                       
+  cutG->SetPoint(5,59.7857,104.052);                                                       
+  cutG->SetPoint(6,59.7962,103.21);                                                        
+  cutG->SetPoint(7,60.5018,102.835);                                                       
+  cutG->SetPoint(8,61.281,103.139);                                                        
+  cutG->SetPoint(9,62.0286,103.654);                                                       
+  cutG->SetPoint(10,62.871,104.192);                                                       
+  cutG->SetPoint(11,63.4712,105.105);                                                      
+  cutG->SetPoint(12,63.566,105.971);                                                       
+  cutG->SetPoint(13,63.3765,106.626);                                                      
+  cutG->SetPoint(14,62.7552,106.789);                                                      
+  cutG->SetPoint(15,61.7864,106.532);                                                      
+  cutG->SetPoint(16,61.3231,106.368);                                   
 
 //#################################################################################################
 // Data loop

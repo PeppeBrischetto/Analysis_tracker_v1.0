@@ -524,7 +524,11 @@ void trackGenerator_th(int run, bool sicFileOpen)
             for (int k=0; k<5; ++k) {	
                if (Row==k) {
                   flag[k]=1;
-                  row[k]->Fill(pad,Charge-th[k]);
+                  if(Charge-th[k]>0){
+                    row[k]->Fill(pad,Charge-th[k]);
+                  }else{
+                    row[k]->Fill(pad,0);
+                  }
                   h_time[k]->Fill(pad,Timestamp-timeinit+timeOffset);                  
                }
             }
