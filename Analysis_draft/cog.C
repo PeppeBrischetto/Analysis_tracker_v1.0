@@ -169,6 +169,8 @@ void cog(int run){
       h_cogTH[row]->GetXaxis()->SetRangeUser(h_cogTH[row]->GetMean()-8,h_cogTH[row]->GetMean()+8);
       h_cogTH[row]->Draw("SAME");
       l->Draw("SAME");
+      
+      cout << "C_" << row << ": " << h_cog[row]->GetMean() << "C*_" << row << ": " << h_cogTH[row]->GetMean() << endl;
    }
    
    char titoloCanvas[100];

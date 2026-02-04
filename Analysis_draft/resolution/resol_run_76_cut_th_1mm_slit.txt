@@ -1,4 +1,20 @@
-             Preliminary results
+             Preliminary results All evts
+
+stDEV_0: 0.930594   FWHM: 2.35*stDEV = 2.18689   StdDEV(): 2.92514   FWHM: 2.35*stDEV = 6.87407
+stDEV_1: 0.872809   FWHM: 2.35*stDEV = 2.0511   StdDEV(): 3.58937   FWHM: 2.35*stDEV = 8.43503
+stDEV_2: 1.09237   FWHM: 2.35*stDEV = 2.56708   StdDEV(): 4.71756   FWHM: 2.35*stDEV = 11.0863
+stDEV_3: 1.01546   FWHM: 2.35*stDEV = 2.38633   StdDEV(): 6.36866   FWHM: 2.35*stDEV = 14.9664
+stDEV_4: 1.66535   FWHM: 2.35*stDEV = 3.91357   StdDEV(): 9.0237   FWHM: 2.35*stDEV = 21.2057
+
+             Preliminary results CutG
+
+stDEV_0: 0.766303   FWHM: 2.35*stDEV = 1.80081   StdDEV(): 0.789419   FWHM: 2.35*stDEV = 1.85514
+stDEV_1: 0.737574   FWHM: 2.35*stDEV = 1.7333   StdDEV(): 0.742464   FWHM: 2.35*stDEV = 1.74479
+stDEV_2: 1.02942   FWHM: 2.35*stDEV = 2.41914   StdDEV(): 1.04716   FWHM: 2.35*stDEV = 2.46083
+stDEV_3: 0.977223   FWHM: 2.35*stDEV = 2.29647   StdDEV(): 1.01476   FWHM: 2.35*stDEV = 2.38467
+stDEV_4: 1.61043   FWHM: 2.35*stDEV = 3.78451   StdDEV(): 1.65836   FWHM: 2.35*stDEV = 3.89714
+
+             Preliminary results Offset correction
 
 stDEV_0: 0.672032   FWHM: 2.35*stDEV = 1.57928   StdDEV(): 0.789419   FWHM: 2.35*stDEV = 1.85514
 stDEV_1: 0.734426   FWHM: 2.35*stDEV = 1.7259   StdDEV(): 0.742464   FWHM: 2.35*stDEV = 1.74479
@@ -24,8 +40,8 @@ stDEV_slitSlit_4: 0.440418   FWHM: 2.35*stDEV_slitSlit = 1.03498   StdDEV(): 0.2
 
    Preliminary results - xf_fit improvement
 
-stDEV_xfit:0.903835   FWHM: 2.35*stDEV_xfit = 2.12401   StdDEV(): 2.5137   FWHM: 2.35*stDEV = 5.9072
-stDEV_xfit:0.738892   FWHM: 2.35*stDEV_xfit = 1.7364   StdDEV(): 0.776999   FWHM: 2.35*stDEV = 1.82595
+stDEV_xfit:0.903761   FWHM: 2.35*stDEV_xfit = 2.12384   StdDEV(): 2.51426   FWHM: 2.35*stDEV = 5.90852
+stDEV_xfit:0.738891   FWHM: 2.35*stDEV_xfit = 1.73639   StdDEV(): 0.776828   FWHM: 2.35*stDEV = 1.82555
 stDEV_xfit:0.734088   FWHM: 2.35*stDEV_xfit = 1.72511   StdDEV(): 0.774855   FWHM: 2.35*stDEV = 1.82091
-stDEV_xfit:0.723121   FWHM: 2.35*stDEV_xfit = 1.69934   StdDEV(): 0.747384   FWHM: 2.35*stDEV = 1.75635
+stDEV_xfit:0.681093   FWHM: 2.35*stDEV_xfit = 1.60057   StdDEV(): 0.745744   FWHM: 2.35*stDEV = 1.7525
 stDEV_xfit:0.41   FWHM: 2.35*stDEV_xfit = 0.9635   StdDEV(): 0.414943   FWHM: 2.35*stDEV = 0.975116

@@ -46,7 +46,7 @@ void chargeDistrib(int run){
    Double_t charge_provv[NRows][100] = {0.};
    Double_t totalCharge_provv[NRows] = {0.};
    
-   Int_t evt = 0;
+   Int_t evt = 48;
    
    TH1D *h_charge[NRows];
    for(int i=0; i<NRows; i++){

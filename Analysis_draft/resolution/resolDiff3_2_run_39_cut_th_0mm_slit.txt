@@ -1,0 +1,7 @@
+             Preliminary results
+
+stDEV: 0.939465   FWHM: 2.35*stDEV = 2.20774   stDEV(): 2.42541   FWHM: 2.35*stDEV() = 5.69973
+stDEV: 0.882295   FWHM: 2.35*stDEV = 2.07339   stDEV(): 0.891957   FWHM: 2.35*stDEV() = 2.0961
+stDEV: 0.876862   FWHM: 2.35*stDEV = 2.06063   stDEV(): 0.887994   FWHM: 2.35*stDEV() = 2.08679
+stDEV: 0.761748   FWHM: 2.35*stDEV = 1.79011   stDEV(): 0.779415   FWHM: 2.35*stDEV() = 1.83163
+stDEV: 0.788529   FWHM: 2.35*stDEV = 1.85304   stDEV(): 0.753261   FWHM: 2.35*stDEV() = 1.77016

@@ -50,28 +50,62 @@
 =  cutG->SetVarX("cl_x_mm[0]");                                                            =
 =  cutG->SetVarY("cl_x_mm[1]");                                                            =
 =  cutG->SetPoint(0,64.3356,106.924);                                                      =
-=  cutG->SetPoint(1,63.5976,106.433);                                                      =
-=  cutG->SetPoint(2,62.9918,106.082);                                                      =
-=  cutG->SetPoint(3,61.5371,104.903);                                                      =
-=  cutG->SetPoint(4,61.6974,103.712);                                                      =
-=  cutG->SetPoint(5,62.3631,103.569);                                                      =
-=  cutG->SetPoint(6,63.9288,103.997);                                                      =
-=  cutG->SetPoint(7,64.6191,104.541);                                                      =
-=  cutG->SetPoint(8,65.026,104.865);                                                       =
-=  cutG->SetPoint(9,5.3712,105.447);                                                       =
-=  cutG->SetPoint(10,65.4328,106.095);                                                     =
-=  cutG->SetPoint(11,65.4081,106.6);                                                       =
-=  cutG->SetPoint(12,65.1369,106.911);                                                     =
+=  cutG->SetPoint(1,63.5976,106.433);                                                      =                                                     
+=  cutG->SetPoint(2,62.9918,106.082);                                                      =                                                     
+=  cutG->SetPoint(3,61.5371,104.903);                                                      =                                                     
+=  cutG->SetPoint(4,61.6974,103.712);                                                      =                                                     
+=  cutG->SetPoint(5,62.3631,103.569);                                                      =                                                     
+=  cutG->SetPoint(6,63.9288,103.997);                                                      =                                                     
+=  cutG->SetPoint(7,64.6191,104.541);                                                      =                                                     
+=  cutG->SetPoint(8,65.026,104.865);                                                       =                                                     
+=  cutG->SetPoint(9,65.3712,105.447);                                                      =                                                      
+=  cutG->SetPoint(10,65.4328,106.095);                                                     =                                                     
+=  cutG->SetPoint(11,65.4081,106.6);                                                       =                                                     
+=  cutG->SetPoint(12,65.1369,106.911);                                                     =                                                     
 =  cutG->SetPoint(13,64.3356,106.924);                                                     =
 = ---------------------------------------------------------------------------------------- =
 =                                                                                          =
 =  RUN41 - V_{ind}=70V; V_{THGEM}=190V; V_{drift}=800V                                     =
 =                                                                                          =
-=  TCutG *cutG = new TCutG("cutG",14);                                                     =
+=  TCutG *cutG = new TCutG("cutG",15);                                                     =                                                     
 =  cutG->SetVarX("cl_x_mm[0]");                                                            =
 =  cutG->SetVarY("cl_x_mm[1]");                                                            =
-=  cutG->SetPoint(
+=  cutG->SetPoint(0,62.5713,106.207);                                                      =
+=  cutG->SetPoint(1,60.9585,105.098);                                                      =
+=  cutG->SetPoint(2,60.3664,104.201);                                                      =
+=  cutG->SetPoint(3,60.4889,103.398);                                                      =
+=  cutG->SetPoint(4,60.8564,102.69);                                                       =
+=  cutG->SetPoint(5,61.5505,102.595);                                                      =
+=  cutG->SetPoint(6,62.8979,102.855);                                                      =
+=  cutG->SetPoint(7,64.2862,103.705);                                                      =
+=  cutG->SetPoint(8,65.2049,104.224);                                                      =
+=  cutG->SetPoint(9,65.8786,105.051);                                                      =
+=  cutG->SetPoint(10,66.2461,106.042);                                                     =
+=  cutG->SetPoint(11,66.0419,106.845);                                                     =
+=  cutG->SetPoint(12,65.4294,107.317);                                                     =
+=  cutG->SetPoint(13,64.2249,107.317);                                                     =
+=  cutG->SetPoint(14,62.5713,106.207);                                                     =
 = ---------------------------------------------------------------------------------------- =
+=                                                                                          =
+=  RUN42 - V_{ind}=70V; V_{THGEM}=190V; V_{drift}=800V                                     =
+=                                                                                          =
+=  TCutG *cutG = new TCutG("cutG",14);                                                     =                                                     
+=  cutG->SetVarX("cl_x_mm[0]");                                                            =
+=  cutG->SetVarY("cl_x_mm[1]");                                                            =
+=  cutG->SetPoint(0,61.779,106.176);                                                       =
+=  cutG->SetPoint(1,=59.8987,104.735);                                                     =
+=  cutG->SetPoint(2,58.8081,103.265);                                                      =
+=  cutG->SetPoint(3,58.8081,101.353);                                                      =
+=  cutG->SetPoint(4,59.7482,100.824);                                                      =
+=  cutG->SetPoint(5,60.7448,101.118);                                                      =
+=  cutG->SetPoint(6,61.9107,101.971);                                                      =
+=  cutG->SetPoint(7,63.9791,103.324);                                                      =
+=  cutG->SetPoint(8,65.2389,104.412);                                                      =
+=  cutG->SetPoint(9,66.0663,105.206);                                                      =
+=  cutG->SetPoint(10,66.2919,106.618);                                                     =
+=  cutG->SetPoint(11,65.8783,107.647);                                                     =
+=  cutG->SetPoint(12,64.0919,107.706);                                                     =
+=  cutG->SetPoint(13,61.779,106.176);                                                      =
 = ---------------------------------------------------------------------------------------- =
 =                                                                                          =
 =  RUN52 - V_{ind}=70V; V_{THGEM}=160V; V_{drift}=800V                                     =
@@ -125,22 +159,83 @@
 =  RUN76 - V_{ind}=70V; V_{THGEM}=160V; V_{drift}=800V                                     =
 =                                                                                          =
 =  TCutG *cutG = new TCutG("cutG",17);                                                     =                                                     
-  cutG->SetVarX("cl_x_mm[0]");                                                             =
-  cutG->SetVarY("cl_x_mm[1]");                                                             =
-  cutG->SetPoint(0,61.3231,106.368);                                                       =
-  cutG->SetPoint(1,60.744,106.088);                                                        =
-  cutG->SetPoint(2,60.4596,105.69);                                                        =
-  cutG->SetPoint(3,60.1437,105.175);                                                       =
-  cutG->SetPoint(4,59.8805,104.637);                                                       =
-  cutG->SetPoint(5,59.7857,104.052);                                                       =
-  cutG->SetPoint(6,59.7962,103.21);                                                        =
-  cutG->SetPoint(7,60.5018,102.835);                                                       =
-  cutG->SetPoint(8,61.281,103.139);                                                        =
-  cutG->SetPoint(9,62.0286,103.654);                                                       =
-  cutG->SetPoint(10,62.871,104.192);                                                       =
-  cutG->SetPoint(11,63.4712,105.105);                                                      =
-  cutG->SetPoint(12,63.566,105.971);                                                       = 
-  cutG->SetPoint(13,63.3765,106.626);                                                      =
-  cutG->SetPoint(14,62.7552,106.789);                                                      =
-  cutG->SetPoint(15,61.7864,106.532);                                                      =
-  cutG->SetPoint(16,61.3231,106.368);                                                      =
+=  cutG->SetVarX("cl_x_mm[0]");                                                            =
+=  cutG->SetVarY("cl_x_mm[1]");                                                            =
+=  cutG->SetPoint(0,61.3231,106.368);                                                      =
+=  cutG->SetPoint(1,60.744,106.088);                                                       =
+=  cutG->SetPoint(2,60.4596,105.69);                                                       =
+=  cutG->SetPoint(3,60.1437,105.175);                                                      =
+=  cutG->SetPoint(4,59.8805,104.637);                                                      =
+=  cutG->SetPoint(5,59.7857,104.052);                                                      =
+=  cutG->SetPoint(6,59.7962,103.21);                                                       =
+=  cutG->SetPoint(7,60.5018,102.835);                                                      =
+=  cutG->SetPoint(8,61.281,103.139);                                                       =
+=  cutG->SetPoint(9,62.0286,103.654);                                                      =
+=  cutG->SetPoint(10,62.871,104.192);                                                      =
+=  cutG->SetPoint(11,63.4712,105.105);                                                     =
+=  cutG->SetPoint(12,63.566,105.971);                                                      = 
+=  cutG->SetPoint(13,63.3765,106.626);                                                     =
+=  cutG->SetPoint(14,62.7552,106.789);                                                     =
+=  cutG->SetPoint(15,61.7864,106.532);                                                     =
+=  cutG->SetPoint(16,61.3231,106.368);                                                     =
+= ---------------------------------------------------------------------------------------- =
+=                                                                                          =
+=  RUN171 - V_{ind}=70V; V_{THGEM}=160V; V_{drift}=800V                                    =
+=                                                                                          =
+=  TCutG *cutG = new TCutG("cutG",15);                                                     =                                                     
+=  cutG->SetVarX("cl_x_mm[0]");                                                            =
+=  cutG->SetVarY("cl_x_mm[1]");                                                            =
+=  cutG->SetPoint(0,57.3759,103.665);                                                      =
+=  cutG->SetPoint(1,57.3759,102.217);                                                      =
+=  cutG->SetPoint(2,57.7169,101.815);                                                      =
+=  cutG->SetPoint(3,58.8802,101.855);                                                      =
+=  cutG->SetPoint(4,59.8029,102.619);                                                      =
+=  cutG->SetPoint(5,60.4848,103.745);                                                      =
+=  cutG->SetPoint(6,60.6252,104.59);                                                       =
+=  cutG->SetPoint(7,60.4848,105.595);                                                      =
+=  cutG->SetPoint(8,60.0636,105.836);                                                      =
+=  cutG->SetPoint(9,59.3817,105.917);                                                      =
+=  cutG->SetPoint(10,58.9203,105.635);                                                     =
+=  cutG->SetPoint(11,58.2986,105.153);                                                     =
+=  cutG->SetPoint(12,57.8573,104.71);                                                      =
+=  cutG->SetPoint(13,57.6768,104.469);                                                     =
+=  cutG->SetPoint(14,57.3759,103.665);                                                     =
+= ---------------------------------------------------------------------------------------- =
+=                                                                                          =
+=  RUN298 - V_{ind}=70V; V_{THGEM}=160V; V_{drift}=800V  (^{7}Li)                          =
+=                                                                                          =
+=  TCutG *cutG = new TCutG("cutG",18);                                                     =                                                     
+=  cutG->SetVarX("cl_x_mm[0]");                                                            =
+=  cutG->SetVarY("cl_x_mm[1]");                                                            =
+=  cutG->SetPoint(0,82.0423,114.72);                                                       =
+=  cutG->SetPoint(1,81.5904,114.267);                                                      =
+=  cutG->SetPoint(2,81.5001,113.609);                                                      =
+=  cutG->SetPoint(3,81.6959,112.684);                                                      =
+=  cutG->SetPoint(4,82.3736,112.602);                                                      =
+=  cutG->SetPoint(5,83.4279,112.869);                                                      =
+=  cutG->SetPoint(6,84.3014,113.383);                                                      =
+=  cutG->SetPoint(7,85.0544,114.103);                                                      =
+=  cutG->SetPoint(8,85.5063,114.679);                                                      =
+=  cutG->SetPoint(9,85.6117,115.419);                                                      =
+=  cutG->SetPoint(10,85.4912,116.159);                                                     =
+=  cutG->SetPoint(11,85.1448,116.488);                                                     =
+=  cutG->SetPoint(12,84.5725,116.57);                                                      =
+=  cutG->SetPoint(13,84.1056,116.509);                                                     =
+=  cutG->SetPoint(14,83.6538,116.2);                                                       =
+=  cutG->SetPoint(15,83.1417,115.83);                                                      =
+=  cutG->SetPoint(16,82.8405,115.583);                                                     =
+=  cutG->SetPoint(17,82.0423,114.72);                                                      =
+= ---------------------------------------------------------------------------------------- =
+=                                                                                          =
+=  RUN298 - V_{ind}=70V; V_{THGEM}=160V; V_{drift}=800V  (alpha)                           =
+=                                                                                          =
+=  TCutG *cutG = new TCutG("cutG",18);                                                     =                                                     
+=  cutG->SetVarX("cl_x_mm[0]");                                                            =
+=  cutG->SetVarY("cl_x_mm[1]");                                                            =
+=  cutG->SetPoint(0,18.5251,24.8128);                                                      =
+=  cutG->SetPoint(1,22.4783,15.8227);                                                      =
+=  cutG->SetPoint(2,190.67,208.811);                                                       =
+=  cutG->SetPoint(3,184.56,215.404);                                                       =
+=  cutG->SetPoint(4,19.6033,29.6076);                                                      =
+=  cutG->SetPoint(5,18.5251,24.8128);                                                      =
+= ---------------------------------------------------------------------------------------- =

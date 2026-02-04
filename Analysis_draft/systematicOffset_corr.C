@@ -37,7 +37,7 @@ void systematicOffset_corr(int run){
    Double_t my_chi = 0.;
    Double_t my_chiRed = 0.;
    Double_t Ndof = 3;
-   Double_t offset[NRows] = {-0.512562,1.99404,-0.637832,-2.32577,1.48162};
+   Double_t offset[NRows] = {-0.762256,1.85075,-0.11295,-2.02796,1.04625};
    Double_t x_corr[NRows] = {0.};
    Double_t newOffset[NRows] = {0.};
    Double_t chiRed_min1 = 0.;
@@ -237,26 +237,23 @@ void systematicOffset_corr(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-  TCutG *cutG = new TCutG("cutG",17);                                                     
+   TCutG *cutG = new TCutG("cutG",14);                                                     
   cutG->SetVarX("cl_x_mm[0]");                                                            
   cutG->SetVarY("cl_x_mm[1]");                                                            
-  cutG->SetPoint(0,61.3231,106.368);                                                      
-  cutG->SetPoint(1,60.744,106.088);                                                        
-  cutG->SetPoint(2,60.4596,105.69);                                                        
-  cutG->SetPoint(3,60.1437,105.175);                                                       
-  cutG->SetPoint(4,59.8805,104.637);                                                       
-  cutG->SetPoint(5,59.7857,104.052);                                                       
-  cutG->SetPoint(6,59.7962,103.21);                                                        
-  cutG->SetPoint(7,60.5018,102.835);                                                       
-  cutG->SetPoint(8,61.281,103.139);                                                        
-  cutG->SetPoint(9,62.0286,103.654);                                                       
-  cutG->SetPoint(10,62.871,104.192);                                                       
-  cutG->SetPoint(11,63.4712,105.105);                                                      
-  cutG->SetPoint(12,63.566,105.971);                                                       
-  cutG->SetPoint(13,63.3765,106.626);                                                      
-  cutG->SetPoint(14,62.7552,106.789);                                                      
-  cutG->SetPoint(15,61.7864,106.532);                                                      
-  cutG->SetPoint(16,61.3231,106.368);  
+  cutG->SetPoint(0,64.3356,106.924);                                                      
+  cutG->SetPoint(1,63.5976,106.433);                                                                                                           
+  cutG->SetPoint(2,62.9918,106.082);                                                                                                           
+  cutG->SetPoint(3,61.5371,104.903);                                                                                                           
+  cutG->SetPoint(4,61.6974,103.712);                                                                                                           
+  cutG->SetPoint(5,62.3631,103.569);                                                                                                           
+  cutG->SetPoint(6,63.9288,103.997);                                                                                                           
+  cutG->SetPoint(7,64.6191,104.541);                                                                                                           
+  cutG->SetPoint(8,65.026,104.865);                                                                                                            
+  cutG->SetPoint(9,65.3712,105.447);                                                                                                            
+  cutG->SetPoint(10,65.4328,106.095);                                                                                                          
+  cutG->SetPoint(11,65.4081,106.6);                                                                                                            
+  cutG->SetPoint(12,65.1369,106.911);                                                                                                          
+  cutG->SetPoint(13,64.3356,106.924);
   
 //#################################################################################################
 // Data loop
