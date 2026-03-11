@@ -1,0 +1,7 @@
+             Preliminary results
+
+stDEV: 0.758442   FWHM: 2.35*stDEV = 1.78234   error: 0.00602159   stDEV(): 1.6089   FWHM: 2.35*stDEV() = 3.78092   error:0.0110484
+stDEV: 0.734217   FWHM: 2.35*stDEV = 1.72541   error: 0.00560189   stDEV(): 0.740431   FWHM: 2.35*stDEV() = 1.74001   error:0.00528252
+stDEV: 0.734213   FWHM: 2.35*stDEV = 1.7254   error: 0.0056199   stDEV(): 0.740431   FWHM: 2.35*stDEV() = 1.74001   error: 0.00528252
+stDEV: 0.488844   FWHM: 2.35*stDEV = 1.14878   error: 0.00624577   stDEV(): 0.498892   FWHM: 2.35*stDEV() = 1.1724   error: 0.00605536
+stDEV: 0.470323   FWHM: 2.35*stDEV = 1.10526   error: 0.00768981   stDEV(): 0.474403   FWHM: 2.35*stDEV() = 1.11485   error: 0.00715883

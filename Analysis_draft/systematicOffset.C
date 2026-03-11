@@ -64,7 +64,7 @@ void systematicOffset(int run){
    anode->GetYaxis()->SetNdivisions(-11);
    anode->GetYaxis()->SetLabelSize(0);
    
-   TH1D *h_theta = new TH1D("h_theta","",900,0,90);
+   TH1D *h_theta = new TH1D("h_theta","h_theta",900,0,90);
    h_theta->GetXaxis()->SetTitle("#theta_{foc} (deg)");
    h_theta->GetXaxis()->SetTitleSize(0.05);
    h_theta->GetXaxis()->SetLabelSize(0.05);
@@ -77,7 +77,7 @@ void systematicOffset(int run){
    h_theta->SetLineWidth(2);
    h_theta->SetStats(0);
    
-   TH1D *h_intercetta = new TH1D("h_intercetta","",300,-30,0);
+   TH1D *h_intercetta = new TH1D("h_intercetta","h_intercetta",300,-30,0);
    h_intercetta->GetXaxis()->SetTitle("intercept (mm)");
    h_intercetta->GetXaxis()->SetTitleSize(0.05);
    h_intercetta->GetXaxis()->SetLabelSize(0.05);
@@ -90,7 +90,7 @@ void systematicOffset(int run){
    h_intercetta->SetLineWidth(2);
    h_intercetta->SetStats(0);
    
-   TH1D *h_chi = new TH1D("h_chi","",50,-0.01,10);
+   TH1D *h_chi = new TH1D("h_chi","h_chi",50,-0.01,10);
    h_chi->GetXaxis()->SetTitle("#chi^{2}");
    h_chi->GetXaxis()->SetTitleSize(0.05);
    h_chi->GetXaxis()->SetLabelSize(0.05);
@@ -103,7 +103,7 @@ void systematicOffset(int run){
    h_chi->SetLineWidth(2);
    h_chi->SetStats(0);
    
-   TH1D *h_chiRed = new TH1D("h_chiRed","",200,0,10);
+   TH1D *h_chiRed = new TH1D("h_chiRed","h_chiRed",200,0,10);
    h_chiRed->GetXaxis()->SetTitle("#tilde{#chi}^{2}_{red}");
    h_chiRed->GetXaxis()->SetTitleSize(0.05);
    h_chiRed->GetXaxis()->SetLabelSize(0.05);
@@ -115,7 +115,7 @@ void systematicOffset(int run){
    h_chiRed->SetNdivisions(7);
    h_chiRed->SetLineWidth(2);
    
-   TH1D *h_corr = new TH1D("h_corr","",1400,0.995,1.002);
+   TH1D *h_corr = new TH1D("h_corr","h_corr",1400,0.995,1.002);
    h_corr->GetXaxis()->SetTitle("r");
    h_corr->GetXaxis()->SetTitleSize(0.05);
    h_corr->GetXaxis()->SetLabelSize(0.05);
@@ -127,7 +127,7 @@ void systematicOffset(int run){
    h_corr->SetNdivisions(7);
    h_corr->SetLineWidth(2);
    
-   TH1D *h_foc = new TH1D("h_foc","",1400,10,60);
+   TH1D *h_foc = new TH1D("h_foc","h_foc",1400,10,60);
    h_foc->GetXaxis()->SetTitle("x_{z=0} (mm)");
    h_foc->GetXaxis()->SetTitleSize(0.05);
    h_foc->GetXaxis()->SetLabelSize(0.05);
@@ -142,7 +142,7 @@ void systematicOffset(int run){
    TH1D *h_errX[NRows];
    for(Int_t i=0; i<NRows; i++){
       sprintf(histoname,"h_errX_%d",i);
-      h_errX[i] = new TH1D("h_errX","",250,0,10);
+      h_errX[i] = new TH1D(histoname,histoname,250,0,10);
       h_errX[i]->GetXaxis()->SetTitle("#varepsilon_{x} (mm)");
       h_errX[i]->GetXaxis()->SetTitleSize(0.05);
       h_errX[i]->GetXaxis()->SetLabelSize(0.05);
@@ -155,7 +155,7 @@ void systematicOffset(int run){
       h_errX[i]->SetLineWidth(2);
    }
    
-   TH1D *h_errM = new TH1D("h_errM","",100,0,0.1);
+   TH1D *h_errM = new TH1D("h_errM","h_errM",100,0,0.1);
    h_errM->GetXaxis()->SetTitle("#varepsilon_{m} (mm)");
    h_errM->GetXaxis()->SetTitleSize(0.05);
    h_errM->GetXaxis()->SetLabelSize(0.05);
@@ -167,7 +167,7 @@ void systematicOffset(int run){
    h_errM->SetNdivisions(7);
    h_errM->SetLineWidth(2);
       
-   TH1D *h_errQ = new TH1D("h_errQ","",25,0,2);
+   TH1D *h_errQ = new TH1D("h_errQ","h_errQ",25,0,2);
    h_errQ->GetXaxis()->SetTitle("#varepsilon_{q} (mm)");
    h_errQ->GetXaxis()->SetTitleSize(0.05);
    h_errQ->GetXaxis()->SetLabelSize(0.05);
@@ -181,8 +181,8 @@ void systematicOffset(int run){
    
    TH1D *discr[NRows];
    for(int i=0; i<NRows; i++){
-      sprintf(histoname,"discr %i",i);
-      discr[i]=new TH1D("","",500,-15,15);
+      sprintf(histoname,"Discr. Row %i",i);
+      discr[i]=new TH1D(histoname,histoname,500,-15,15);
       discr[i]->GetXaxis()->SetTitle("(x_{i} - f(z_{i})) (mm)");
       discr[i]->GetXaxis()->SetTitleSize(0.05);
       discr[i]->GetXaxis()->SetLabelSize(0.05);
@@ -197,8 +197,8 @@ void systematicOffset(int run){
    
    TH1D *amplitude[NRows];
    for(int i=0; i<NRows; i++){
-      sprintf(histoname,"amplitude %i",i);
-      amplitude[i]=new TH1D("","",500,-15,15);
+      sprintf(histoname,"Amplitude Row %i",i);
+      amplitude[i]=new TH1D(histoname,histoname,500,-15,15);
       amplitude[i]->GetXaxis()->SetTitle("#sqrt{(x_{i} - f(z_{i}))^{2}} (mm)");
       amplitude[i]->GetXaxis()->SetTitleSize(0.05);
       amplitude[i]->GetXaxis()->SetLabelSize(0.05);
@@ -234,24 +234,19 @@ void systematicOffset(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-                                                                                          
-  TCutG *cutG = new TCutG("cutG",14);                                                     
+   TCutG *cutG = new TCutG("cutG",10);                                                                                                          
   cutG->SetVarX("cl_x_mm[0]");                                                            
   cutG->SetVarY("cl_x_mm[1]");                                                            
-  cutG->SetPoint(0,64.3356,106.924);                                                      
-  cutG->SetPoint(1,63.5976,106.433);                                                                                                           
-  cutG->SetPoint(2,62.9918,106.082);                                                                                                           
-  cutG->SetPoint(3,61.5371,104.903);                                                                                                           
-  cutG->SetPoint(4,61.6974,103.712);                                                                                                           
-  cutG->SetPoint(5,62.3631,103.569);                                                                                                           
-  cutG->SetPoint(6,63.9288,103.997);                                                                                                           
-  cutG->SetPoint(7,64.6191,104.541);                                                                                                           
-  cutG->SetPoint(8,65.026,104.865);                                                                                                            
-  cutG->SetPoint(9,65.3712,105.447);                                                                                                            
-  cutG->SetPoint(10,65.4328,106.095);                                                                                                          
-  cutG->SetPoint(11,65.4081,106.6);                                                                                                            
-  cutG->SetPoint(12,65.1369,106.911);                                                                                                          
-  cutG->SetPoint(13,64.3356,106.924);
+  cutG->SetPoint(0,60.327,105.785);                                                       
+  cutG->SetPoint(1,58.9946,104.395);                                                      
+  cutG->SetPoint(2,58.5505,102.696);                                                      
+  cutG->SetPoint(3,58.7947,101.492);                                                      
+  cutG->SetPoint(4,59.5609,101.461);                                                      
+  cutG->SetPoint(5,61.0154,102.604);                                                      
+  cutG->SetPoint(6,63.0139,104.21);                                                       
+  cutG->SetPoint(7,63.5802,105.908);                                                      
+  cutG->SetPoint(8,62.6364,107.236);                                                      
+  cutG->SetPoint(9,60.327,105.785);                                                  
 
 //#################################################################################################
 // Data loop
@@ -273,6 +268,7 @@ void systematicOffset(int run){
       Double_t totalCharge[NRows] = {0.};
       Double_t scarto[NRows] = {0.};
       Double_t ampiezza[NRows] = {0.};
+      Int_t mult = 0;
 
       tree->GetEntry(i);
       retta->Set(0);
@@ -283,7 +279,22 @@ void systematicOffset(int run){
       if(sic_fired==1 && energySic>2000){
       if(/*theta_deg>=60 && theta_deg<70 &&*/ cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
       for(Int_t row = 0; row < NRows; row++){
-         for(Int_t p = 0; p < cl_padMult[row]; p++){
+         mult = cl_padMult[row];
+
+         // Debug: guarda cosa sta succedendo
+         // cout << "Event " << i << " row " << row << " mult = " << mult << endl;
+
+         // Limita la molteplicità agli array disponibili
+         if(mult > 50) {
+            //cout << "WARNING: cl_padMult[" << row << "] = " << mult << " > 50, taglio a 50" << endl;
+            mult = 50;
+         }else
+            if(mult <= 50) {
+              //cout << "WARNING: cl_padMult[" << row << "] = " << mult << " > NStrips(" << NStrips << "), taglio a NStrips" << endl;
+              mult = cl_padMult[row];
+            }
+      
+         for(Int_t p = 0; p < mult; p++){
             pad[row][p] = pads_fired[row][p];
             charge[row][p] = pad_charge[row][p];
             totalCharge[row] += charge[row][p];

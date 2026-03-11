@@ -38,7 +38,7 @@ void systematicOffset_corr_slit(int run){
    Double_t my_chi = 0.;
    Double_t my_chiRed = 0.;
    Double_t Ndof = 3;
-   Double_t offset[NRows] = {-0.762256,1.85075,-0.11295,-2.02796,1.04625};
+   Double_t offset[NRows] = {-0.298574,1.64806,-0.4818,-2.49216,1.62263};
    Double_t x_corr[NRows] = {0.};
    Double_t newOffset[NRows] = {0.};
    Double_t chiRed_min1 = 0.;
@@ -124,23 +124,19 @@ void systematicOffset_corr_slit(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",14);                                                     
+   TCutG *cutG = new TCutG("cutG",10);                                                                                                          
   cutG->SetVarX("cl_x_mm[0]");                                                            
   cutG->SetVarY("cl_x_mm[1]");                                                            
-  cutG->SetPoint(0,64.3356,106.924);                                                      
-  cutG->SetPoint(1,63.5976,106.433);                                                                                                           
-  cutG->SetPoint(2,62.9918,106.082);                                                                                                           
-  cutG->SetPoint(3,61.5371,104.903);                                                                                                           
-  cutG->SetPoint(4,61.6974,103.712);                                                                                                           
-  cutG->SetPoint(5,62.3631,103.569);                                                                                                           
-  cutG->SetPoint(6,63.9288,103.997);                                                                                                           
-  cutG->SetPoint(7,64.6191,104.541);                                                                                                           
-  cutG->SetPoint(8,65.026,104.865);                                                                                                            
-  cutG->SetPoint(9,65.3712,105.447);                                                                                                            
-  cutG->SetPoint(10,65.4328,106.095);                                                                                                          
-  cutG->SetPoint(11,65.4081,106.6);                                                                                                            
-  cutG->SetPoint(12,65.1369,106.911);                                                                                                          
-  cutG->SetPoint(13,64.3356,106.924); 
+  cutG->SetPoint(0,60.327,105.785);                                                       
+  cutG->SetPoint(1,58.9946,104.395);                                                      
+  cutG->SetPoint(2,58.5505,102.696);                                                      
+  cutG->SetPoint(3,58.7947,101.492);                                                      
+  cutG->SetPoint(4,59.5609,101.461);                                                      
+  cutG->SetPoint(5,61.0154,102.604);                                                      
+  cutG->SetPoint(6,63.0139,104.21);                                                       
+  cutG->SetPoint(7,63.5802,105.908);                                                      
+  cutG->SetPoint(8,62.6364,107.236);                                                      
+  cutG->SetPoint(9,60.327,105.785);
    
 //#################################################################################################
 // Data loop
@@ -161,6 +157,7 @@ void systematicOffset_corr_slit(int run){
       Double_t x_mm[NStrips] = {0.};
       Double_t y[NRows] = {0.};
       Double_t totalCharge[NRows] = {0.};
+      Int_t mult = 0;
 
       tree->GetEntry(i);
       retta->Set(0);
@@ -170,7 +167,18 @@ void systematicOffset_corr_slit(int run){
       o++;
       for(Int_t row = 0; row < NRows; row++){
          x_corr[row] = 0.;
-         for(Int_t p = 0; p < cl_padMult[row]; p++){
+         mult = cl_padMult[row];
+         
+         if(mult > 50) {
+            //cout << "WARNING: cl_padMult[" << row << "] = " << mult << " > 50, taglio a 50" << endl;
+            mult = 50;
+         }else
+            if(mult <= 50) {
+              //cout << "WARNING: cl_padMult[" << row << "] = " << mult << " > NStrips(" << NStrips << "), taglio a NStrips" << endl;
+              mult = cl_padMult[row];
+            }
+            
+         for(Int_t p = 0; p < mult; p++){
             pad[row][p] = pads_fired[row][p];
             charge[row][p] = pad_charge[row][p];
             totalCharge[row] += charge[row][p];

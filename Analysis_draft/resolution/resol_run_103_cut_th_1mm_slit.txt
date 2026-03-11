@@ -1,0 +1,47 @@
+             Preliminary results All evts
+
+stDEV_0: 0.738394   FWHM: 2.35*stDEV = 1.73523   error: 0.0145031   StdDEV(): 6.64737   FWHM: 2.35*stDEV = 15.6213   error: 0.109184
+stDEV_1: 0.821466   FWHM: 2.35*stDEV = 1.93044   error: 0.0165243   StdDEV(): 5.45289   FWHM: 2.35*stDEV = 12.8143   error: 0.0895645
+stDEV_2: 1.03106   FWHM: 2.35*stDEV = 2.42299   error: 0.0207627   StdDEV(): 5.25251   FWHM: 2.35*stDEV = 12.3434   error: 0.0862731
+stDEV_3: 1.45833   FWHM: 2.35*stDEV = 3.42709   error: 0.0291819   StdDEV(): 6.22193   FWHM: 2.35*stDEV = 14.6215   error: 0.102196
+stDEV_4: 2.08196   FWHM: 2.35*stDEV = 4.89261   error: 0.0414058   StdDEV(): 10.8216   FWHM: 2.35*stDEV = 25.4307   error: 0.177746
+
+             Preliminary results CutG
+
+stDEV_0: 0.692877   FWHM: 2.35*stDEV = 1.62826   error: 0.0124383   StdDEV(): 0.693268   FWHM: 2.35*stDEV = 1.62918   error: 0.011882
+stDEV_1: 0.786415   FWHM: 2.35*stDEV = 1.84808   error: 0.0148947   StdDEV(): 0.782846   FWHM: 2.35*stDEV = 1.83969   error: 0.0134173
+stDEV_2: 0.995658   FWHM: 2.35*stDEV = 2.3398   error: 0.0191549   StdDEV(): 1.01129   FWHM: 2.35*stDEV = 2.37654   error: 0.0173327
+stDEV_3: 1.41105   FWHM: 2.35*stDEV = 3.31598   error: 0.0269531   StdDEV(): 1.44004   FWHM: 2.35*stDEV = 3.38409   error: 0.024681
+stDEV_4: 2.02135   FWHM: 2.35*stDEV = 4.75018   error: 0.0387135   StdDEV(): 2.08391   FWHM: 2.35*stDEV = 4.89718   error: 0.0357164
+
+             Preliminary results Offset correction
+
+stDEV_0: 0.675875   FWHM: 2.35*stDEV = 1.58831   error: 1.58831   StdDEV(): 0.649412   FWHM: 2.35*stDEV = 1.52612   error: 0.0112956
+stDEV_1: 0.720827   FWHM: 2.35*stDEV = 1.69394   error: 1.69394   StdDEV(): 0.739578   FWHM: 2.35*stDEV = 1.73801   error: 0.0128639
+stDEV_2: 0.954205   FWHM: 2.35*stDEV = 2.24238   error: 2.24238   StdDEV(): 0.964749   FWHM: 2.35*stDEV = 2.26716   error: 0.0167804
+stDEV_3: 1.34889   FWHM: 2.35*stDEV = 3.1699   error: 3.1699   StdDEV(): 1.38058   FWHM: 2.35*stDEV = 3.24437   error: 0.0240132
+stDEV_4: 1.95595   FWHM: 2.35*stDEV = 4.59649   error: 4.59649   StdDEV(): 2.01633   FWHM: 2.35*stDEV = 4.73838   error: 0.0350712
+
+       Preliminary results - slit on ROW4
+
+stDEV_slit_0: 0.577455   FWHM: 2.35*stDEV_slit = 1.35702   error: 0.0243298   StdDEV(): 0.584496   FWHM: 2.35*stDEV = 1.37357   error: 0.0224123
+stDEV_slit_1: 0.499452   FWHM: 2.35*stDEV_slit = 1.17371   error: 0.0192436   StdDEV(): 0.504868   FWHM: 2.35*stDEV = 1.18644   error: 0.019359
+stDEV_slit_2: 0.510757   FWHM: 2.35*stDEV_slit = 1.20028   error: 0.0222522   StdDEV(): 0.518352   FWHM: 2.35*stDEV = 1.21813   error: 0.019876
+stDEV_slit_3: 0.502032   FWHM: 2.35*stDEV_slit = 1.17978   error: 0.0230754   StdDEV(): 0.508229   FWHM: 2.35*stDEV = 1.19434   error: 0.0194879
+stDEV_slit_4: 0.320852   FWHM: 2.35*stDEV_slit = 0.754003   error: 0.0224268   StdDEV(): 0.290304   FWHM: 2.35*stDEV = 0.682213   error: 0.0111316
+
+   Preliminary results - slit on ROW0 & ROW4
+
+stDEV_slitSlit_0: 0.332468   FWHM: 2.35*stDEV_slitSlit = 0.781301   error: 0.0318345   StdDEV(): 0.27832   FWHM: 2.35*stDEV = 0.654052   error: 0.0137036
+stDEV_slitSlit_1: 0.433736   FWHM: 2.35*stDEV_slitSlit = 1.01928   error: 0.0229402   StdDEV(): 0.435788   FWHM: 2.35*stDEV = 1.0241   error: 0.0214569
+stDEV_slitSlit_2: 0.465408   FWHM: 2.35*stDEV_slitSlit = 1.09371   error: 0.0291824   StdDEV(): 0.474132   FWHM: 2.35*stDEV = 1.11421   error: 0.0233448
+stDEV_slitSlit_3: 0.46197   FWHM: 2.35*stDEV_slitSlit = 1.08563   error: 0.0277694   StdDEV(): 0.478461   FWHM: 2.35*stDEV = 1.12438   error: 0.0235579
+stDEV_slitSlit_4: 0.313713   FWHM: 2.35*stDEV_slitSlit = 0.737225   error: 0.0274961   StdDEV(): 0.290646   FWHM: 2.35*stDEV = 0.683019   error: 0.0143105
+
+   Preliminary results - xf_fit improvement
+
+stDEV_xfit:0.639422   FWHM: 2.35*stDEV_xfit = 1.50264   error: 0.0126   StdDEV(): 6.15669   FWHM: 2.35*stDEV = 14.4682   error: 0.101184
+stDEV_xfit:0.606308   FWHM: 2.35*stDEV_xfit = 1.42482   error: 0.0107299   StdDEV(): 0.60777   FWHM: 2.35*stDEV = 1.42826   error: 0.0104167
+stDEV_xfit:0.563165   FWHM: 2.35*stDEV_xfit = 1.32344   error: 0.00908453   StdDEV(): 0.571289   FWHM: 2.35*stDEV = 1.34253   error: 0.00993675
+stDEV_xfit:0.52639   FWHM: 2.35*stDEV_xfit = 1.23702   error: 0.0211579   StdDEV(): 0.537452   FWHM: 2.35*stDEV = 1.26301   error: 0.0206084
+stDEV_xfit:0.325096   FWHM: 2.35*stDEV_xfit = 0.763977   error: 0.0165365   StdDEV(): 0.320249   FWHM: 2.35*stDEV = 0.752586   error: 0.0157681

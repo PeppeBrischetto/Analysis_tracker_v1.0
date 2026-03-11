@@ -1,7 +1,7 @@
              Preliminary results
 
-stDEV: 1.14341   FWHM: 2.35*stDEV = 2.68701   stDEV(): 2.26807   FWHM: 2.35*stDEV() = 5.32997
-stDEV: 1.09378   FWHM: 2.35*stDEV = 2.57039   stDEV(): 1.10475   FWHM: 2.35*stDEV() = 2.59617
-stDEV: 1.09412   FWHM: 2.35*stDEV = 2.57118   stDEV(): 1.10475   FWHM: 2.35*stDEV() = 2.59617
-stDEV: 0.997658   FWHM: 2.35*stDEV = 2.3445   stDEV(): 1.02063   FWHM: 2.35*stDEV() = 2.39848
-stDEV: 0.979269   FWHM: 2.35*stDEV = 2.30128   stDEV(): 0.980086   FWHM: 2.35*stDEV() = 2.3032
+stDEV: 1.14341   FWHM: 2.35*stDEV = 2.687   error: 0.00828423   stDEV(): 2.26911   FWHM: 2.35*stDEV() = 5.3324   error:0.0148605
+stDEV: 1.09378   FWHM: 2.35*stDEV = 2.57039   error: 0.00792121   stDEV(): 1.10475   FWHM: 2.35*stDEV() = 2.59617   error:0.0081314
+stDEV: 1.09412   FWHM: 2.35*stDEV = 2.57118   error: 0.00793157   stDEV(): 1.10475   FWHM: 2.35*stDEV() = 2.59617   error: 0.0081314
+stDEV: 0.998155   FWHM: 2.35*stDEV = 2.34566   error: 0.0202385   stDEV(): 1.02118   FWHM: 2.35*stDEV() = 2.39977   error: 0.0212894
+stDEV: 0.977458   FWHM: 2.35*stDEV = 2.29703   error: 0.0635931   stDEV(): 0.981816   FWHM: 2.35*stDEV() = 2.30727   error: 0.0566297

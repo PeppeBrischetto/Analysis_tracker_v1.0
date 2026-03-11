@@ -14,7 +14,7 @@
 #include <TRandom.h>
 #include <TMath.h>
 #include "TPrincipal.h"
-#include "../Include/openfilesclone.h"
+#include "../Include/openfilesthresh.h"
 
 using namespace std;
 using namespace TMath;
@@ -71,7 +71,7 @@ void chargeSpectrumPerPad(int run){
    
 //################################################################################################################
 // OpenFiles
-   openTrackCloneFile(run);
+   openTrackFileTh(run);
    tree->Print();   
 
 //################################################################################################################

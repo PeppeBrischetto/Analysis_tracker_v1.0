@@ -130,14 +130,22 @@ void charge_per_pad(int run){
 //################################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",5);
-   cutG->SetVarX("cl_x_mm[0]");
-   cutG->SetVarY("cl_x_mm[1]");
-   cutG->SetPoint(0,22.0711,27.5907);
-   cutG->SetPoint(1,176.674,208.212);
-   cutG->SetPoint(2,185.042,194.43);
-   cutG->SetPoint(3,27.5105,16.3471);
-   cutG->SetPoint(4,22.0711,27.5907);
+   TCutG *cutG = new TCutG("cutG",13);                                                                                                          
+  cutG->SetVarX("cl_x_mm[0]");                                                            
+  cutG->SetVarY("cl_x_mm[1]");                                                            
+  cutG->SetPoint(0,63.9099,106.765);                                                      
+  cutG->SetPoint(1,64.2387,108.319);                                                       
+  cutG->SetPoint(2,65.0241,109.003);                                                      
+  cutG->SetPoint(3,65.7768,109.165);                                                      
+  cutG->SetPoint(4,66.4307,108.786);                                                      
+  cutG->SetPoint(5,66.6499,107.697);                                                      
+  cutG->SetPoint(6,66.5585,107.169);                                                      
+  cutG->SetPoint(7,66.2566,106.247);                                                      
+  cutG->SetPoint(8,65.974,105.521);                                                       
+  cutG->SetPoint(9,65.4443,104.65);                                                       
+  cutG->SetPoint(10,64.9693,104.619);                                                     
+  cutG->SetPoint(11,63.983,105.023);                                                      
+  cutG->SetPoint(12,63.9099,106.765);
       
 //################################################################################################################
 // OpenFiles
@@ -147,26 +155,27 @@ void charge_per_pad(int run){
 //################################################################################################################
 // Data-loop
    for(Int_t i=0; i<entries; i++){
+      charge = 0.;
       tree->GetEntry(i);
       //if(cutG->IsInside(cl_x_mm[0], cl_x_mm[1]){
       if(Row==0){
-         //charge=Charge;
+         charge=Charge;
          h_pad0[Pads]->Fill(Charge);
       }else
        if(Row==1){
-         //charge=Charge;
+         charge=Charge;
          h_pad1[Pads]->Fill(Charge);
        }else
         if(Row==2){
-          //charge=Charge;
+          charge=Charge;
           h_pad2[Pads]->Fill(Charge);
         }else
          if(Row==3){
-          //charge=Charge;
+           charge=Charge;
            h_pad3[Pads]->Fill(Charge);
          }else
           if(Row==4){
-            //charge=Charge;
+            charge=Charge;
             h_pad4[Pads]->Fill(Charge);
           }
    }

@@ -1,0 +1,15 @@
+============================== Preliminary quality test results ==============================
+
+                    error_coeffAng: 0.00154831    error_intercept: 0.246963
+
+                    Mean_error_x_0: 0.500656
+
+                    Mean_error_x_1: 0.56048
+
+                    Mean_error_x_2: 0.629702
+
+                    Mean_error_x_3: 0.710071
+
+                    Mean_error_x_4: 0.809146
+
+                    Pearson_coeff.: 0.999984    chi_{red}: 0.0469036

@@ -38,7 +38,7 @@ void resolution_3_2(int run){
    Double_t r3_2[NRows] = {0.};
    Double_t err_r3_2[NRows] = {0.};
    
-   Double_t semiaperture = 0.15;                                                                  // semiaperture of the virtual slit(s)
+   Double_t semiaperture = 0.25;                                                                  // semiaperture of the virtual slit(s)
    
    TF1 *f_gaus = new TF1("f_gaus","gaus",0,300);
    f_gaus->SetParameters(0,0,0);
@@ -46,8 +46,8 @@ void resolution_3_2(int run){
    TF1 *linea = new TF1("linea","pol1",0,300);
    linea->SetParameters(0,0);
    
-   sprintf(titolox,"|x_{3} - x_{2}| (mm)");
-   TH1D *x_NC = new TH1D("x_NC","x_NC",3000.,0.,300);
+   sprintf(titolox,"  |x_{3} - x_{2}| (mm)");
+   TH1D *x_NC = new TH1D(titolox,titolox,3000.,0.,300);
    x_NC->GetXaxis()->SetTitle(titolox);
    x_NC->GetXaxis()->SetTitleSize(0.05);
    x_NC->GetXaxis()->SetLabelSize(0.05);
@@ -142,26 +142,19 @@ void resolution_3_2(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-TCutG *cutG = new TCutG("cutG",17);                                                                                                          
-cutG->SetVarX("cl_x_mm[0]");                                                            
-cutG->SetVarY("cl_x_mm[1]");                                                            
-cutG->SetPoint(0,61.3231,106.368);                                                      
-cutG->SetPoint(1,60.744,106.088);                                                       
-cutG->SetPoint(2,60.4596,105.69);                                                       
-cutG->SetPoint(3,60.1437,105.175);                                                      
-cutG->SetPoint(4,59.8805,104.637);                                                      
-cutG->SetPoint(5,59.7857,104.052);                                                      
-cutG->SetPoint(6,59.7962,103.21);                                                       
-cutG->SetPoint(7,60.5018,102.835);                                                      
-cutG->SetPoint(8,61.281,103.139);                                                       
-cutG->SetPoint(9,62.0286,103.654);                                                      
-cutG->SetPoint(10,62.871,104.192);                                                      
-cutG->SetPoint(11,63.4712,105.105);                                                     
-cutG->SetPoint(12,63.566,105.971);                                                       
-cutG->SetPoint(13,63.3765,106.626);                                                     
-cutG->SetPoint(14,62.7552,106.789);                                                     
-cutG->SetPoint(15,61.7864,106.532);                                                     
-cutG->SetPoint(16,61.3231,106.368);                                              
+   TCutG *cutG = new TCutG("cutG",10);                                                                                                          
+  cutG->SetVarX("cl_x_mm[0]");                                                            
+  cutG->SetVarY("cl_x_mm[1]");                                                            
+  cutG->SetPoint(0,60.327,105.785);                                                       
+  cutG->SetPoint(1,58.9946,104.395);                                                      
+  cutG->SetPoint(2,58.5505,102.696);                                                      
+  cutG->SetPoint(3,58.7947,101.492);                                                      
+  cutG->SetPoint(4,59.5609,101.461);                                                      
+  cutG->SetPoint(5,61.0154,102.604);                                                      
+  cutG->SetPoint(6,63.0139,104.21);                                                       
+  cutG->SetPoint(7,63.5802,105.908);                                                      
+  cutG->SetPoint(8,62.6364,107.236);                                                      
+  cutG->SetPoint(9,60.327,105.785);                                 
    
 //#################################################################################################
 // Data Loop
@@ -172,20 +165,21 @@ cutG->SetPoint(16,61.3231,106.368);
       Double_t x[NRows] = {0.};
       Double_t x_mm[NStrips] = {0.};
       Double_t totalCharge[NRows] = {0.};
+      Int_t mult = 0;
       
       tree->GetEntry(i);
       
       for(Int_t row = 0; row < NRows; row++){
          nPoint = row;
-         Int_t mult = cl_padMult[row];
+         mult = cl_padMult[row];
          if(mult > 50) {
           // cout << "WARNING: cl_padMult[" << row << "] = " << mult << " > 50, taglio a 50" << endl;
             mult = 50;
-         }
-         if(mult > NStrips) {
-           // cout << "WARNING: cl_padMult[" << row << "] = " << mult << " > NStrips(" << NStrips << "), taglio a NStrips" << endl;
-           mult = NStrips;
-         }
+         }else
+            if(mult <= 50) {
+              // cout << "WARNING: cl_padMult[" << row << "] = " << mult << " > NStrips(" << NStrips << "), taglio a NStrips" << endl;
+              mult = cl_padMult[row];
+            }
          for(Int_t p = 0; p < mult; p++){
             pad[row][p] = pads_fired[row][p];
             charge[row][p] = pad_charge[row][p];
@@ -312,26 +306,32 @@ cutG->SetPoint(16,61.3231,106.368);
    sprintf(fileOut,"resolution/resolDiff3_2_run_%d_cut_th_%.0fmm_slit.txt",run,2*semiaperture);
    output.open(fileOut);
    Double_t st[5] = {0.};
+   Double_t st_err[5] = {0.};
    x_NC->Fit(f_gaus,"N","N",0,300);
    st[0] = f_gaus->GetParameter(2);
+   st_err[0] = f_gaus->GetParError(2);
    f_gaus->SetParameters(0,0,0);
    x_NC_cut->Fit(f_gaus,"N","N",0,300);
    st[1] = f_gaus->GetParameter(2);
+   st_err[1] = f_gaus->GetParError(2);
    f_gaus->SetParameters(0,0,0);
    xCorr->Fit(f_gaus,"N","N",0,300);
    st[2] = f_gaus->GetParameter(2);
+   st_err[2] = f_gaus->GetParError(2);
    f_gaus->SetParameters(0,0,0);
    xCorr_slit->Fit(f_gaus,"N","N",0,300);
    st[3] = f_gaus->GetParameter(2);
+   st_err[3] = f_gaus->GetParError(2);
    f_gaus->SetParameters(0,0,0);
    xCorr_slitSlit->Fit(f_gaus,"N","N",0,300);
    st[4] = f_gaus->GetParameter(2);
+   st_err[4] = f_gaus->GetParError(2);
    
    output << "             Preliminary results" << endl << endl;
-   output << "stDEV: " << st[0] << "   FWHM: 2.35*stDEV = " << 2.35*st[0] << "   stDEV()"  << ": " << x_NC->GetStdDev() << "   FWHM: 2.35*stDEV() = "<< 2.35*x_NC->GetStdDev() << endl;
-   output << "stDEV: " << st[1] << "   FWHM: 2.35*stDEV = " << 2.35*st[1] << "   stDEV()"  << ": " << x_NC_cut->GetStdDev() << "   FWHM: 2.35*stDEV() = "<< 2.35*x_NC_cut->GetStdDev() << endl;
-   output << "stDEV: " << st[2] << "   FWHM: 2.35*stDEV = " << 2.35*st[2] << "   stDEV()"  << ": " << xCorr->GetStdDev() << "   FWHM: 2.35*stDEV() = "<< 2.35*xCorr->GetStdDev() << endl;
-   output << "stDEV: " << st[3] << "   FWHM: 2.35*stDEV = " << 2.35*st[3] << "   stDEV()"  << ": " << xCorr_slit->GetStdDev() << "   FWHM: 2.35*stDEV() = "<< 2.35*xCorr_slit->GetStdDev() << endl;
-   output << "stDEV: " << st[4] << "   FWHM: 2.35*stDEV = " << 2.35*st[4] << "   stDEV()"  << ": " << xCorr_slitSlit->GetStdDev() << "   FWHM: 2.35*stDEV() = "<< 2.35*xCorr_slitSlit->GetStdDev() << endl;
+   output << "stDEV: " << st[0] << "   FWHM: 2.35*stDEV = " << 2.35*st[0] << "   error: " << 2.35*st_err[0] << "   stDEV()"  << ": " << x_NC->GetStdDev() << "   FWHM: 2.35*stDEV() = "<< 2.35*x_NC->GetStdDev() << "   error:" << 2.35*x_NC->GetStdDevError() << endl;
+   output << "stDEV: " << st[1] << "   FWHM: 2.35*stDEV = " << 2.35*st[1] << "   error: " << 2.35*st_err[1] << "   stDEV()"  << ": " << x_NC_cut->GetStdDev() << "   FWHM: 2.35*stDEV() = "<< 2.35*x_NC_cut->GetStdDev() << "   error:" << 2.35*x_NC_cut->GetStdDevError() << endl;
+   output << "stDEV: " << st[2] << "   FWHM: 2.35*stDEV = " << 2.35*st[2] << "   error: " << 2.35*st_err[2] << "   stDEV()"  << ": " << xCorr->GetStdDev() << "   FWHM: 2.35*stDEV() = "<< 2.35*xCorr->GetStdDev() << "   error: " << 2.35*xCorr->GetStdDevError() << endl;
+   output << "stDEV: " << st[3] << "   FWHM: 2.35*stDEV = " << 2.35*st[3] << "   error: " << 2.35*st_err[3] << "   stDEV()"  << ": " << xCorr_slit->GetStdDev() << "   FWHM: 2.35*stDEV() = "<< 2.35*xCorr_slit->GetStdDev() << "   error: " << 2.35*xCorr_slit->GetStdDevError() << endl;
+   output << "stDEV: " << st[4] << "   FWHM: 2.35*stDEV = " << 2.35*st[4] << "   error: " << 2.35*st_err[4] << "   stDEV()"  << ": " << xCorr_slitSlit->GetStdDev() << "   FWHM: 2.35*stDEV() = "<< 2.35*xCorr_slitSlit->GetStdDev() << "   error: " << 2.35*xCorr_slitSlit->GetStdDevError() << endl;
    
 }
