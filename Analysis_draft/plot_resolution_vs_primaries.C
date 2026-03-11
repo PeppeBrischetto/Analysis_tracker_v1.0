@@ -33,7 +33,7 @@ void plot_resolution_vs_primaries(){
 // Needed variables
    Int_t p = 0;
    Double_t np[2] = {95834.,203948.};                                       // Number of primary electrons - obtained dividing energy loss (by LISE++) and the average ioization potential (23.4 eV)
-   Double_t sp[2] = {1.63E+08,5.301E+08};                                                     // Number of secondary electrons - obtained converting the digitizer signal (in mV) in # e- -> digi * 61e-3/7.24e-5    
+   Double_t sp[2] = {2.98E+08,1.0E+9};                                                     // Number of secondary electrons - obtained converting the digitizer signal (in mV) in # e- -> digi * 61e-3/7.24e-5    
    Double_t resol_2[8] = {1.01453,1.20145,1.37213,1.4087,1.00553,1.16879,1.28275,1.33634};                                            // resolution array, measured in mm
    Double_t resol_1[8] = {0.78438,0.839794,0.955735,0.991787,0.74615,0.759098,0.823552,0.891991};                                                // resolution array, measured in mm
    Double_t resol_05[8] = {0.680787,0.757098,0.780148,0.796688,0.550655,0.540796,0.612535,0.668728};                                               // resolution array, measured in mm
@@ -55,7 +55,7 @@ void plot_resolution_vs_primaries(){
    Double_t resolDiff_err[2] = {0.};
    
    TGraphErrors *gr_r = new TGraphErrors();     
-   gr_r->SetTitle("#deltax vs N_{secondaries} - R = 20 Hz");
+   gr_r->SetTitle("#deltax vs N_{secondaries} - R = 3000 Hz");
    gr_r->GetXaxis()->SetTitle("N_{secondaries}");
    gr_r->GetYaxis()->SetTitle("#deltax (mm)");
    gr_r->SetMarkerColor(kGreen+2);
@@ -66,7 +66,7 @@ void plot_resolution_vs_primaries(){
    gr_r->SetLineColor(kGreen+2);
    
    TGraphErrors *gr_rDiff = new TGraphErrors();     
-   gr_rDiff->SetTitle("#deltax vs N_{secondaries} - R = 20 Hz");
+   gr_rDiff->SetTitle("#deltax vs N_{secondaries} - R = 3000 Hz");
    gr_rDiff->GetXaxis()->SetTitle("N_{secondaries}");
    gr_rDiff->GetYaxis()->SetTitle("#deltax (mm)");
    gr_rDiff->SetMarkerColor(kGreen+2);
@@ -83,7 +83,7 @@ void plot_resolution_vs_primaries(){
       resolDiff_2_err[i] = resolDiff_2_err[i]/sqrt(2);
       resolDiff_1_err[i] = resolDiff_1_err[i]/sqrt(2);
       resolDiff_05_err[i] = resolDiff_05_err[i]/sqrt(2);
-      if(i==0 || i==4){
+      if(i==3 || i==7){
          cout << "p: " << p << endl; 
          resol[p] = resol_05[i];
          resol_err[p] = resol_05_err[i];  
