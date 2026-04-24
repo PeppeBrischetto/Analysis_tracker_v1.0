@@ -397,23 +397,20 @@ void quanta_x_mult_LI(int run){
 //################################################################################################################
 // Graphyical cut definition
 
-  TCutG *cutG = new TCutG("cutG",14);                                                     
+  TCutG *cutG = new TCutG("cutG",11);                                                     
   cutG->SetVarX("cl_x_mm[0]");                                                            
   cutG->SetVarY("cl_x_mm[1]");                                                            
-  cutG->SetPoint(0,64.0785,106.954);                                                      
-  cutG->SetPoint(1,63.5976,106.433);                                                      
-  cutG->SetPoint(2,63.0751,106.032);                                                      
-  cutG->SetPoint(3,62.6239,105.311);                                                      
-  cutG->SetPoint(4,62.6508,104.562);                                                      
-  cutG->SetPoint(5,62.8456,104.363);                                                      
-  cutG->SetPoint(6,63.9078,104.388);                                                      
-  cutG->SetPoint(7,64.4478,104.708);                                                      
-  cutG->SetPoint(8,65.0034,105.075);                                                      
-  cutG->SetPoint(9,65.4966,105.741);                                                      
-  cutG->SetPoint(10,65.4377,106.692);                                                     
-  cutG->SetPoint(11,65.224,106.954);                                                      
-  cutG->SetPoint(12,64.8815,106.995);                                                     
-  cutG->SetPoint(13,64.0785,106.954);
+  cutG->SetPoint(0,45.3512,99.7678);                                                      
+  cutG->SetPoint(1,44.9973,99.3284);                                                      
+  cutG->SetPoint(2,44.6707,96.2529);                                                      
+  cutG->SetPoint(3,46.2767,95.1714);                                                      
+  cutG->SetPoint(4,47.7058,95.9825);                                                      
+  cutG->SetPoint(5,48.8899,98.1793);                                                      
+  cutG->SetPoint(6,49.1893,99.8692);                                                      
+  cutG->SetPoint(7,48.4816,100.849);                                                      
+  cutG->SetPoint(8,46.8075,101.018);                                                      
+  cutG->SetPoint(9,46.8075,101.018);                                                      
+  cutG->SetPoint(10,45.3512,99.7678);
    
 //################################################################################################################
 // Data loop

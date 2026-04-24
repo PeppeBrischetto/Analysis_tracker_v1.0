@@ -92,6 +92,24 @@ void resolution_3_2(int run){
       x_c[i]->SetLineWidth(2);
    }
    
+   TH1D *x_cCorr[NRows];
+   for(int i=0; i<NRows; i++){
+      sprintf(histoname,"x_cCorr %i",i);
+      sprintf(titolox,"x_{%d} (mm)",i);
+      x_cCorr[i]=new TH1D(histoname,histoname,3000.,0.,300);
+      x_cCorr[i]->GetXaxis()->SetTitle(titolox);
+      x_cCorr[i]->GetXaxis()->SetTitleSize(0.05);
+      x_cCorr[i]->GetXaxis()->SetLabelSize(0.05);
+      x_cCorr[i]->GetXaxis()->SetTitleOffset(0.9);
+      x_cCorr[i]->GetYaxis()->SetTitleSize(0.05);
+      x_cCorr[i]->GetYaxis()->SetLabelSize(0.05);
+      x_cCorr[i]->GetYaxis()->SetTitleOffset(0.9);
+      x_cCorr[i]->SetNdivisions(7);
+      x_cCorr[i]->SetFillColor(kBlue-5);
+      x_cCorr[i]->SetFillStyle(3001);
+      x_cCorr[i]->SetLineWidth(2);
+   }
+   
    TH1D *xCorr = new TH1D("xCorr","xCorr",3000.,0.,300);
    xCorr->GetXaxis()->SetTitle(titolox);
    xCorr->GetXaxis()->SetTitleSize(0.05);
@@ -142,19 +160,15 @@ void resolution_3_2(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",10);                                                                                                          
+  TCutG *cutG = new TCutG("cutG",6);                                                      
   cutG->SetVarX("cl_x_mm[0]");                                                            
   cutG->SetVarY("cl_x_mm[1]");                                                            
-  cutG->SetPoint(0,60.327,105.785);                                                       
-  cutG->SetPoint(1,58.9946,104.395);                                                      
-  cutG->SetPoint(2,58.5505,102.696);                                                      
-  cutG->SetPoint(3,58.7947,101.492);                                                      
-  cutG->SetPoint(4,59.5609,101.461);                                                      
-  cutG->SetPoint(5,61.0154,102.604);                                                      
-  cutG->SetPoint(6,63.0139,104.21);                                                       
-  cutG->SetPoint(7,63.5802,105.908);                                                      
-  cutG->SetPoint(8,62.6364,107.236);                                                      
-  cutG->SetPoint(9,60.327,105.785);                                 
+  cutG->SetPoint(0,44.068,96.1617);                                                       
+  cutG->SetPoint(1,44.5419,92.6775);                                                      
+  cutG->SetPoint(2,50.8881,97.6209);                                                      
+  cutG->SetPoint(3,51.2774,102.207);                                                      
+  cutG->SetPoint(4,50.8204,102.951);                                                      
+  cutG->SetPoint(5,47.0296,101.224);
    
 //#################################################################################################
 // Data Loop
@@ -172,11 +186,11 @@ void resolution_3_2(int run){
       for(Int_t row = 0; row < NRows; row++){
          nPoint = row;
          mult = cl_padMult[row];
-         if(mult > 50) {
+         if(mult > 40) {
           // cout << "WARNING: cl_padMult[" << row << "] = " << mult << " > 50, taglio a 50" << endl;
-            mult = 50;
+            mult = 40;
          }else
-            if(mult <= 50) {
+            if(mult <= 40) {
               // cout << "WARNING: cl_padMult[" << row << "] = " << mult << " > NStrips(" << NStrips << "), taglio a NStrips" << endl;
               mult = cl_padMult[row];
             }
@@ -190,9 +204,12 @@ void resolution_3_2(int run){
          if(totalCharge[row] > 0){
            x[row] = x[row]/totalCharge[row];
            x_c[row]->Fill(x[row]);
+           if(cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
+              x_cCorr[row]->Fill(x[row]);
+           }
            if(row==3){
              x_NC->Fill(Abs(x[3]-x[2]));
-             if(/*theta_deg>=0 && theta_deg<20 &&*/ sic_fired==1 && energySic>2000 && cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
+             if(/*theta_deg>=0 && theta_deg<20 && sic_fired==1 && energySic>2000 &&*/ cutG->IsInside(cl_x_mm[0], cl_x_mm[1])){
                x_NC_cut->Fill(Abs(x[3]-x[2]));
              }
            }
@@ -229,7 +246,7 @@ void resolution_3_2(int run){
    for(Int_t j=0; j<evts; j++){
        mytree->GetEntry(j);
        
-       xCorr->Fill(x_corr[3]-x_corr[2]);
+       xCorr->Fill(Abs(x_corr[3]-x_corr[2]));
        
    }
    
@@ -256,13 +273,13 @@ void resolution_3_2(int run){
       output << "stDEV_" << row << ": " << stDEV << "   FWHM: 2.35*stDEV = "<< 2.35*stDEV << "   StdDEV(): " << xCorr[row]->GetStdDev() << "   FWHM: 2.35*stDEV = " << 2.35*(xCorr[row]->GetStdDev())<< endl;
    }*/
    
-   row0 = x_c[0]->GetMean();
-   row4 = x_c[4]->GetMean();
+   row0 = x_cCorr[0]->GetMean();
+   row4 = x_cCorr[4]->GetMean();
    cout << "Row0: " << row0 << "     Row4: "<< row4 << endl;
    for(Int_t i=0; i<evts; i++){
       mytree->GetEntry(i);
       if(x_corr[4]>=row4-semiaperture && x_corr[4]<=row4+semiaperture){                                                                                  // single-slit in row4
-        xCorr_slit->Fill(x_corr[3]-x_corr[2]);
+        xCorr_slit->Fill(Abs(x_corr[3]-x_corr[2]));
       }
    }
    
@@ -277,7 +294,7 @@ void resolution_3_2(int run){
    for(Int_t j=0; j<evts; j++){
       mytree->GetEntry(j);
       if(x_corr[0]>=row0-semiaperture && x_corr[0]<=row0+semiaperture && x_corr[4]>=row4-semiaperture && x_corr[4]<=row4+semiaperture){                                    // double-slit row0 & row4
-        xCorr_slitSlit->Fill(x_corr[3]-x_corr[2]);
+        xCorr_slitSlit->Fill(Abs(x_corr[3]-x_corr[2]));
       }
    }
 

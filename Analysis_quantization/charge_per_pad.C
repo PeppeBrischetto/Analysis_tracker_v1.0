@@ -130,22 +130,16 @@ void charge_per_pad(int run){
 //################################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",13);                                                                                                          
+   TCutG *cutG = new TCutG("cutG",7);                                                      
   cutG->SetVarX("cl_x_mm[0]");                                                            
   cutG->SetVarY("cl_x_mm[1]");                                                            
-  cutG->SetPoint(0,63.9099,106.765);                                                      
-  cutG->SetPoint(1,64.2387,108.319);                                                       
-  cutG->SetPoint(2,65.0241,109.003);                                                      
-  cutG->SetPoint(3,65.7768,109.165);                                                      
-  cutG->SetPoint(4,66.4307,108.786);                                                      
-  cutG->SetPoint(5,66.6499,107.697);                                                      
-  cutG->SetPoint(6,66.5585,107.169);                                                      
-  cutG->SetPoint(7,66.2566,106.247);                                                      
-  cutG->SetPoint(8,65.974,105.521);                                                       
-  cutG->SetPoint(9,65.4443,104.65);                                                       
-  cutG->SetPoint(10,64.9693,104.619);                                                     
-  cutG->SetPoint(11,63.983,105.023);                                                      
-  cutG->SetPoint(12,63.9099,106.765);
+  cutG->SetPoint(0,39.1934,96.0966);                                                      
+  cutG->SetPoint(1,41.0057,88.8592);                                                      
+  cutG->SetPoint(2,46.1275,91.0441);                                                      
+  cutG->SetPoint(3,55.1891,105.792);                                                      
+  cutG->SetPoint(4,49.8309,109.069);                                                      
+  cutG->SetPoint(5,45.3395,104.426);                                                      
+  cutG->SetPoint(6,39.1934,96.0966);
       
 //################################################################################################################
 // OpenFiles

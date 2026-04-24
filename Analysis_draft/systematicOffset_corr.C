@@ -37,7 +37,7 @@ void systematicOffset_corr(int run){
    Double_t my_chi = 0.;
    Double_t my_chiRed = 0.;
    Double_t Ndof = 3;
-   Double_t offset[NRows] = {-0.198552,1.6391,-0.647232,-2.51562,1.71956};
+   Double_t offset[NRows] = {-1.32992,3.01546,-0.507376,-2.25566,1.07984};
    Double_t x_corr[NRows] = {0.};
    Double_t newOffset[NRows] = {0.};
    Double_t chiRed_min1 = 0.;
@@ -237,19 +237,16 @@ void systematicOffset_corr(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-  TCutG *cutG = new TCutG("cutG",10);                                                                                                          
+   TCutG *cutG = new TCutG("cutG",7);                                                      
   cutG->SetVarX("cl_x_mm[0]");                                                            
-  cutG->SetVarY("cl_x_mm[1]");                                                            
-  cutG->SetPoint(0,60.327,105.785);                                                       
-  cutG->SetPoint(1,58.9946,104.395);                                                      
-  cutG->SetPoint(2,58.5505,102.696);                                                      
-  cutG->SetPoint(3,58.7947,101.492);                                                      
-  cutG->SetPoint(4,59.5609,101.461);                                                      
-  cutG->SetPoint(5,61.0154,102.604);                                                      
-  cutG->SetPoint(6,63.0139,104.21);                                                       
-  cutG->SetPoint(7,63.5802,105.908);                                                      
-  cutG->SetPoint(8,62.6364,107.236);                                                      
-  cutG->SetPoint(9,60.327,105.785);
+  cutG->SetVarY("cl_x_mm[1]");                                                                                                                        
+  cutG->SetPoint(0,45.6964,97.8353);                                                      
+  cutG->SetPoint(1,45.2721,93.4294);                                                      
+  cutG->SetPoint(2,48.1709,94.0882);                                                      
+  cutG->SetPoint(3,52.3659,99.2353);                                                      
+  cutG->SetPoint(4,52.3188,103.641);                                                      
+  cutG->SetPoint(5,48.2416,102.159);                                                      
+  cutG->SetPoint(6,45.6964,97.8353); 
   
 //#################################################################################################
 // Data loop

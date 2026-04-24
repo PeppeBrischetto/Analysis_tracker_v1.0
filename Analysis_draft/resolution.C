@@ -41,6 +41,7 @@ void resolution(int run){
    Int_t evts = 0;
    Double_t r3_2[NRows] = {0.};
    Double_t err_r3_2[NRows] = {0.};
+   Double_t max[6] = {0.};
    
    Double_t semiaperture = 0.25;                                              // semiaperture of the virtual slit(s)
    ofstream diffWidth;
@@ -194,19 +195,15 @@ void resolution(int run){
 //###########################################################################################################
 // Graphyical cut definition
 
-   TCutG *cutG = new TCutG("cutG",10);                                                                                                          
+   TCutG *cutG = new TCutG("cutG",6);                                                      
   cutG->SetVarX("cl_x_mm[0]");                                                            
   cutG->SetVarY("cl_x_mm[1]");                                                            
-  cutG->SetPoint(0,60.327,105.785);                                                       
-  cutG->SetPoint(1,58.9946,104.395);                                                      
-  cutG->SetPoint(2,58.5505,102.696);                                                      
-  cutG->SetPoint(3,58.7947,101.492);                                                      
-  cutG->SetPoint(4,59.5609,101.461);                                                      
-  cutG->SetPoint(5,61.0154,102.604);                                                      
-  cutG->SetPoint(6,63.0139,104.21);                                                       
-  cutG->SetPoint(7,63.5802,105.908);                                                      
-  cutG->SetPoint(8,62.6364,107.236);                                                      
-  cutG->SetPoint(9,60.327,105.785);                                 
+  cutG->SetPoint(0,44.068,96.1617);                                                       
+  cutG->SetPoint(1,44.5419,92.6775);                                                      
+  cutG->SetPoint(2,50.8881,97.6209);                                                      
+  cutG->SetPoint(3,51.2774,102.207);                                                      
+  cutG->SetPoint(4,50.8204,102.951);                                                      
+  cutG->SetPoint(5,47.0296,101.224);
    
 //#################################################################################################################
 // Data loop for all events
@@ -352,7 +349,7 @@ void resolution(int run){
       x_NC_cut[row]->Fit(f_gaus,"Q0","",0,300);
       Double_t stDEVB = f_gaus->GetParameter(2);
       Double_t stDEVB_err = f_gaus->GetParError(2);
-      Double_t y = x_NC_cut[row]->GetMaximum();
+      Double_t y = x_NC_cut[row]->GetMaximumBin();
       char testo[100];
       sprintf(testo,"FWHM: 2.35*%f = %f",stDEVB,2.35*stDEVB);
       x_NC_cut[row]->Draw("SAME");
